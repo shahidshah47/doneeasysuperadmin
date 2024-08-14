@@ -27,21 +27,23 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const fullName = ref('');
-const email = ref('');
+const router = useRouter();
+const username = ref('');
 const password = ref('');
-const confirmPassword = ref('');
 const showPassword = ref(false);
 
-function signUp() {
-  // Perform sign-up logic here
-  console.log({ fullName: fullName.value, email: email.value, password: password.value, confirmPassword: confirmPassword.value });
+function signIn() {
+  console.log("Navigating to dashboard.");
+  console.log(router)
+  router.push('/dashboard').catch(err => {
+    console.error("Failed to navigate:", err);
+  });
 }
-</script>
 
-<style scoped>
-button {
-  cursor: pointer;
+function togglePassword() {
+  showPassword.value = !showPassword.value;
 }
-</style>
+
+</script>

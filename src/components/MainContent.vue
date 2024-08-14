@@ -1,13 +1,15 @@
-<script>
-export default {
-  name: "MainContent.vue"
-}
-</script>
-
 <template>
 
 </template>
 
-<style scoped>
+<script>
+export default {
+  name: "MainContent"
+}
+</script>
 
+<style scoped>
+.main-content {
+  padding: 20px;
+}
 </style>

@@ -1,10 +1,9 @@
-<script>
-export default {
-  name: "TopBar.vue"
-}
+<script setup>
+
 </script>
 
 <template>
+
 </template>
 
 <style scoped>
