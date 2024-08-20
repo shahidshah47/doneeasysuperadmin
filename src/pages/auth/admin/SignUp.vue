@@ -1,4 +1,5 @@
 <template>
+  <TopBar></TopBar>
   <div class="flex items-center justify-center min-h-screen font-averta">
     <!-- Adjusted max width and padding for a wider card -->
     <div class="px-4 py-8 bg-white rounded-lg shadow-xl w-full max-w-2xl">
@@ -42,6 +43,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import TopBar from "../../../components/TopBar.vue";
 
 const fullName = ref('');
 const email = ref('');

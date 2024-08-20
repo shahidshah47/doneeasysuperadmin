@@ -1,0 +1,6 @@
+.SiteHeader__container {
+    position: relative;
+    max-width: calc(var(--columnPaddingNormal)* 2 + var(--layoutWidth));
+    margin: 0 auto;
+    padding: 0 var(--columnPaddingNormal);
+}

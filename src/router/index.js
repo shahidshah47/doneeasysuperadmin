@@ -7,9 +7,15 @@ const routes = [
         path: '/',
         component: AuthLayout,
         children: [
+            { path: '/admin/signin', component: () => import('../pages/auth/admin/SignIn.vue') },
+            { path: '/admin/signup', component: () => import('../pages/auth/admin/SignUp.vue') },
+            { path: '/admin/email-confirmation', component: () => import('../pages/auth/admin/EmailConfirmation.vue') },
+
+        //     Client
             { path: '', redirect: '/signin' },
-            { path: '/signin', component: () => import('../components/SignIn.vue') },
-            { path: '/signup', component: () => import('../components/SignUp.vue') }
+            { path: '/signin', component: () => import('../pages/auth/client/SignIn.vue') },
+            { path: '/signup', component: () => import('../pages/auth/client/SignUp.vue') },
+            { path: '/company/register', component: () => import('../pages/auth/client/company/register.vue') },
         ]
     },
     {

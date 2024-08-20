@@ -1,4 +1,5 @@
 <template>
+  <TopBar></TopBar>
   <div class="flex items-center justify-center min-h-screen">
     <div class="p-8 bg-white rounded-lg shadow-xl w-full max-w-md">
       <h2 class="mb-6 text-2xl font-bold text-gray-700 text-left">Log In</h2> <!-- Align title to left -->
@@ -28,6 +29,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import TopBar from "../../../components/TopBar.vue";
 
 const router = useRouter();
 const username = ref('');

@@ -1,0 +1,412 @@
+html{--gutterWidth:16px;--scrollbarWidth:0px;--windowWidth:calc(100vw - var(--scrollbarWidth));--layoutWidth:calc(var(--windowWidth) - var(--gutterWidth)*2);--layoutWidthMax:1319px;--viewportWidthSmall:375;--viewportWidthMedium:600;--viewportWidthLarge:1112;--viewportScale:calc(var(--windowWidth)/var(--viewportWidthLarge));--paddingTop:160px;--paddingBottom:160px;--columnPaddingNone:0;--columnPaddingSmall:8px;--columnPaddingNormal:16px;--columnPaddingMedium:16px;--columnPaddingLarge:16px;--columnPaddingXLarge:16px;--rowGapNormal:8px;--rowGapMedium:24px;--rowGapLarge:32px;--rowGapXLarge:64px;--rowGapXXLarge:88px;--rowGap:var(--rowGapNormal);--columnCountMax:1;--columnWidth:calc(var(--layoutWidth)/var(--columnCountMax));--columnMaxWidth:calc(var(--layoutWidthMax)*0.25);--copyMaxWidth:calc(var(--columnMaxWidth)*3)}@media (min-width:600px){html{--columnPaddingMedium:32px;--columnPaddingLarge:64px;--columnPaddingXLarge:64px;--columnCountMax:2}}@media (min-width:900px){html{--columnPaddingXLarge:112px;--columnCountMax:4}}@media (min-width:1112px){html{--layoutWidth:var(--layoutWidthMax);--gutterWidth:calc(var(--windowWidth)/2 - var(--layoutWidth)/2)}}
+
+body{
+    font-family: 'Averta';
+    color: #0E0D35 !important;
+    letter-spacing: normal !important;
+}
+h1, h2, h3, h4, h5{
+    font-family: 'Averta-Bold';
+}
+.font-semibold{
+    font-family: 'Averta-Semibold';
+}
+.font-light{
+    font-family: 'Averta-Light';
+}
+.font-black{
+    font-family: 'Averta-Bold';
+    font-weight: 900;
+}
+.link .active{
+    color: #5825EB;
+    font-family: 'Averta';
+    font-weight: 700;
+    word-wrap:break-word
+}
+
+.link{
+    font-family: 'Averta';
+    font-weight: 400;
+    word-wrap:break-word
+}
+
+.home_container {
+    position: relative;
+    max-width: calc(var(--columnPaddingNormal)* 2 + var(--layoutWidth));
+    margin: 0 auto;
+    padding: 0 var(--columnPaddingNormal);
+}
+.theme-purple{
+    color: #38E0B2;
+}
+
+.bg-mix {
+    background-image: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%) !important;
+}
+
+.bg-mix-gradient {
+    background-image: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%) !important;
+}
+.bg-mix-gradient:hover {
+    background-image: linear-gradient(98.24deg, #9E21EE -10%, #5925EB 64.63%, #442AE8 116.94%);
+}
+.sliderContainer {
+    overflow: hidden;
+}
+
+.logoSlider {
+    display: flex;
+    gap: 24px;
+}
+
+.logo {
+    width: 100px; /* Set your preferred width */
+    height: auto;
+    opacity: 0.5; /* Adjust as needed */
+    transition: opacity 0.3s ease;
+
+}
+
+.currentLogo {
+    width: 100px; /* Highlighted logo width */
+    opacity: 1;
+    background-color: #fff;
+}
+
+.b-mix {
+    padding: 1px; /* Set your desired border width */
+    border-style: solid;
+    border-image-source: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%);
+    border-image-slice: 1; /* This is a default value, adjust as needed */
+    display: inline-block; /* or use 'block' if appropriate */
+    border-radius: 17px; /* Set your desired border radius */
+    overflow: hidden; /* Ensure the border-radius is applied */
+    background: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%),
+    linear-gradient(0deg, rgba(252, 253, 255, 0.5), rgba(252, 253, 255, 0.5));
+}
+.b-light-mix {
+    padding: 1px; /* Set your desired border width */
+    border-style: solid;
+    border-image-source: linear-gradient(148.03deg, #D6F1F5 -18.12%, #EBE4FD 84.98%);
+    border-image-slice: 1; /* This is a default value, adjust as needed */
+    display: inline-block; /* or use 'block' if appropriate */
+    border-radius: 17px; /* Set your desired border radius */
+    overflow: hidden; /* Ensure the border-radius is applied */
+    background: linear-gradient(148.03deg, #D6F1F5 -18.12%, #EBE4FD 84.98%),
+    linear-gradient(0deg, rgba(252, 253, 255, 0.5), rgba(252, 253, 255, 0.5));
+}
+.register-btn{
+    padding: 2px; /* Set your desired border width */
+    border-style: solid;
+    border-color: #fff;
+    display: inline-block; /* or use 'block' if appropriate */
+    border-radius: 17px; /* Set your desired border radius */
+    overflow: hidden; /* Ensure the border-radius is applied */
+}
+.register-btn:hover{
+    padding: 2px; /* Set your desired border width */
+    border-style: solid;
+    border-image-source: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%);
+    border-image-slice: 1; /* This is a default value, adjust as needed */
+    display: inline-block; /* or use 'block' if appropriate */
+    border-radius: 17px; /* Set your desired border radius */
+    overflow: hidden; /* Ensure the border-radius is applied */
+    background: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%),
+    linear-gradient(0deg, rgba(252, 253, 255, 0.5), rgba(252, 253, 255, 0.5));
+}
+.btn-b-mix {
+    border-width: 1px; /* Set your desired border width */
+    border-style: solid;
+    border-image-source: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%);
+    border-image-slice: 1; /* This is a default value, adjust as needed */
+    display: inline-block; /* or use 'block' if appropriate */
+    border-radius: 16px; /* Set your desired border radius */
+    overflow: hidden; /* Ensure the border-radius is applied */
+    background: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%);
+}
+
+.btn-b-mix {
+    border-width: 1px; /* Set your desired border width */
+    border-style: solid;
+    border-image-source: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%);
+    border-image-slice: 1; /* This is a default value, adjust as needed */
+    display: inline-block; /* or use 'block' if appropriate */
+    border-radius: 16px; /* Set your desired border radius */
+    overflow: hidden; /* Ensure the border-radius is applied */
+    background: linear-gradient(148.03deg, #D6F1F5 -18.12%, #EBE4FD 84.98%);
+
+}
+
+.slick-current{
+    background-color: transparent;
+    overflow: hidden;
+}
+body.slick-active{
+    overflow: hidden;
+}
+/* styles/TestimonialSlider.module.css */
+.testimonialSliderContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+}
+
+.testimonialSlider {
+    width: 648px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 32px;
+}
+
+.clientImages {
+    width: 635px;
+    height: 642px;
+    position: relative;
+}
+
+.clientImages img {
+    width: 224px;
+    height: 224px;
+    position: absolute;
+    border-radius: 50%;
+    border: 12px #38E0B2 solid;
+    transition: border-color 0.3s ease;
+}
+
+.clientImages img.highlighted {
+    border-color: #5825EB; /* Highlight color */
+}
+
+.carousel .control-dots .dot{
+    float: left !important;
+    width: 16px !important;
+    background-color: #CFCFD7 !important;
+    border-radius: 69px !important;
+    box-shadow: unset !important;
+}
+.carousel .control-dots .dot.selected{
+    float: left !important;
+    width: 39px !important;
+    background-color: #5825EB !important;
+    border-radius: 69px !important;
+    box-shadow: unset !important;
+}
+#why_choose_us .slick-dots{
+    position: relative !important;
+    bottom: unset !important;
+}
+.slick-list {margin: 0 -5px;}
+.slick-slide>div {padding: 0 5px;}
+.slick-track { 	display: flex !important; }  .slick-slide { 	height: inherit !important; 	display: flex !important; 	justify-content: center; 	align-items: center; }
+.slick-slide > div { height: 100%; }
+.slick-dots li.slick-active button{
+    width: 20px !important;
+    background-color: #5825EB !important;
+    border-radius: 32px !important;
+    box-shadow: unset !important;
+}
+.slick-dots li button:before{
+    font-size: unset !important;
+    height: unset;
+}
+.slick-dots li button{
+    padding-right: 1px;
+    height:6px !important;
+    width: 12px !important;
+    border-radius: 32px !important;
+    box-shadow: unset !important;
+    background-color: #CFCFD7 !important;
+}
+.slick-dots li{
+    width: unset !important;
+    height: unset !important;
+    margin: 1px !important;
+}
+.bg-light-gradient {
+    background: white;
+}
+
+.bg-light-gradient:hover {
+    background:linear-gradient(148.03deg, #D6F1F5 -18.12%, #EBE4FD 84.98%);
+}
+
+.transition-background {
+    transition: background-image 0.5s ease;
+}
+
+.gradient-text {
+    /* Apply the gradient as a background */
+    background: -webkit-linear-gradient(50.24deg, #38E0B2 -18%, #442AE8 50%, #5925EB 64.63%, #9E21EE 116.94%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 30px; /* Example size, adjust as needed */
+    font-weight: bold; /* Optional: makes the gradient more visible */
+}
+.active-link{
+    font-weight: 600;
+}
+.slick-track{
+    background-color: transparent !important;
+}
+
+.top-element {
+    transition: top 0.5s ease, bottom 0.5s ease; /* Add transition for top and bottom */
+}
+
+.top-element-hidden {
+  display: none;
+}
+.animated-button::before {
+    border-radius: 16px;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform-origin: top left;
+    transform: scaleX(0) scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.animated-button:hover::before {
+    transform: scaleX(1) scaleY(1);
+    border-image-source: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%);
+    border-image-slice: 1; /* This is a default value, adjust as needed */
+    background: linear-gradient(148.03deg, #D6F1F5 -18.12%, #EBE4FD 84.98%);
+    z-index: -1;
+}
+
+/* Add this in your CSS file */
+.swimming-image-size {
+    width: 64px !important;
+    height: 64px !important;
+    object-fit: cover; /* Ensures the image covers the set dimensions */
+}
+
+#map-container .mapboxgl-canvas {
+    width: 100%;
+    height: 500px !important; /* Forces the canvas height to be 500px */
+}
+
+.marker {
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mapboxgl-popup {
+    max-width: 200px;
+}
+
+.mapboxgl-popup-content {
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+}
+
+
+/*checkbox */
+.checkbox{
+    -webkit-appearance: none;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 1px solid #B7B7C3;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.checkbox:checked{
+    background: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%);
+    border: unset;
+}
+
+.checkbox::before{
+    content: '';
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 8px;
+    pointer-events: none;
+    background-image: url(../check_ico.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.checkbox::before{
+ display: none;
+}
+
+.checkbox:checked::before{
+    display: block;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.get_started_child, .why_choose_us_child, .how_it_works_child, .early_access, .early_access, .faqs_child, .blogs_child {
+    position: relative;
+    max-width: calc(var(--columnPaddingNormal)* 2 + var(--layoutWidth));
+    margin: 0 auto;
+    padding: 0 var(--columnPaddingNormal);
+}
+
+.verticles_card_shadow{
+    box-shadow: 0px 3px 24px 0px #C4C3F726;
+}
+
+.main_container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main_body {
+    overflow-y: auto;
+    height: calc(100vh - 79px - 105px);
+}
+
+
+.company_size_card {
+    padding: 2px; /* Set your desired border width */
+    border-style: solid;
+    border-image-source: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%);
+    border-image-slice: 1; /* This is a default value, adjust as needed */
+    display: inline-block; /* or use 'block' if appropriate */
+    border-radius: 17px; /* Set your desired border radius */
+    overflow: hidden; /* Ensure the border-radius is applied */
+    background: linear-gradient(98.24deg, #38E0B2 -18.55%, #442AE8 28.45%, #5925EB 64.63%, #9E21EE 116.94%),
+    linear-gradient(0deg, rgba(252, 253, 255, 0.5), rgba(252, 253, 255, 0.5));
+}
+
+.search-border {
+    padding: 1px;
+    border-image-slice: 1; /* This is a default value, adjust as needed */
+    display: inline-block; /* or use 'block' if appropriate */
+    border-radius: 16px; /* Set your desired border radius */
+    overflow: hidden; /* Ensure the border-radius is applied */
+    border-image-source: linear-gradient(148.03deg, #D6F1F5 -18.12%, #EBE4FD 84.98%);
+    background: linear-gradient(148.03deg, #D6F1F5 -18.12%, #EBE4FD 84.98%);
+}
+.font-bold{
+    font-family: Averta-Bold;
+}
