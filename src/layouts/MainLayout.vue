@@ -1,13 +1,11 @@
 <script setup>
 
-import Sidebar from "../components/Sidebar.vue";
+import SideBar from "../components/SideBar.vue";
 </script>
 
 <template>
-  <Sidebar />
+  <SideBar />
 
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

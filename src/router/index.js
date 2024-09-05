@@ -28,8 +28,8 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
-        path: '/home',
-        component: () => import('../pages/Home.vue'),
+        path: '/vendor',
+        component: () => import('../pages/Vendor.vue'),
         meta: { requiresAuth: true }
     }
 ]
