@@ -1,9 +1,9 @@
 <template>
     <div class="row dashboard-stats d-flex" id="dashboard-stats">
         <div v-for="(stat, index) in dashboardStats" :key="index" class="col-md-3">
-            <div class="carddesign">
+            <div class="card">
                 <div class="card-header">{{ stat.title }}
-                    <img class="float-right" :src="getImagePath('Frame 48096300.png')">
+                    <img class="float-end" :src="getImagePath('Frame 48096300.png')">
                 </div>
                 <div class="card-body">
                     <div class="number">{{ stat.number }}</div>
@@ -19,24 +19,22 @@
     <div class="vendor-list">
         <div class="search-filter">
             <div class="left-buttons">
-                <button class="btn btn-primary3">All</button>
-                <button class="btn btn-grey">Approved</button>
-                <button class="btn btn-grey">Pending</button>
+                <button class="btn btn-primary">All</button>
+                <button class="btn btn-secondary">Approved</button>
+                <button class="btn btn-secondary">Pending</button>
             </div>
             <div class="right-section d-flex">
                 <div class="search-bar mx-4">
-                    <input type="text" placeholder="Search">
+                    <input type="text" class="form-control" placeholder="Search">
                     <i class="fas fa-search"></i>
                 </div>
                 <div class="filter-buttons">
                     <button class="btn btn-light">
-                        <i class="fas fa-filter"></i>
-                        Filters by
+                        <i class="fas fa-filter"></i> Filters by
                         <img :src="getImagePath('Frame 48096300.png')">
                     </button>
                     <button class="btn btn-light">
-                        <i class="fas fa-columns"></i>
-                        Columns
+                        <i class="fas fa-columns"></i> Columns
                         <img :src="getImagePath('Component 9.png')">
                     </button>
                 </div>
@@ -60,7 +58,7 @@
             </thead>
             <tbody id="vendor-table-body">
                 <tr v-for="(vendor, index) in vendorData" :key="index">
-                    <td><input type="checkbox"></td>
+                    <td><input type="checkbox" class="form-check-input"></td>
                     <td>{{ vendor.id }}</td>
                     <td>
                         <img :src="getImagePath(vendor.companyImage)" />
@@ -74,9 +72,8 @@
                     <td>{{ vendor.totalRevenue }}</td>
                     <td>{{ vendor.totalSpending }}</td>
                     <td>
-                        <select class="form-control" :style="{ backgroundColor: vendor.statusColor }">
-                            <option :value="vendor.status.toLowerCase()" selected>{{ vendor.status }}
-                            </option>
+                        <select class="form-select" :style="{ backgroundColor: vendor.statusColor }">
+                            <option :value="vendor.status.toLowerCase()" selected>{{ vendor.status }}</option>
                             <option value="banned">Banned</option>
                             <option value="inactive">Inactive</option>
                             <option value="monitory">Monitory</option>
@@ -84,7 +81,7 @@
                     </td>
                     <td class="vertivelsubscribe">{{ vendor.verticalSubscribed }}</td>
                     <td>{{ vendor.registeredDate }}</td>
-                    <td style="display: flex; flex-direction: row;">
+                    <td class="d-flex">
                         <img class="px-1" :src="getImagePath('eye.png')" />
                         <img class="px-1" :src="getImagePath('delete.png')" />
                         <img class="px-1" :src="getImagePath('share.png')" />

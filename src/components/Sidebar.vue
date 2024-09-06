@@ -4,7 +4,7 @@
       <img :src="getImagePath('Logo.png')" alt="Logo">
     </div>
     <div class="py-2">
-      <ul class="nav d-flex justify-content-center" id="sidebar-menu">
+      <ul class="nav flex-column align-items-center" id="sidebar-menu">
         <li v-for="(item, index) in sidebarItems" :key="index" class="nav-item">
           <a class="nav-link py-2" href="#">
             <img :src="getImagePath(item.image)" />
