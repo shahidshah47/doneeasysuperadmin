@@ -1,10 +1,13 @@
 <template>
-  <div class="header">
-    <div class="date">Feb 13, 2023
-      <div class="greeting">Hey, Jane Cooper</div>
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="fs-6">Feb 13, 2023
+      <div class="fs-4 fw-bold">Hey, Jane Cooper</div>
     </div>
-    <div class="left-side-header d-flex gap-3">
-      <button class="btn btn-primary">Add Vendor</button>
+    <div class="d-flex gap-3">
+      <button class="btn btn-primary btn-sm py-0 px-3 rounded-3 align-items-center">
+        <span class="fs-5 me-2">+</span>
+        Vendor
+      </button>
       <button class="btn btn-light">
         <img :src="getImagePath('Messages.png')">
       </button>
@@ -14,12 +17,6 @@
       <button class="btn btn-light">
         <img :src="getImagePath('notification.png')">
       </button>
-    </div>
-  </div>
-  <div class="d-flex justify-content-between align-items-center">
-    <div class="vendor-title">Vendor</div>
-    <div class="addvendorbuttons">
-      <button class="btn btn-primary">Add Vendor</button>
     </div>
   </div>
 </template>

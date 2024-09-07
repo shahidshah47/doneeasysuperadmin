@@ -137,7 +137,7 @@
                                     <p class="mb-3">CEO</p>
                                     <p class="fw-bold">+971 983402031</p>
                                     <p>johnthompson15@gmail.com</p>
-                                    <button type="button" class="btn btn-primary w-50 mt-3">
+                                    <button type="button" class="btn btn-primary w-75 mt-3">
                                         View Details
                                     </button>
                                 </div>
@@ -147,7 +147,7 @@
                                     <p class="mb-3">CEO</p>
                                     <p class="fw-bold">+971 983402031</p>
                                     <p>johnthompson15@gmail.com</p>
-                                    <button type="button" class="btn btn-primary w-50 mt-3">
+                                    <button type="button" class="btn btn-primary w-75 mt-3">
                                         View Details
                                     </button>
                                 </div>
@@ -157,7 +157,7 @@
                                     <p class="mb-3">CEO</p>
                                     <p class="fw-bold">+971 983402031</p>
                                     <p>johnthompson15@gmail.com</p>
-                                    <button type="button" class="btn btn-primary w-50 mt-3">
+                                    <button type="button" class="btn btn-primary w-75 mt-3">
                                         View Details
                                     </button>
                                 </div>
@@ -175,28 +175,28 @@
                                 <div class="grey-box">
                                     <p>Main Office</p>
                                     <p>Jebel Ali Free Zone, Zip Code 61327</p>
-                                    <button type="button" class="btn btn-primary w-50 mt-3">
+                                    <button type="button" class="btn btn-primary w-75 mt-3">
                                         View Details
                                     </button>
                                 </div>
                                 <div class="grey-box">
                                     <p>Branch No.2</p>
                                     <p>Jebel Ali Free Zone, Zip Code 61327</p>
-                                    <button type="button" class="btn btn-primary w-50 mt-3">
+                                    <button type="button" class="btn btn-primary w-75 mt-3">
                                         View Details
                                     </button>
                                 </div>
                                 <div class="grey-box">
                                     <p>Branch No.3</p>
                                     <p>Jebel Ali Free Zone, Zip Code 61327</p>
-                                    <button type="button" class="btn btn-primary w-50 mt-3">
+                                    <button type="button" class="btn btn-primary w-75 mt-3">
                                         View Details
                                     </button>
                                 </div>
                                 <div class="grey-box">
                                     <p>Branch No.4</p>
                                     <p>Jebel Ali Free Zone, Zip Code 61327</p>
-                                    <button type="button" class="btn btn-primary w-50 mt-3">
+                                    <button type="button" class="btn btn-primary w-75 mt-3">
                                         View Details
                                     </button>
                                 </div>
@@ -207,12 +207,12 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="col-md-12 d-flex justify-content-center gap-3 mt-3">
-                <p class="fw-bold mb-0 align-baseline">Quick Actions</p>
-                <button class="btn btn-outline-primary border">Edit</button>
-                <button class="btn btn-outline-primary">Delete</button>
-                <button class="btn btn-outline-primary">Organization Mode</button>
-                <button class="btn btn-outline-primary">Share Profile</button>
+            <div class="col-md-12 d-flex justify-content-center align-items-center gap-3 mt-3">
+                <p class="fw-bold mb-0">Quick Actions</p>
+                <button class="btn btn-outline-primary px-4">Edit</button>
+                <button class="btn btn-outline-primary px-4">Delete</button>
+                <button class="btn btn-outline-primary px-4">Organization Mode</button>
+                <button class="btn btn-outline-primary px-4">Share Profile</button>
             </div>
         </div>
     </div>
@@ -225,7 +225,10 @@ const getImagePath = (imageName) => {
 </script>
 
 <style scoped>
-/* General Styling */
+* {
+    font-family: "Poppins", sans-serif !important;
+}
+
 .company-details {
     background-color: #f2f4fb;
     padding: 20px;
@@ -341,15 +344,5 @@ const getImagePath = (imageName) => {
 
 .add-new {
     color: #5825eb;
-}
-
-.btn-primary {
-    background: linear-gradient(98.24deg,
-            #38e0b2 -18.55%,
-            #442ae8 28.45%,
-            #5925eb 64.63%,
-            #9e21ee 116.94%);
-    border: none;
-    text-transform: uppercase;
 }
 </style>

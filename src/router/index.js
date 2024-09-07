@@ -5,6 +5,10 @@ import MainLayout from "../layouts/MainLayout.vue";
 const routes = [
   {
     path: "/",
+    redirect: "/dashboard",
+  },
+  {
+    path: "/",
     component: AuthLayout,
     children: [
       {
@@ -19,9 +23,6 @@ const routes = [
         path: "/admin/email-confirmation",
         component: () => import("../pages/auth/admin/EmailConfirmation.vue"),
       },
-
-      //     Client
-      { path: "", redirect: "/signin" },
       {
         path: "/signin",
         component: () => import("../pages/auth/client/SignIn.vue"),
@@ -37,12 +38,16 @@ const routes = [
     ],
   },
   {
-    path: "",
+    path: "/",
     component: MainLayout,
     children: [
       { path: "/project", component: () => import("../pages/Project.vue") },
-      { path: "/dashboard", component: () => import("../pages/Dashboard.vue") },
     ],
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/dashboard",
+    component: () => import("../pages/Dashboard.vue"),
     meta: { requiresAuth: true },
   },
   {
@@ -62,7 +67,7 @@ const router = createRouter({
   routes,
 });
 
-// You can uncomment and adjust the beforeEach hook to handle authentication redirects
+// Uncomment the beforeEach hook if you want to enforce authentication
 // router.beforeEach((to, from, next) => {
 //     const isAuthenticated = localStorage.getItem('user');
 //     if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {

@@ -1,131 +1,130 @@
-<script setup>
-
-import TopBar from "../layouts/TopBar.vue";
-</script>
-
 <template>
-  <div class="px-4 py-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-      <!-- Card 1 -->
-      <div class="bg-white shadow rounded-lg p-4 flex flex-col justify-between">
-        <div class="flex justify-between items-center">
-          <h5 class="text-lg font-bold">Total Sales</h5>
-          <img src="../assets/icons/sales-icon.svg" alt="Sales Icon" class="h-6 w-6">
-        </div>
-        <div class="flex justify-between items-center">
-          <p class="text-2xl font-semibold mt-2">1,234</p>
-          <div class="bg-green-100 p-1">
-            50%
+  <div>
+    <!-- Cards Section -->
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-body d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Total Sales</h5>
+              <p class="card-text display-6">1,234</p>
+              <p class="text-success fw-bold">50%</p>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0 text-muted">
+            Lifetime
           </div>
         </div>
-
-        <p class="text-sm text-gray-500 mt-1">Lifetime</p>
       </div>
-      <div class="bg-white shadow rounded-lg p-4 flex flex-col justify-between">
-        <div class="flex justify-between items-center">
-          <h5 class="text-lg font-bold">Total Sales</h5>
-          <img src="../assets/icons/sales-icon.svg" alt="Sales Icon" class="h-6 w-6">
-        </div>
-        <div class="flex justify-between items-center">
-          <p class="text-2xl font-semibold mt-2">1,234</p>
-          <div class="bg-green-100 p-1">
-            50%
+
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-body d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Total Sales</h5>
+              <p class="card-text display-6">1,234</p>
+              <p class="text-success fw-bold">50%</p>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0 text-muted">
+            Lifetime
           </div>
         </div>
-
-        <p class="text-sm text-gray-500 mt-1">Lifetime</p>
       </div>
-      <div class="bg-white shadow rounded-lg p-4 flex flex-col justify-between">
-        <div class="flex justify-between items-center">
-          <h5 class="text-lg font-bold">Total Sales</h5>
-          <img src="../assets/icons/sales-icon.svg" alt="Sales Icon" class="h-6 w-6">
-        </div>
-        <div class="flex justify-between items-center">
-          <p class="text-2xl font-semibold mt-2">1,234</p>
-          <div class="bg-green-100 p-1">
-            50%
+
+      <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-body d-flex justify-content-between">
+            <div>
+              <h5 class="card-title">Total Sales</h5>
+              <p class="card-text display-6">1,234</p>
+              <p class="text-success fw-bold">50%</p>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0 text-muted">
+            Lifetime
           </div>
         </div>
-
-        <p class="text-sm text-gray-500 mt-1">Lifetime</p>
-      </div>
-      <div class="bg-white shadow rounded-lg p-4 flex flex-col justify-between">
-        <div class="flex justify-between items-center">
-          <h5 class="text-lg font-bold">Total Sales</h5>
-          <img src="../assets/icons/sales-icon.svg" alt="Sales Icon" class="h-6 w-6">
-        </div>
-        <div class="flex justify-between items-center">
-          <p class="text-2xl font-semibold mt-2">1,234</p>
-          <div class="bg-green-100 p-1">
-            50%
-          </div>
-        </div>
-
-        <p class="text-sm text-gray-500 mt-1">Lifetime</p>
-      </div>
-    </div>
-    <div class="bg-white shadow-lg rounded-lg p-4 mt-5">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
-        <!-- Left Section with Buttons -->
-        <div class="mb-4 md:mb-0 flex space-x-2">
-          <button class="bg-[#5825EB] text-white px-4 py-2 rounded">All</button>
-          <button class="bg-[#5825EB] text-white px-4 py-2 rounded">Approved</button>
-          <button class="bg-[#5825EB] text-white px-4 py-2 rounded">Pending</button>
-        </div>
-
-        <!-- Right Section with Search and Filter -->
-        <div class="flex space-x-2">
-          <input type="text" placeholder="Search..." class="border-gray-300 border p-2 rounded w-full md:w-auto" />
-          <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Filter</button>
-          <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded">Columns</button>
-        </div>
-      </div>
-
-      <!-- Table -->
-      <div class="mt-4 overflow-x-auto">
-        <table class="w-full text-sm text-left text-gray-500">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-200">
-          <tr>
-            <th scope="col" class="px-6 py-3">
-              <input type="checkbox" />
-            </th>
-            <th scope="col" class="px-6 py-3">ID</th>
-            <th scope="col" class="px-6 py-3">Name</th>
-            <th scope="col" class="px-6 py-3">Status</th>
-            <th scope="col" class="px-6 py-3">Date</th>
-            <th scope="col" class="px-6 py-3">Role</th>
-            <th scope="col" class="px-6 py-3">Usage</th>
-            <th scope="col" class="px-6 py-3">Limit</th>
-            <th scope="col" class="px-6 py-3">Action</th>
-          </tr>
-          </thead>
-          <tbody>
-          <!-- Dynamic rows can be inserted here -->
-          <tr class="bg-white border-b">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <input type="checkbox" />
-            </td>
-            <td class="px-6 py-4">1</td>
-            <td class="px-6 py-4">John Doe</td>
-            <td class="px-6 py-4">Approved</td>
-            <td class="px-6 py-4">01/01/2022</td>
-            <td class="px-6 py-4">Admin</td>
-            <td class="px-6 py-4">80%</td>
-            <td class="px-6 py-4">100GB</td>
-            <td class="px-6 py-4">
-              <a href="#" class="text-blue-600 hover:text-blue-900">Edit</a>
-            </td>
-          </tr>
-          <!-- Additional rows -->
-          </tbody>
-        </table>
       </div>
     </div>
 
+    <!-- Table Section -->
+    <div class="card mt-5 shadow-sm border-0">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4 gap-4">
+          <!-- Filter Buttons -->
+          <div class="d-flex justify-content-center gap-1">
+            <button class="btn btn-primary me-2">All</button>
+            <button class="btn btn-light me-2">Approved</button>
+            <button class="btn btn-light">Pending</button>
+          </div>
+          <!-- Search and Filter Inputs -->
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search...">
+            <button class="btn btn-outline-secondary" type="button">Filter</button>
+            <button class="btn btn-outline-secondary" type="button">Columns</button>
+          </div>
+        </div>
+
+        <!-- Responsive Table -->
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th scope="col"><input type="checkbox" /></th>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date</th>
+                <th scope="col">Role</th>
+                <th scope="col">Usage</th>
+                <th scope="col">Limit</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td>1</td>
+                <td>John Doe</td>
+                <td>Approved</td>
+                <td>01/01/2022</td>
+                <td>Admin</td>
+                <td>80%</td>
+                <td>100GB</td>
+                <td><a href="#" class="text-primary">Edit</a></td>
+              </tr>
+              <!-- Additional rows go here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-
 </template>
 
-<style scoped>
+<script setup>
+</script>
 
+<style scoped>
+.card-title {
+  font-size: 1.25rem;
+}
+
+.card-text {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.display-6 {
+  font-size: 1.5rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f9fa;
+}
 </style>

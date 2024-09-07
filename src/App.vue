@@ -7,16 +7,20 @@ import TopBar from './components/TopBar.vue';
   <div class="container-fluid">
     <div class="row">
       <!-- Sidebar -->
-      <Sidebar />
+      <div class="col-md-1 d-md-flex d-none flex-column align-items-center bg-white shadow">
+        <Sidebar />
+      </div>
 
       <!-- Content Section -->
-      <div class="col-md-11 content py-3">
+      <div class="col-md-11 py-3">
         <div>
           <!-- TopBar -->
           <TopBar />
 
           <!-- Main Content -->
-          <router-view></router-view>
+          <div class="py-4">
+            <router-view></router-view>
+          </div>
         </div>
       </div>
     </div>
