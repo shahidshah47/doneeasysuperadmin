@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import AuthLayout from "../layouts/AuthLayout.vue";
-import MainLayout from "../layouts/MainLayout.vue";
 import DashboardLayout from "../layouts/DashboardLayout.vue";
 
 const routes = [
@@ -13,38 +12,26 @@ const routes = [
     component: AuthLayout,
     children: [
       {
-        path: "/admin/signin",
-        component: () => import("../pages/auth/admin/SignIn.vue"),
+        path: "/super-admin/login",
+        component: () => import("../pages/auth/Login.vue"),
       },
       {
-        path: "/admin/signup",
-        component: () => import("../pages/auth/admin/SignUp.vue"),
+        path: "/super-admin/register",
+        component: () => import("../pages/auth/Register.vue"),
       },
       {
-        path: "/admin/email-confirmation",
-        component: () => import("../pages/auth/admin/EmailConfirmation.vue"),
+        path: "/super-admin/email-confirmation",
+        component: () => import("../pages/auth/Email.vue"),
       },
       {
-        path: "/signin",
-        component: () => import("../pages/auth/client/SignIn.vue"),
+        path: "/super-admin/verify",
+        component: () => import("../pages/auth/Verify.vue"),
       },
       {
-        path: "/signup",
-        component: () => import("../pages/auth/client/SignUp.vue"),
-      },
-      {
-        path: "/company/register",
-        component: () => import("../pages/auth/client/company/register.vue"),
+        path: "/super-admin/google-2fa-enrollment",
+        component: () => import("../pages/auth/GoogleEnrollment.vue"),
       },
     ],
-  },
-  {
-    path: "/",
-    component: MainLayout,
-    children: [
-      { path: "/project", component: () => import("../pages/Project.vue") },
-    ],
-    meta: { requiresAuth: true },
   },
   {
     path: "/",
