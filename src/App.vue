@@ -1,4 +1,5 @@
 <script setup>
+import Breadcrumb from './components/Breadcrumb.vue';
 import Sidebar from './components/Sidebar.vue';
 import TopBar from './components/TopBar.vue';
 </script>
@@ -16,11 +17,9 @@ import TopBar from './components/TopBar.vue';
         <div>
           <!-- TopBar -->
           <TopBar />
-
+          <Breadcrumb class="pt-4" />
           <!-- Main Content -->
-          <div class="py-4">
-            <router-view></router-view>
-          </div>
+          <router-view></router-view>
         </div>
       </div>
     </div>

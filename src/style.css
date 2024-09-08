@@ -1,12 +1,22 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+body h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+b,
+span,
+button,
+ul,
+ol,
+li,
+a {
+  font-family: "Poppins", sans-serif !important;
 }
 
 body {
   background-color: #f2f4fb;
-  font-family: "Poppins", sans-serif !important;
 }
 
 .btn-primary {
@@ -61,4 +71,8 @@ body {
 
 .btn-outline-primary:active {
   transform: translateY(2px) !important;
+}
+
+.text-primary {
+  color: #5825eb !important;
 }

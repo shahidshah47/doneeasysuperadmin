@@ -2,67 +2,7 @@
     <div class="container-fluid company-details">
         <div class="row">
             <!-- Company Info and Stats -->
-            <div class="col-md-12 company-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div class="company-info">
-                        <div class="d-flex align-items-center">
-                            <img :src="getImagePath('LoveClipLogo.png')" class="company-logo" alt="Company Logo" />
-                            <div class="company-details-text">
-                                <div class="company-status">
-                                    <span class="badge badge-success mb-2">Active</span>
-                                </div>
-                                <h3>ABS Company Pvt Ltd</h3>
-                                <p>ID OFC 903823</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="company-stats d-flex gap-5">
-                        <div class="stat-item">
-                            <p>Total Revenue Generated</p>
-                            <h5>AED 32,100</h5>
-                        </div>
-                        <div class="stat-item">
-                            <p>No. of Order Completed</p>
-                            <h5>2190</h5>
-                        </div>
-                        <div class="stat-item">
-                            <p>No. of Verticals</p>
-                            <h5>16</h5>
-                        </div>
-                        <div class="stat-item">
-                            <p>Rating</p>
-                            <h5><span class="stars">★★★★☆</span> 4.5</h5>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab Navigation -->
-                <div class="tabs-section mt-5">
-                    <ul class="nav nav-tabs d-flex justify-content-around border-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Info</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Appointments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Site Survey</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Employees</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Verticals</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Chats History</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Finance</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <CompanyHeader />
 
             <!-- Company Details -->
             <div class="col-md-12 company-details-section">
@@ -219,91 +159,14 @@
 </template>
 
 <script setup>
+import CompanyHeader from '../../components/CompanyHeader.vue';
+
 const getImagePath = (imageName) => {
-    return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
+    return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
 };
 </script>
 
 <style scoped>
-* {
-    font-family: "Poppins", sans-serif !important;
-}
-
-.company-details {
-    background-color: #f2f4fb;
-    padding: 20px;
-}
-
-.company-header {
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-}
-
-.company-logo {
-    width: 80px;
-    margin-right: 20px;
-}
-
-.company-details-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.stars {
-    color: #f8961e;
-}
-
-.nav-tabs .nav-link.active[data-v-f28c6120] {
-    background-color: #fff !important;
-    border: none !important;
-    position: relative;
-}
-
-.nav-tabs .nav-link.active[data-v-f28c6120]::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -21px;
-    height: 4px;
-    background-color: #5825EB;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.company-details-text h3 {
-    font-weight: 700;
-    margin: 0;
-}
-
-.company-status .badge-success {
-    background-color: #28a745;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-.stat-item p {
-    color: #5825eb;
-    font-weight: 600;
-}
-
-.nav-tabs .nav-link {
-    color: #6c757d;
-}
-
-.nav-tabs .nav-link.active {
-    color: #495057;
-    background-color: #e9ecef;
-}
-
-.company-details-section {
-    padding: 20px;
-}
-
 .company-details-box {
     background-color: #fcfdff;
     padding: 20px;
