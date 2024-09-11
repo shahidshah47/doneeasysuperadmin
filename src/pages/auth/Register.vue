@@ -1,57 +1,54 @@
 <template>
-    <div class="register-page">
-        <div class="form-section">
-            <!-- Register Form -->
-            <div class="register-form-box">
-                <h2>Create Account</h2>
-                <form>
-                    <!-- Full Name Input -->
-                    <div class="form-group">
-                        <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" placeholder="e.g John Smith" class="form-control" />
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="register-form-box p-4 rounded-3 shadow">
+            <h2 class="fw-bold">Create Account</h2>
+            <form>
+                <!-- Full Name Input -->
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="e.g John Smith" class="form-control" />
+                </div>
+
+                <!-- Email Input -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="e.g johnsmith@gmail.com" class="form-control" />
+                </div>
+
+                <!-- Password Input with Custom Tooltip -->
+                <div class="form-group password-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" v-model="password" @focus="showTooltip"
+                        @blur="hideTooltip" />
+                    <i :class="isPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"
+                        class="password-toggle align-self-center" @click="togglePasswordVisibility('password')"></i>
+
+                    <!-- Tooltip Trigger -->
+                    <div id="passwordTooltip" class="custom-tooltip" ref="tooltip">
+                        <ul class="tooltip-rules">
+                            <li><i class="fas fa-check-circle"></i> Must be 4 to 16 characters in length.</li>
+                            <li><i class="fas fa-check-circle"></i> Must contain an Uppercase & lower case.</li>
+                            <li><i class="fas fa-check-circle"></i> Symbols such as !, @, #, $, etc. are allowed.
+                            </li>
+                            <li><i class="fas fa-check-circle"></i> Cannot include your username.</li>
+                            <li><i class="fas fa-times-circle"></i> Cannot be a previously used password.</li>
+                            <li><i class="fas fa-check-circle"></i> Cannot be a commonly used word or sequence of
+                                numbers, (password or 123456).</li>
+                        </ul>
                     </div>
+                </div>
 
-                    <!-- Email Input -->
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" placeholder="e.g johnsmith@gmail.com" class="form-control" />
-                    </div>
+                <!-- Confirm Password Input -->
+                <div class="form-group password-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" v-model="confirmPassword" />
+                    <i :class="isConfirmPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'" class="password-toggle"
+                        @click="togglePasswordVisibility('confirmPassword')"></i>
+                </div>
 
-                    <!-- Password Input with Custom Tooltip -->
-                    <div class="form-group password-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" class="form-control" v-model="password"
-                            @focus="showTooltip" @blur="hideTooltip" />
-                        <i :class="isPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"
-                            class="password-toggle align-self-center" @click="togglePasswordVisibility('password')"></i>
-
-                        <!-- Tooltip Trigger -->
-                        <div id="passwordTooltip" class="custom-tooltip" ref="tooltip">
-                            <ul class="tooltip-rules">
-                                <li><i class="fas fa-check-circle"></i> Must be 4 to 16 characters in length.</li>
-                                <li><i class="fas fa-check-circle"></i> Must contain an Uppercase & lower case.</li>
-                                <li><i class="fas fa-check-circle"></i> Symbols such as !, @, #, $, etc. are allowed.
-                                </li>
-                                <li><i class="fas fa-check-circle"></i> Cannot include your username.</li>
-                                <li><i class="fas fa-times-circle"></i> Cannot be a previously used password.</li>
-                                <li><i class="fas fa-check-circle"></i> Cannot be a commonly used word or sequence of
-                                    numbers, (password or 123456).</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Confirm Password Input -->
-                    <div class="form-group password-group">
-                        <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" class="form-control" v-model="confirmPassword" />
-                        <i :class="isConfirmPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'" class="password-toggle"
-                            @click="togglePasswordVisibility('confirmPassword')"></i>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary">CREATE ACCOUNT</button>
-                </form>
-            </div>
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">CREATE ACCOUNT</button>
+            </form>
         </div>
     </div>
 </template>
@@ -106,9 +103,6 @@ const hideTooltip = () => {
 
 .register-form-box {
     background-color: #FCFDFFB2;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     width: 100%;
 }
