@@ -17,13 +17,27 @@
                         <input type="email" id="email" placeholder="e.g johnsmith@gmail.com" class="form-control" />
                     </div>
 
-                    <!-- Password Input with Bootstrap Popover -->
+                    <!-- Password Input with Custom Tooltip -->
                     <div class="form-group password-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" class="form-control" v-model="password"
-                            @focus="showPopover" @blur="hidePopover" />
+                            @focus="showTooltip" @blur="hideTooltip" />
                         <i :class="isPasswordVisible ? 'fas fa-eye-slash' : 'fas fa-eye'"
                             class="password-toggle align-self-center" @click="togglePasswordVisibility('password')"></i>
+
+                        <!-- Tooltip Trigger -->
+                        <div id="passwordTooltip" class="custom-tooltip" ref="tooltip">
+                            <ul class="tooltip-rules">
+                                <li><i class="fas fa-check-circle"></i> Must be 4 to 16 characters in length.</li>
+                                <li><i class="fas fa-check-circle"></i> Must contain an Uppercase & lower case.</li>
+                                <li><i class="fas fa-check-circle"></i> Symbols such as !, @, #, $, etc. are allowed.
+                                </li>
+                                <li><i class="fas fa-check-circle"></i> Cannot include your username.</li>
+                                <li><i class="fas fa-times-circle"></i> Cannot be a previously used password.</li>
+                                <li><i class="fas fa-check-circle"></i> Cannot be a commonly used word or sequence of
+                                    numbers, (password or 123456).</li>
+                            </ul>
+                        </div>
                     </div>
 
                     <!-- Confirm Password Input -->
@@ -69,35 +83,16 @@ const togglePasswordVisibility = (inputId) => {
     }
 };
 
-// Function to initialize Bootstrap popover
-const showPopover = () => {
-    const passwordInput = document.getElementById('password');
-    const popover = new bootstrap.Popover(passwordInput, {
-        title: 'Create strong passwords',
-        content: `
-            <ul class='popover-rules'>
-                <li><i class="fas fa-check-circle"></i> Must be 4 to 16 characters in length.</li>
-                <li><i class="fas fa-check-circle"></i> Must contain an Uppercase & lower case.</li>
-                <li><i class="fas fa-check-circle"></i> Symbols such as !, @, #, $, etc. are allowed.</li>
-                <li><i class="fas fa-check-circle"></i> Cannot include your username.</li>
-                <li><i class="fas fa-times-circle"></i> Cannot be a previously used password.</li>
-                <li><i class="fas fa-check-circle"></i> Cannot be a commonly used word or sequence of numbers, (password or 123456).</li>
-            </ul>
-        `,
-        html: true,
-        trigger: 'manual',
-        placement: 'right',
-    });
-
-    popover.show();
+// Function to show the tooltip
+const showTooltip = () => {
+    const tooltip = document.getElementById('passwordTooltip');
+    tooltip.style.display = 'block';
 };
 
-const hidePopover = () => {
-    const passwordInput = document.getElementById('password');
-    const popover = bootstrap.Popover.getInstance(passwordInput);
-    if (popover) {
-        popover.hide();
-    }
+// Function to hide the tooltip
+const hideTooltip = () => {
+    const tooltip = document.getElementById('passwordTooltip');
+    tooltip.style.display = 'none';
 };
 </script>
 
@@ -110,7 +105,7 @@ const hidePopover = () => {
 }
 
 .register-form-box {
-    background-color: #fff;
+    background-color: #FCFDFFB2;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -171,25 +166,48 @@ const hidePopover = () => {
     background-color: #5a54d1;
 }
 
-/* Custom styling for popover rules */
-.popover .popover-rules {
+/* Custom Tooltip Styling */
+.custom-tooltip {
+    display: none;
+    position: absolute;
+    top: -100%;
+    left: 105%;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    width: 360px;
+    z-index: 1000;
+    border: 1px solid #ddd;
+}
+
+.custom-tooltip::before {
+    content: "";
+    position: absolute;
+    left: -5%;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent white transparent transparent;
+}
+
+.tooltip-rules {
     padding-left: 0;
-    list-style: none !important;
-    margin: 0 !important;
+    list-style: none;
 }
 
-.popover .popover-rules li {
-    font-size: 14px !important;
-    margin-bottom: 5px !important;
-    color: #333 !important;
+.tooltip-rules li {
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
-.popover .popover-rules li i {
-    margin-right: 10px !important;
-    color: #6c63ff !important;
+.tooltip-rules li i {
+    margin-right: 10px;
+    color: #6c63ff;
 }
 
-.popover .popover-rules li .fa-times-circle {
-    color: #dc3545 !important;
+.tooltip-rules li .fa-times-circle {
+    color: #dc3545;
 }
 </style>
