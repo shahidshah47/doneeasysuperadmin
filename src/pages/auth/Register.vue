@@ -119,6 +119,12 @@ const hideTooltip = () => {
     color: #333;
 }
 
+.form-control {
+    border: none !important;
+    border-radius: 8px !important;
+    background-color: #F2F4FB;
+}
+
 .form-group {
     margin-bottom: 20px;
 }
