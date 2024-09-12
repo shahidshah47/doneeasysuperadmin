@@ -13,8 +13,9 @@
                 </div>
                 <div class="d-flex gap-3">
                     <div class="d-flex align-items-center text-center position-relative">
-                        <input type="text" class="form-control border-0 bg-body-secondary" placeholder="Search">
-                        <i class="fas fa-search position-absolute end-0 me-2"></i>
+                        <input type="text" class="form-control border-0 py-2 px-3"
+                            style="background-color: #F2F4FB; width: 350px;" placeholder="Search">
+                        <i class="fas fa-search position-absolute end-0 me-3"></i>
                     </div>
                     <div class="d-flex align-items-center">
                         <button class="btn btn-light bg-white border-0">
