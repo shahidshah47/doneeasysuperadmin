@@ -13,7 +13,7 @@ ol,
 li,
 a,
 label,
-input {
+input, th, td {
   font-family: "Poppins", sans-serif !important;
 }
 
@@ -77,4 +77,12 @@ body {
 
 .text-primary {
   color: #5825eb !important;
+}
+
+.border-primary {
+  border: 1px solid #5825eb !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

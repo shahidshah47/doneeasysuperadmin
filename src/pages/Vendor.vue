@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <table class="table">
+            <table class="table custom-table">
                 <thead>
                     <tr>
                         <th></th>
@@ -95,14 +95,91 @@
                         </td>
                         <td class="vertivelsubscribe">{{ vendor.verticalSubscribed }}</td>
                         <td>{{ vendor.registeredDate }}</td>
-                        <td class="d-flex">
-                            <img class="px-1" :src="getImagePath('eye.png')" />
-                            <img class="px-1" :src="getImagePath('delete.png')" />
-                            <img class="px-1" :src="getImagePath('share.png')" />
+                        <td class="d-flex gap-1">
+                            <div class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+                                data-bs-toggle="modal" data-bs-target="#analyticsModal">
+
+                                <i class="fa-regular fa-eye text-primary"></i>
+                            </div>
+                            <div
+                                class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
+
+                                <i class="fa-regular fa-trash-can text-primary"></i>
+                            </div>
+                            <div
+                                class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
+
+                                <i class="fa-regular fa-share-from-square text-primary"></i>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="analyticsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="analyticsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="analyticsModalLabel">Yearly Analytics</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-body-secondary">
+                            <tr class="table-active text-center">
+                                <th>Month</th>
+                                <th>Total Vendor</th>
+                                <th>Active Members</th>
+                                <th>New Subscribe</th>
+                                <th>Inactive</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(data, index) in yearlyAnalyticsData" :key="index">
+                                <td>{{ data.month }}</td>
+                                <td class="text-center">{{ data.totalVendor }}
+                                    <span class="text-success">
+                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
+                                            {{ data.totalVendorPercentage }}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="text-center">{{ data.activeMembers }}
+                                    <span class="text-success">
+                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
+                                            {{ data.activeMembersPercentage }}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="text-center">{{ data.newSubscribe }}
+                                    <span class="text-success">
+                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
+                                            {{ data.newSubscribePercentage }}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="text-center">{{ data.inactive }}
+                                    <span class="text-danger">
+                                        <span class="border-0 rounded-2 p-1" style="background-color: #FFE5E5;">
+                                            {{ data.inactivePercentage }}
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="table-active text-center fw-bold">
+                                <td>Total</td>
+                                <td>1747025.14</td>
+                                <td>26557581.00</td>
+                                <td>1747025.14</td>
+                                <td>1747025.14</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -207,6 +284,141 @@ const vendorData = ref([
         statusColor: "lightyellow",
     },
 ]);
+
+const yearlyAnalyticsData = ref([
+    {
+        month: "January",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "February",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "March",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "April",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "May",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "June",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "July",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "August",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "September",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "October",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "November",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+    {
+        month: "December",
+        totalVendor: "39,7892",
+        activeMembers: "15,045",
+        newSubscribe: "1,200",
+        inactive: "200",
+        totalVendorPercentage: "20%",
+        activeMembersPercentage: "20%",
+        newSubscribePercentage: "20%",
+        inactivePercentage: "-12%",
+    },
+]);
 </script>
 
 <style scoped>
@@ -230,7 +442,7 @@ td {
     line-height: 1.5;
 }
 
-.table {
+.custom-table {
     border-collapse: collapse;
     width: 100%;
     font-size: 14px;
@@ -238,21 +450,21 @@ td {
     padding-right: 33px;
 }
 
-.table thead th {
+.custom-table thead th {
     background-color: #f2f4fb;
     font-weight: 600;
     font-size: 14px;
     text-align: center;
 }
 
-.table tbody tr {
+.custom-table tbody tr {
     background-color: #ffffff;
     text-align: center;
     border-radius: 22px;
 }
 
-.table th,
-.table td {
+.custom-table th,
+.custom-table td {
     padding: 10px;
     text-align: left;
     align-items: center;
@@ -260,18 +472,18 @@ td {
     font-weight: 700;
 }
 
-.table td,
-.table th {
+.custom-table td,
+.custom-table th {
     border: none;
 }
 
-.table td img {
+.custom-table td img {
     max-width: 70%;
     height: auto;
     margin-left: 11px;
 }
 
-.table td select {
+.custom-table td select {
     max-width: 100%;
     border: 1px solid #ddd;
     border-radius: 12px;
@@ -280,18 +492,18 @@ td {
     padding: 5px;
 }
 
-.table td button {
+.custom-table td button {
     margin: auto;
     align-items: center;
 }
 
-.table td .form-control {
+.custom-table td .form-control {
     max-width: 100%;
     padding: 5px;
     font-size: 13px;
 }
 
-.table td .status-select {
+.custom-table td .status-select {
     max-width: 100%;
     padding: 5px 15px;
     font-size: 15px;
@@ -300,7 +512,7 @@ td {
     border-radius: 12px;
 }
 
-.table td {
+.custom-table td {
     font-weight: 600;
     font-size: 14px;
 }
@@ -308,5 +520,13 @@ td {
 .custom-button img,
 .custom-button i {
     margin: 0;
+}
+
+.text-success {
+    font-size: 10px;
+}
+
+.text-danger {
+    font-size: 10px;
 }
 </style>
