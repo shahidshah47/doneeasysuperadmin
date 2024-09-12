@@ -127,7 +127,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <table class="table table-hover mb-0">
+                    <table class="table table-hover table-striped mb-0">
                         <thead class="bg-body-secondary">
                             <tr class="table-active text-center">
                                 <th>Month</th>
