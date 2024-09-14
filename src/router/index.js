@@ -62,6 +62,21 @@ const routes = [
         },
       },
       {
+        path: "/super-admin/company-details/info/authentication",
+        component: () =>
+          import("../pages/CompanyDetails/Info/Authentication.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            { label: "Details", link: "/super-admin/company-details/info" },
+            {
+              label: "Authentication",
+              link: "/super-admin/company-details/info/authentication",
+            },
+          ],
+        },
+      },
+      {
         path: "/super-admin/company-details/appointment",
         component: () => import("../pages/CompanyDetails/Appointment.vue"),
         meta: {

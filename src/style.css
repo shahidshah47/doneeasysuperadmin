@@ -13,7 +13,12 @@ ol,
 li,
 a,
 label,
-input, th, td {
+input,
+th,
+td,
+select,
+textarea,
+option {
   font-family: "Poppins", sans-serif !important;
 }
 
