@@ -83,7 +83,8 @@
                     <div class="col-md-3">
                         <div class="d-flex justify-content-between">
                             <h5 class="fw-bold">Admin/Manager</h5>
-                            <a href="#" class="add-new text-decoration-none">+ Add New</a>
+                            <a href="#" class="add-new text-decoration-none" data-bs-toggle="modal"
+                                data-bs-target="#addAdminModal">+ Add New</a>
                         </div>
                         <div class="company-details-box">
                             <div class="details-item gap-4">
@@ -319,7 +320,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary"
                         style="text-transform: none !important;">Commit</button>
                 </div>
@@ -366,20 +367,221 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-light text-uppercase"
+                    <button type="button" class="btn btn-outline-secondary text-uppercase"
                         data-bs-dismiss="modal">Cancel</button>
                     <button type="button" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-header border-0 rounded-top-4" style="background-color: #F2F4FB;">
+                    <h5 class="modal-title" id="addAdminModalLabel">Add Admin/Manager</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Profile Picture -->
+                        <div class="col-12 text-center">
+                            <div class="profile-picture mb-3">
+                                <img :src="getImagePath('profile-pic.webp')" class="img-fluid rounded-circle"
+                                    alt="Profile Picture">
+                                <button class="btn btn-light btn-sm mt-2" @click="uploadPicture">
+                                    <i class="fa fa-camera"></i> Change Photo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Inputs -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" v-model="admin.fullName"
+                                placeholder="Enter full name">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="designation" class="form-label">Designation</label>
+                            <input type="text" class="form-control" id="designation" v-model="admin.designation"
+                                placeholder="Enter designation">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="mobileNo" class="form-label">Mobile No</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="mobileNo" v-model="admin.mobileNo"
+                                    placeholder="Enter mobile number">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="emailAddress" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="emailAddress" v-model="admin.emailAddress"
+                                placeholder="Enter email address">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="trn" class="form-label">TRN</label>
+                            <input type="text" class="form-control" id="trn" v-model="admin.trn"
+                                placeholder="Enter TRN">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="role" class="form-label">Select your role</label>
+                            <select class="form-select" id="role" v-model="admin.role">
+                                <option value="Sales Manager">Sales Manager</option>
+                                <option value="HR Manager">HR Manager</option>
+                                <option value="Operations Manager">Operations Manager</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group position-relative">
+                                <input type="password" class="form-control" id="password" v-model="admin.password"
+                                    placeholder="Enter password">
+                                <span class="position-absolute top-0 end-0 me-3" style="margin-top: 3%;"
+                                    @click="togglePasswordVisibility('password')">
+                                    <i class="fa fa-eye text-primary"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm Password</label>
+                            <div class="input-group position-relative">
+                                <input type="password" class="form-control" id="confirmPassword"
+                                    v-model="admin.confirmPassword" placeholder="Confirm password">
+                                <span class="position-absolute top-0 end-0 me-3" style="margin-top: 3%;"
+                                    @click="togglePasswordVisibility('confirmPassword')">
+                                    <i class="fa fa-eye text-primary"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Document Upload Section -->
+                    <div class="upload-section mt-4">
+                        <div class="d-flex align-items-center justify-content-center my-4">
+                            <div class="flex-grow-1 border-bottom"></div>
+                            <span class="mx-2 text-muted fw-bold">Upload Documents</span>
+                            <div class="flex-grow-1 border-bottom"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Upload Emirates ID (Optional)</label>
+                            <div class="row">
+                                <div class="col-md-6" v-for="file in admin.emiratesId" :key="file.name">
+                                    <div class="d-flex align-items-center border border-1 rounded-4">
+                                        <!-- Icon and File Name Section -->
+                                        <div
+                                            class="bg-success-subtle p-2 rounded-start-4 d-flex justify-content-center">
+                                            <img :src="getImagePath(file.icon)" alt="File Icon" class="img-fluid"
+                                                style="width: 30px;">
+                                        </div>
+                                        <span class="ms-3">{{ file.name }}</span>
+
+                                        <!-- Icons Section -->
+                                        <div class="ms-auto me-3 d-flex align-items-center gap-2 cursor-pointer">
+                                            <i class="fa fa-eye"></i>
+                                            <i class="fa fa-trash"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Upload Visa (Optional)</label>
+                            <div class="row">
+                                <div class="col-md-6" v-for="file in admin.visa" :key="file.name">
+                                    <div class="d-flex align-items-center border border-1 rounded-4">
+                                        <!-- Icon and File Name Section -->
+                                        <div
+                                            class="bg-success-subtle p-2 rounded-start-4 d-flex justify-content-center">
+                                            <img :src="getImagePath(file.icon)" alt="File Icon" class="img-fluid"
+                                                style="width: 30px;">
+                                        </div>
+                                        <span class="ms-3">{{ file.name }}</span>
+
+                                        <!-- Icons Section -->
+                                        <div class="ms-auto me-3 d-flex align-items-center gap-2 cursor-pointer">
+                                            <i class="fa fa-eye"></i>
+                                            <i class="fa fa-trash"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" @click="addAdmin">Add</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import CompanyHeader from '../../components/CompanyHeader.vue';
 
 const getImagePath = (imageName) => {
     return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
+};
+
+// Data for the form
+const admin = ref({
+    fullName: 'John Thompson',
+    designation: 'CEO',
+    mobileNo: '+971 93427012',
+    emailAddress: 'johnthompson15@gmail.com',
+    trn: '98734-3423-21',
+    role: 'Sales Manager',
+    password: '**********',
+    confirmPassword: '**********',
+    emiratesId: [
+        { name: 'Front.jpg', icon: 'file-icon.png', size: '3.2mb' },
+        { name: 'Back.jpg', icon: 'file-icon.png', size: '3.2mb' },
+    ],
+    visa: [
+        { name: 'Visa.jpg', icon: 'file-icon.png', size: '3.2mb' },
+    ],
+});
+
+const togglePasswordVisibility = (field) => {
+    const input = document.getElementById(field);
+    if (input.type === 'password') {
+        input.type = 'text';
+    } else {
+        input.type = 'password';
+    }
+};
+
+const uploadPicture = () => {
+    alert('Upload profile picture clicked');
+};
+
+const uploadEmiratesId = () => {
+    alert('Upload Emirates ID clicked');
+};
+
+const uploadVisa = () => {
+    alert('Upload Visa clicked');
+};
+
+const addAdmin = () => {
+    alert('Admin/Manager added');
 };
 </script>
 
@@ -451,5 +653,38 @@ const getImagePath = (imageName) => {
     background-color: #F2F4FB !important;
     border-radius: 10px !important;
     padding: 10px 20px !important;
+}
+
+.profile-picture img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.upload-file {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.btn-upload {
+    font-size: 24px;
+    color: #5A5A5A;
+    border: 1px dashed #D8D8D8;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-upload:hover {
+    background-color: #f0f0f0;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 600;
 }
 </style>
