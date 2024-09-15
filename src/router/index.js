@@ -90,6 +90,24 @@ const routes = [
         },
       },
       {
+        path: "/super-admin/company-details/appointment/details",
+        component: () =>
+          import("../pages/CompanyDetails/Appointment/Details.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Appointments",
+              link: "/super-admin/company-details/appointment",
+            },
+            {
+              label: "Details",
+              link: "/super-admin/company-details/appointment/details",
+            },
+          ],
+        },
+      },
+      {
         path: "/super-admin/company-details/site-survey",
         component: () => import("../pages/CompanyDetails/SiteSurvey.vue"),
         meta: {

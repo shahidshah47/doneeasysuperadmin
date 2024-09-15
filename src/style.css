@@ -6,6 +6,7 @@ h5,
 h6,
 p,
 b,
+small,
 span,
 button,
 ul,
@@ -24,6 +25,16 @@ option {
 
 body {
   background-color: #f2f4fb;
+}
+
+.bg-primary {
+  background: linear-gradient(
+    98.24deg,
+    #38e0b2 -18.55%,
+    #442ae8 28.45%,
+    #5925eb 64.63%,
+    #9e21ee 116.94%
+  ) !important;
 }
 
 .btn-primary {
@@ -90,4 +101,8 @@ body {
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.small-font {
+  font-size: 12px !important;
 }
