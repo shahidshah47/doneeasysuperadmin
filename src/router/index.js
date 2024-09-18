@@ -121,6 +121,24 @@ const routes = [
         },
       },
       {
+        path: "/super-admin/company-details/site-survey/details",
+        component: () =>
+          import("../pages/CompanyDetails/SiteSurvey/Details.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Site Survey",
+              link: "/super-admin/company-details/site-survey",
+            },
+            {
+              label: "Details",
+              link: "/super-admin/company-details/site-survey/details",
+            },
+          ],
+        },
+      },
+      {
         path: "/super-admin/company-details/offers",
         component: () => import("../pages/CompanyDetails/Offers.vue"),
         meta: {
