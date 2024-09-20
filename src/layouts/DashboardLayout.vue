@@ -15,11 +15,13 @@ import TopBar from '../components/TopBar.vue';
       <!-- Content Section -->
       <div class="col-md-11 py-3">
         <div>
-          <!-- TopBar -->
-          <TopBar />
-          <Breadcrumb class="pt-4" />
-          <!-- Main Content -->
-          <router-view></router-view>
+          <div class="mx-3">
+            <!-- TopBar -->
+            <TopBar />
+            <Breadcrumb class="pt-4" />
+            <!-- Main Content -->
+            <router-view></router-view>
+          </div>
         </div>
       </div>
     </div>

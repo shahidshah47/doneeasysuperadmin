@@ -70,7 +70,10 @@
                         <td class="vertivelsubscribe">{{ vendor.verticalSubscribed }}</td>
                         <td>{{ vendor.registeredDate }}</td>
                         <td class="d-flex">
-                            <img class="px-1" :src="getImagePath('eye.png')" />
+                            <a href="/super-admin/company-details/offers/details"
+                                class="text-reset text-decoration-none">
+                                <img class="px-1" :src="getImagePath('eye.png')" />
+                            </a>
                             <img class="px-1" :src="getImagePath('delete.png')" />
                             <img class="px-1" :src="getImagePath('share.png')" />
                         </td>
