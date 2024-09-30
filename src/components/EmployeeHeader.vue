@@ -3,10 +3,14 @@
         <div class="d-flex justify-content-between align-items-center">
             <div class="company-info">
                 <div class="d-flex align-items-center">
-                    <img :src="getImagePath('LoveClipLogo.png')" class="company-logo" alt="Company Logo" />
+                    <div class="d-flex flex-column align-items-center me-4">
+                        <img :src="getImagePath('5s_0017_harps-joseph-tAvpDE7fXgY-unsplash.png')" class="company-logo"
+                            alt="Company Logo" />
+                        <span class="badge rounded-3 text-bg-primary">50% complete</span>
+                    </div>
                     <div class="company-details-text">
                         <div class="company-status">
-                            <span class="badge badge-success mb-2">Active</span>
+                            <span class="badge badge-success mb-2">Active <i class="fa-solid fa-sort-down ms-3 text-black fs-6"></i></span>
                         </div>
                         <h3>ABS Company Pvt Ltd</h3>
                         <p>ID OFC 903823</p>
@@ -47,6 +51,10 @@ const getImagePath = (imageName) => {
 </script>
 
 <style scoped>
+.text-bg-primary {
+    background: #A321EE !important;
+}
+
 .company-details {
     background-color: #f2f4fb;
     padding: 20px;
@@ -61,7 +69,6 @@ const getImagePath = (imageName) => {
 
 .company-logo {
     width: 80px;
-    margin-right: 20px;
 }
 
 .company-details-text {
@@ -80,8 +87,8 @@ const getImagePath = (imageName) => {
 }
 
 .company-status .badge-success {
-    background-color: #28a745;
-    color: white;
+    background-color: #D6FFEF;
+    color: #00995C;
     padding: 5px 10px;
     border-radius: 5px;
 }

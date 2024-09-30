@@ -150,8 +150,7 @@ const routes = [
       },
       {
         path: "/super-admin/company-details/offers/details",
-        component: () =>
-          import("../pages/CompanyDetails/Offers/Details.vue"),
+        component: () => import("../pages/CompanyDetails/Offers/Details.vue"),
         meta: {
           breadcrumb: [
             { label: "Vendor", link: "/super-admin/vendor" },
@@ -175,6 +174,24 @@ const routes = [
             {
               label: "Employees",
               link: "/super-admin/company-details/employees",
+            },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/company-details/employees/details",
+        component: () =>
+          import("../pages/CompanyDetails/Employees/Details.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Offers",
+              link: "/super-admin/company-details/employees",
+            },
+            {
+              label: "Details",
+              link: "/super-admin/company-details/employees/details",
             },
           ],
         },
