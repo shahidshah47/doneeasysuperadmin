@@ -4,79 +4,80 @@
             <!-- Company Info and Stats -->
             <CompanyHeader />
         </div>
-        <div class="p-3 mb-1 bg-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex gap-3">
-                    <button class="btn btn-primary rounded-3 px-3 py-2">All</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2">Approved</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2">Pending</button>
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-md-3 p-3 bg-white border-end">
+                    <div class="conversation mb-4 d-flex align-items-center">
+                        <div class="avatar bg-secondary rounded-circle me-3"></div>
+                        <div>
+                            <h6 class="mb-0">Biffco Enterprises</h6>
+                            <p class="small text-muted mb-0">Hi there! How can I assist you today?</p>
+                            <span class="small text-muted">3 days ago</span>
+                        </div>
+                    </div>
+                    <div class="conversation d-flex align-items-center">
+                        <div class="avatar bg-secondary rounded-circle me-3"></div>
+                        <div>
+                            <h6 class="mb-0">AKAL Pvt</h6>
+                            <p class="small text-muted mb-0">Hi there! How can I assist you today?</p>
+                            <span class="small text-muted">12/03/2023</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="d-flex gap-3">
-                    <div class="d-flex align-items-center text-center position-relative">
-                        <input type="text" class="form-control border-0 py-2 px-3"
-                            style="background-color: #F2F4FB; width: 350px;" placeholder="Search">
-                        <i class="fas fa-search position-absolute end-0 me-3"></i>
+
+                <!-- Main Content Area -->
+                <div class="col-md-6 p-3">
+                    <div
+                        class="violation-alert mb-3 p-3 bg-light rounded d-flex justify-content-between align-items-center">
+                        <span>Violation Alert</span>
+                        <span class="badge bg-warning text-dark">6</span>
+                        <span class="small text-muted">3 of 6</span>
+                        <button class="btn btn-sm btn-outline-primary">View Detail</button>
                     </div>
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-light bg-white border-0">
-                            Filters by <i class="fas fa-filter"></i>
-                        </button>
-                        <span class="border-start mx-2" style="height: 24px;"></span>
-                        <button class="btn btn-light bg-white border-0">
-                            Columns <i class="fas fa-columns"></i>
-                        </button>
+
+                    <!-- Chat Messages -->
+                    <div class="chat-window bg-white rounded p-3 mb-3">
+                        <div class="message mb-3 p-2 bg-light rounded">
+                            <p class="mb-0">Absolutely. I’ll include a detailed proposal and references...</p>
+                        </div>
+                        <div class="message mb-3 p-2 bg-light rounded">
+                            <p class="mb-0">Let’s deal outside the DE platform. Share your WhatsApp.</p>
+                        </div>
+                        <div class="message p-2 bg-light rounded">
+                            <p class="mb-0">I’m sorry to hear that. We can provide secure pick-up and delivery services
+                                and help with compliance...</p>
+                        </div>
                     </div>
+
+                    <!-- Violation Warning Box -->
+                    <div class="violation-warning p-3 bg-light border rounded position-relative">
+                        <p>
+                            We notice you advise the other party to deal outside the DoneEasy platform.
+                            This action has been logged as a violation of our <a href="#"
+                                class="text-primary">policy</a>.
+                        </p>
+                        <button class="btn btn-sm btn-primary me-2">Take Action</button>
+                        <button class="btn btn-sm btn-outline-secondary">Ignore</button>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="col-md-3 p-3 bg-white border-start">
+                    <div class="violation-info bg-light p-3 rounded mb-3">
+                        <h5>No. of Violations: <span class="text-danger">32</span></h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">Under investigation</li>
+                            <li class="mb-2">Violation level 1, 2, 3</li>
+                            <li class="mb-2">False Alarm</li>
+                            <li>Un-identified</li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-primary w-100 mb-2">Offer</button>
+                    <button class="btn btn-outline-primary w-100 mb-2">Site survey</button>
+                    <button class="btn btn-outline-primary w-100">Appointment</button>
                 </div>
             </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>ID</th>
-                        <th>Organization <br> Name</th>
-                        <th>Title & Description</th>
-                        <th>Vertical</th>
-                        <th>Order Type</th>
-                        <th>Expected <br> Delivery Date & Time</th>
-                        <th>Payment</th>
-                        <th>Order Amount</th>
-                        <th>Payment State</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="vendor-table-body">
-                    <tr v-for="(vendor, index) in vendorData" :key="index">
-                        <td><input type="checkbox" class="form-check-input"></td>
-                        <td>{{ vendor.id }}</td>
-                        <td>
-                            <img :src="getImagePath(vendor.companyImage)" />
-                            {{ vendor.companyName }}
-                        </td>
-                        <td>
-                            <img :src="getImagePath(vendor.managerImage)" alt="Profile Picture" />
-                            {{ vendor.ceoManager }}
-                        </td>
-                        <td class="mail" v-html="vendor.contactEmail"></td>
-                        <td>{{ vendor.totalRevenue }}</td>
-                        <td>{{ vendor.totalSpending }}</td>
-                        <td>
-                            <select class="form-select" :style="{ backgroundColor: vendor.statusColor }">
-                                <option :value="vendor.status.toLowerCase()" selected>{{ vendor.status }}</option>
-                                <option value="banned">Banned</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="monitory">Monitory</option>
-                            </select>
-                        </td>
-                        <td class="vertivelsubscribe">{{ vendor.verticalSubscribed }}</td>
-                        <td>{{ vendor.registeredDate }}</td>
-                        <td class="d-flex">
-                            <img class="px-1" :src="getImagePath('eye.png')" />
-                            <img class="px-1" :src="getImagePath('delete.png')" />
-                            <img class="px-1" :src="getImagePath('share.png')" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 </template>
@@ -148,3 +149,57 @@ const vendorData = ref([
     },
 ]);
 </script>
+
+<style scoped>
+body {
+    background-color: #F7F8FC;
+    font-family: 'Inter', sans-serif;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+}
+
+.conversation {
+    cursor: pointer;
+}
+
+.violation-alert {
+    background-color: #FFE8D6;
+}
+
+.chat-window {
+    height: 250px;
+    overflow-y: auto;
+}
+
+.violation-warning {
+    background-color: #FFE8E8;
+}
+
+.violation-info h5 {
+    font-size: 18px;
+    color: #FF6347;
+}
+
+.list-unstyled li {
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background-color: #007BFF;
+}
+
+.btn-outline-primary {
+    border-color: #007BFF;
+    color: #007BFF;
+}
+
+.violation-warning a {
+    text-decoration: none;
+}
+</style>
