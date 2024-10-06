@@ -19,8 +19,9 @@ th,
 td,
 select,
 textarea,
-option {
-  font-family: "Poppins", sans-serif !important;
+option,
+div {
+  font-family: Averta, sans-serif !important;
 }
 
 body {
@@ -93,6 +94,14 @@ body {
 
 .text-primary {
   color: #5825eb !important;
+}
+
+.primary-bg {
+  background-color: #7871f7 !important;
+}
+
+.text-bg-primary {
+  background-color: #a321ee !important;
 }
 
 .border-primary {

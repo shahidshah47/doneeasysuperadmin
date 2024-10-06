@@ -186,12 +186,84 @@ const routes = [
           breadcrumb: [
             { label: "Vendor", link: "/super-admin/vendor" },
             {
-              label: "Offers",
+              label: "Employees",
               link: "/super-admin/company-details/employees",
             },
             {
               label: "Details",
               link: "/super-admin/company-details/employees/details",
+            },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/company-details/employees/appointment",
+        component: () =>
+          import("../pages/CompanyDetails/Employees/Appointment.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Employees",
+              link: "/super-admin/company-details/employees",
+            },
+            {
+              label: "Appointments",
+              link: "/super-admin/company-details/employees/appointment",
+            },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/company-details/employees/site-survey",
+        component: () =>
+          import("../pages/CompanyDetails/Employees/SiteSurvey.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Employees",
+              link: "/super-admin/company-details/employees",
+            },
+            {
+              label: "Site Survey",
+              link: "/super-admin/company-details/employees/site-survey",
+            },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/company-details/employees/chat-history",
+        component: () =>
+          import("../pages/CompanyDetails/Employees/ChatsHistory.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Employees",
+              link: "/super-admin/company-details/employees",
+            },
+            {
+              label: "Chats History",
+              link: "/super-admin/company-details/employees/chat-history",
+            },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/company-details/employees/rating-reviews",
+        component: () =>
+          import("../pages/CompanyDetails/Employees/RatingReviews.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Employees",
+              link: "/super-admin/company-details/employees",
+            },
+            {
+              label: "Rating & Reviews",
+              link: "/super-admin/company-details/employees/rating-reviews",
             },
           ],
         },
@@ -205,6 +277,24 @@ const routes = [
             {
               label: "Verticals",
               link: "/super-admin/company-details/verticals",
+            },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/company-details/verticals/details",
+        component: () =>
+          import("../pages/CompanyDetails/Verticals/Details.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Verticals",
+              link: "/super-admin/company-details/verticals",
+            },
+            {
+              label: "Details",
+              link: "/super-admin/company-details/verticals/details",
             },
           ],
         },
