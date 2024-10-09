@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="p-3 mb-1 bg-white">
+        <div class="p-3 mb-1 bg-white rounded-3">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex gap-3">
                     <button class="btn btn-primary rounded-3 px-3 py-2">All</button>

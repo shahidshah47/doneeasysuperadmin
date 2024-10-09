@@ -3,7 +3,7 @@
         <div class="row">
             <CompanyHeader />
         </div>
-        <div class="p-3 mb-1 bg-white">
+        <div class="p-3 mb-1 bg-white rounded-3">
             <div class="d-flex justify-content-between align-items-center">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
