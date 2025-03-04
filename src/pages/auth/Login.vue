@@ -1,11 +1,11 @@
 <template>
-    <div class="d-flex justify-content-center align-items-center vh-100">
-        <div class="register-form-box p-4 rounded-3 shadow">
-            <h2 class="fw-bold">Login</h2>
-            <form>
+    <div class="flex justify-center items-center min-h-screen">
+        <div class="p-4 bg-white min-w-96 rounded-3 shadow">
+            <h2 class="fw-bold mb-4">Login</h2>
+            <form @submit="handleSubmit">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="e.g johnsmith@gmail.com" class="form-control" />
+                    <input type="email" id="email" v-model="email" placeholder="e.g johnsmith@gmail.com" class="form-control" />
                 </div>
 
                 <div class="form-group password-group">
@@ -18,15 +18,22 @@
 
                 <button type="submit" class="btn btn-primary">Log In</button>
             </form>
+            <p class="text-white p-2 bg-red-500 rounded-sm mt-2" v-if="error">{{ error }}</p>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { authApi } from '../../api';
+import { useRouter } from "vue-router";
 
+const router = useRouter();
+const email = ref('');
 const password = ref('');
 const isPasswordVisible = ref(false);
+const loading = ref(true);
+const error = ref(null);
 
 const togglePasswordVisibility = (inputId) => {
     const input = document.getElementById(inputId);
@@ -38,6 +45,32 @@ const togglePasswordVisibility = (inputId) => {
         isPasswordVisible.value = false;
     }
 }
+
+
+const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+        const response = await authApi.post("/superadmin/login", { email: email.value, password: password.value });
+        if (!response.data.success) {
+            error.value = response.data.message;
+        } else {
+            error.value = null;
+            const { data } = response.data;
+            localStorage?.setItem("user", data?.user);
+            localStorage?.setItem("token", data?.token);
+            router.push("/super-admin/vendor");
+        }
+        // console.log(response.data, error.value, "response data");
+    } catch (err) {
+        console.error(err);
+        error.value = "Error fetching data";
+    } finally {
+        loading.value = false;
+    }
+}
+
+// Fetch data when component mounts
+// onMounted(handleSubmit);
 </script>
 
 <style scoped>

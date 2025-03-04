@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="flex justify-between items-center mb-4">
             <div class="fs-4 fw-bold">Vendor</div>
             <div class="fs-4">
                 <button class="btn btn-primary py-2 px-4">Add Vendor</button>
@@ -8,20 +8,20 @@
         </div>
 
         <div class="row mb-4" id="dashboard-stats">
-            <div v-for="(stat, index) in dashboardStats" :key="index" class="col-md-3 mb-md-0 mb-3">
-                <div class="card border-0 shadow">
+            <div v-for="(stat, index) in dashboardStats" :key="index" class="col-md-3">
+                <div class="card border-0 shadow p-2">
                     <div class="card-header bg-white fw-bold border-bottom-0 mt-1">{{ stat.title }}
                         <img class="float-end" :src="getImagePath('Frame 48096300.png')">
                     </div>
-                    <div class="card-body d-flex justify-content-between">
+                    <div class="card-body flex justify-between">
                         <div>
-                            <p class="fs-3 fw-bold mb-0">
+                            <p class="fs-3 fw-bold mb-0 !text-[3.5rem] leading-24">
                                 {{ stat.number }}
                             </p>
                             <p class="fs-6 text-muted">{{ stat.timePeriod }}</p>
                         </div>
                         <div v-if="stat.percentage"
-                            class="align-self-center fs-6 py-0 px-4 rounded-2 fw-bold text-center ms-2"
+                            class="self-center fs-6 p-2 rounded-2 fw-bold text-center ms-2"
                             :style="{ backgroundColor: stat.percentageColor || '#fff', color: stat.textColor }">
                             {{ stat.percentage }}
                         </div>
@@ -30,20 +30,20 @@
             </div>
         </div>
 
-        <div class="p-3 mb-1 bg-white rounded-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex gap-3">
+        <div class="p-3 bg-white rounded-3 shadow">
+            <div class="flex justify-between items-center">
+                <div class="flex gap-3">
                     <button class="btn btn-primary rounded-3 px-3 py-2">All</button>
                     <button class="btn btn-light rounded-3 px-3 py-2">Approved</button>
                     <button class="btn btn-light rounded-3 px-3 py-2">Pending</button>
                 </div>
-                <div class="d-flex gap-3">
-                    <div class="d-flex align-items-center text-center position-relative">
+                <div class="flex gap-3">
+                    <div class="flex items-center text-center relative">
                         <input type="text" class="form-control border-0 py-2 px-3"
                             style="background-color: #F2F4FB; width: 350px;" placeholder="Search">
-                        <i class="fas fa-search position-absolute end-0 me-3"></i>
+                        <i class="fas fa-search absolute end-0 me-3"></i>
                     </div>
-                    <div class="d-flex align-items-center">
+                    <div class="flex items-center">
                         <button class="btn btn-light bg-white border-0">
                             Filters by <i class="fas fa-filter"></i>
                         </button>
@@ -72,13 +72,13 @@
                 </thead>
                 <tbody id="vendor-table-body">
                     <tr v-for="(vendor, index) in vendorData" :key="index">
-                        <td><input type="checkbox" class="form-check-input"></td>
+                        <td><input type="checkbox" class="w-5 h-5"></td>
                         <td>{{ vendor.id }}</td>
-                        <td>
+                        <td class="font-theme-bold">
                             <img :src="getImagePath(vendor.companyImage)" />
                             {{ vendor.companyName }}
                         </td>
-                        <td>
+                        <td class="font-theme-bold">
                             <img :src="getImagePath(vendor.managerImage)" alt="Profile Picture" />
                             {{ vendor.ceoManager }}
                         </td>
@@ -94,7 +94,7 @@
                             </select>
                         </td>
                         <td class="vertivelsubscribe">{{ vendor.verticalSubscribed }}</td>
-                        <td>{{ vendor.registeredDate }}</td>
+                        <td v-html="vendor.registeredDate"></td>
                         <td class="d-flex gap-1">
                             <div class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
                                 data-bs-toggle="modal" data-bs-target="#analyticsModal">
@@ -185,7 +185,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from "vue";
+import axios from "axios";
+import api from "../api";
 
 // Utility function to generate image path
 const getImagePath = (imageName) => {
@@ -419,6 +421,27 @@ const yearlyAnalyticsData = ref([
         inactivePercentage: "-12%",
     },
 ]);
+
+const data = ref([]);
+const loading = ref(true);
+const error = ref(null);
+
+// Fetch Data
+const fetchData = async () => {
+  try {
+    const response = await api.get("/superadmin/dashboard?status=1", { headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } }); // Replace with your API URL
+    data.value = response.data;
+    console.log(response.data, "response data");
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+// Fetch data when component mounts
+onMounted(fetchData);
 </script>
 
 <style scoped>
@@ -452,8 +475,7 @@ td {
 .custom-table thead th {
     background-color: #f2f4fb;
     font-weight: 700;
-    font-size: 14px;
-    text-align: center;
+    font-size: 16px;
 }
 
 .custom-table tbody tr {
@@ -514,7 +536,6 @@ td {
 }
 
 .custom-table td {
-    font-weight: 600;
     font-size: 14px;
 }
 

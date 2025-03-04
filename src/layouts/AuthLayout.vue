@@ -1,5 +1,12 @@
 <script setup>
 import Header from '../components/Header.vue'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+if (localStorage?.getItem("token")) {
+  router.push("/super-admin/vendor");
+}
+
 </script>
 
 <template>

@@ -1,12 +1,12 @@
 <template>
-    <header class="header d-flex justify-content-between align-items-center">
-        <div class="logo">
+    <header class="header flex justify-between items-center fixed top-0 right-0 left-0">
+        <div class="">
             <img src="../assets/Logo.png" alt="DoneEasy Logo" width="150" />
         </div>
         <div class="help-link">
-            <h6>
+            <h6 class="font-theme-bold">
                 Need Help?
-                <router-link to="/super-admin/contact-us" class="text-primary text-decoration-none">
+                <router-link to="/super-admin/contact-us" class="text-primary text-decoration-none font-theme-bold">
                     Contact Us
                 </router-link>
             </h6>
