@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex justify-content-center align-items-center vh-100">
         <div class="register-form-box p-5 rounded-2 shadow justify-content-center align-items-center text-center">
-            <img src="../../assets/image/email_confirm.png" alt="email confirm" class="img-fluid">
+            <img src="../../assets/image/email_confirm.png" alt="email confirm" class="img-fluid" />
             <div class="px-4 my-4">
                 <h3>Email Confirmation</h3>
                 <p>An email has been sent to your email address. Kindly click on the link to complete the verification
