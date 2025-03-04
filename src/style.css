@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 body h1,
 h2,
 h3,
@@ -26,92 +28,33 @@ div {
 
 body {
   background-color: #f2f4fb;
+  min-height: 100vh;
 }
 
-.bg-primary {
-  background: linear-gradient(
-    98.24deg,
-    #38e0b2 -18.55%,
-    #442ae8 28.45%,
-    #5925eb 64.63%,
-    #9e21ee 116.94%
-  ) !important;
+.font-theme-bold {
+  font-weight: 700;
 }
 
-.btn-primary {
-  background: linear-gradient(
-    98.24deg,
-    #38e0b2 -18.55%,
-    #442ae8 28.45%,
-    #5925eb 64.63%,
-    #9e21ee 116.94%
-  ) !important;
-  border: none !important;
-  transition: background 0.4s ease, transform 0.2s ease !important;
-  text-transform: uppercase !important;
+.font-theme-medium {
+  font-weight: 500;
 }
 
-.btn-primary:hover {
-  background: linear-gradient(
-    98.24deg,
-    #442ae8 -18.55%,
-    #5925eb 28.45%,
-    #9e21ee 64.63%,
-    #38e0b2 116.94%
-  ) !important;
-  transform: translateY(-3px) !important;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2) !important;
+.font-theme-medium-lg {
+  font-weight: 600;
 }
 
-.btn-primary:active {
-  transform: translateY(2px) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+.font-theme-regular {
+  font-weight: 400;
 }
 
-.btn-outline-primary {
-  background: transparent !important;
-  border: 2px solid #442ae8 !important;
-  color: #442ae8 !important;
-  transition: background 0.4s ease, color 0.2s ease, transform 0.2s ease !important;
+.font-theme-light {
+  font-weight: 300;
 }
 
-.btn-outline-primary:hover {
-  background: linear-gradient(
-    98.24deg,
-    #38e0b2 -18.55%,
-    #442ae8 28.45%,
-    #5925eb 64.63%,
-    #9e21ee 116.94%
-  ) !important;
-  color: #fff !important;
-  border: none !important;
-  transform: translateY(-3px) !important;
+.font-theme-lighter {
+  font-weight: 200;
 }
 
-.btn-outline-primary:active {
-  transform: translateY(2px) !important;
-}
-
-.text-primary {
-  color: #5825eb !important;
-}
-
-.primary-bg {
-  background-color: #7871f7 !important;
-}
-
-.text-bg-primary {
-  background-color: #a321ee !important;
-}
-
-.border-primary {
-  border: 1px solid #5825eb !important;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.small-font {
-  font-size: 12px !important;
+.font-theme-light-important {
+  font-weight: 300 !important;
 }

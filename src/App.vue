@@ -2,5 +2,7 @@
 </script>
 
 <template>
-  <router-view />
+  <div class="min-h-screen">
+    <router-view />
+  </div>
 </template>

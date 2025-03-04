@@ -16,7 +16,7 @@
                 </div>
                 <p class="text-end text-primary fw-bold" style="font-size: 14px;">Need help with Login?</p>
 
-                <button type="submit" class="btn btn-primary">CREATE ACCOUNT</button>
+                <button type="submit" class="btn btn-primary">Log In</button>
             </form>
         </div>
     </div>

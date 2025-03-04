@@ -1,17 +1,15 @@
 <template>
-  <div class="logo py-3 d-flex justify-content-center">
-    <img :src="getImagePath('Logo.png')" alt="Logo">
-  </div>
-  <div class="py-2">
-    <ul class="nav flex-column align-items-center" id="sidebar-menu">
-      <li v-for="(item, index) in sidebarItems" :key="index" class="nav-item">
-        <a class="nav-link py-2" href="#">
-          <img :src="getImagePath(item.image)" />
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div class="py-3">
+  <div class="flex flex-col items-center justify-between gap-4 py-10 pt-4 px-4 h-full">
+    <div class="flex flex-col items-center justify-center gap-4">
+      <img :src="getImagePath('Logo.png')" alt="Logo" class="w-16">
+      <ul class="nav flex-col items-center gap-2 bg-gray-100 rounded-3xl p-3" id="sidebar-menu">
+        <li v-for="(item, index) in sidebarItems" :key="index" class="list-item">
+          <a class="hover:bg-white hover:rounded-full" href="#">
+            <img :src="getImagePath(item.image)" />
+          </a>
+        </li>
+      </ul>
+    </div>
     <img :src="getImagePath('Frame 48096327.png')">
   </div>
 </template>
@@ -40,25 +38,11 @@ const sidebarItems = ref([
 </script>
 
 <style scoped>
-#sidebar-menu {
-  background-color: #f2f4fb;
-  border-radius: 66px;
-  width: min-content;
+.list-item {
+  transition: all 0.2s ease-in-out;
 }
-
-.nav-link {
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  transition: background-color 0.3s;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-weight: 600;
-  line-height: 12px;
-}
-
-.nav-link:hover {
+.list-item:hover {
   background-color: #ffffff;
-  border-radius: 77px;
+  border-radius: 50%;
 }
 </style>

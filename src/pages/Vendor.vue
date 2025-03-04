@@ -58,7 +58,7 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>ID</th>
+                        <th class="">ID</th>
                         <th>Company Name</th>
                         <th>CEO / Manager</th>
                         <th>Contact / Email</th>
@@ -435,7 +435,6 @@ const yearlyAnalyticsData = ref([
 }
 
 td {
-    font-family: "Roboto", sans-serif;
     font-size: 14px;
     color: #000000;
     padding: 8px;
@@ -452,7 +451,7 @@ td {
 
 .custom-table thead th {
     background-color: #f2f4fb;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 14px;
     text-align: center;
 }
@@ -461,6 +460,7 @@ td {
     background-color: #ffffff;
     text-align: center;
     border-radius: 22px;
+    font-weight: 700;
 }
 
 .custom-table th,
@@ -468,13 +468,13 @@ td {
     padding: 10px;
     text-align: left;
     align-items: center;
-    font-family: "Montserrat", sans-serif;
     font-weight: 700;
 }
 
 .custom-table td,
 .custom-table th {
     border: none;
+    font-weight: 700;
 }
 
 .custom-table td img {
@@ -495,6 +495,7 @@ td {
 .custom-table td button {
     margin: auto;
     align-items: center;
+    font-weight: 700;
 }
 
 .custom-table td .form-control {

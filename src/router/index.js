@@ -5,7 +5,7 @@ import DashboardLayout from "../layouts/DashboardLayout.vue";
 const routes = [
   {
     path: "/",
-    redirect: "/super-admin/company-details/info",
+    redirect: "/super-admin/vendor",
   },
   {
     path: "/",

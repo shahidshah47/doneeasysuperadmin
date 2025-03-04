@@ -1,15 +1,15 @@
 <template>
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb font-theme-bold">
             <li class="breadcrumb-item">
                 <router-link to="/" class="text-dark"><i class="fas fa-home"></i></router-link>
             </li>
             <li v-for="(crumb, index) in crumbs" :key="index" class="breadcrumb-item"
                 :class="{ 'active': index === crumbs.length - 1 }" aria-current="page">
-                <router-link v-if="index !== crumbs.length - 1" :to="crumb.link" class="text-dark text-decoration-none">
+                <router-link v-if="index !== crumbs.length - 1" :to="crumb.link" class="text-dark text-decoration-none font-theme-bold">
                     {{ crumb.label }}
                 </router-link>
-                <span v-else>{{ crumb.label }}</span>
+                <span v-else class="font-theme-bold">{{ crumb.label }}</span>
             </li>
         </ol>
     </nav>

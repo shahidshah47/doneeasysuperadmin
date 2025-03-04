@@ -11,7 +11,7 @@
               <p class="text-success fw-bold">50%</p>
             </div>
           </div>
-          <div class="card-footer bg-transparent border-0 text-muted">
+          <div class="card-footer bg-transparent border-0 text-muted font-theme-bold">
             Lifetime
           </div>
         </div>
