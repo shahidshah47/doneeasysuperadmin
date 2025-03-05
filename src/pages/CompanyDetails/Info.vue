@@ -533,9 +533,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import CompanyHeader from '../../components/CompanyHeader.vue';
+import { useRoute, useRouter } from 'vue-router';
+import api from '../../api';
+const route = useRoute();
+const companyDetails = ref([]);
+const loading = ref(true);
+const error = ref(null);
 
+// const router = useRouter();
+
+console.log(route.params.companyId);
 const getImagePath = (imageName) => {
     return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
 };
@@ -583,6 +592,27 @@ const uploadVisa = () => {
 const addAdmin = () => {
     alert('Admin/Manager added');
 };
+
+const fetchCompanyDetailsById = async (id) => {
+    try {
+        const response = await api.post("/superadmin/company/details/" + id, {}, { 
+            headers: { 
+                Authorization: `Bearer ${localStorage?.getItem("token")}` 
+            } 
+        });
+        console.log(response.data, "response data");
+        // companyDetails.value = transformData(data.data);
+    } catch (err) {
+        error.value = "Error fetching data";
+        console.error(err);
+    } finally {
+        loading.value = false;
+    }
+}
+
+onMounted(() => {
+    fetchCompanyDetailsById(route.params.companyId);
+});
 </script>
 
 <style scoped>
