@@ -4,9 +4,14 @@ import api from "../api";
 import DataTable from "datatables.net-bs5";
 import { transformData } from "../utils/helper";
 import { useRouter } from "vue-router";
+
 const companiesData = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const searchQuery = ref("");
+const tableRef = ref(null);
+const entriesPerPage = ref(10); // Default entries per page
+const paginationInfoData = ref(null);
 
 const router = useRouter();
 
@@ -185,9 +190,8 @@ const yearlyAnalyticsData = ref([
 
 const fetchData = async () => {
     try {
-        const response = await api.get("/superadmin/dashboard?status=1", { headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } }); // Replace with your API URL
+        const response = await api.get("/superadmin/dashboard?status=1", { headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } });
         const { data } = response.data;
-        // console.log(transformData(data.data), "response data");
         companiesData.value = transformData(data.data);
     } catch (err) {
         error.value = "Error fetching data";
@@ -207,9 +211,55 @@ onMounted(() => {
 
 nextTick(() => {
     setTimeout(() => {
-        new DataTable("#example");
-    }, 1000)
+        const table = new DataTable("#example", {
+            dom: '<"top"f>rt<"bottom"lip><"clear">', // Remove built-in length and pagination controls
+            pageLength: entriesPerPage.value, // Set initial page length
+            lengthMenu: [10, 25, 50, 100], // Define available entries per page options
+            initComplete: handleInitComplete
+        });
+        tableRef.value = table;
+        paginationInfoData.value = table.page.info();
+    }, 1000);
 });
+
+const handleInitComplete = () => {
+    // Bind external search input to DataTable search
+    const externalSearch = document.getElementById('external-search');
+    if (externalSearch) {
+        externalSearch.addEventListener('keyup', function () {
+            tableRef.value.search(this.value).draw();
+        });
+    }
+
+    // Bind external dropdown to DataTable page length
+    const entriesDropdown = document.getElementById('entries-dropdown');
+    if (entriesDropdown) {
+        entriesDropdown.addEventListener('change', function () {
+            tableRef.value.page.len(this.value).draw();
+            // console.log(tableRef.value, this.value, tableRef.value.page.info(), "Dasdasd");
+            const info = tableRef.value.page.info();
+            paginationInfoData.value = info;
+            const paginationInfo = document.getElementById('pagination-info');
+            if (paginationInfo) {
+                paginationInfo.textContent = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
+            }
+        });
+    }
+
+    // Update external pagination info on table redraw
+    tableRef?.value?.on('draw', function () {
+        const info = tableRef.value.page.info();
+
+        paginationInfoData.value = info;
+        const paginationInfo = document.getElementById('pagination-info');
+        if (paginationInfo) {
+            paginationInfo.textContent = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
+        }
+    });
+
+    // Trigger initial pagination info update
+    tableRef?.value?.draw();
+}
 
 </script>
 
@@ -244,7 +294,7 @@ nextTick(() => {
             </div>
         </div>
 
-        <div class="p-3 bg-white rounded-3 shadow">
+        <div class="p-4 bg-white rounded-3 shadow relative">
             <div class="flex justify-between items-center">
                 <div class="flex gap-3">
                     <button class="btn btn-primary rounded-3 px-3 py-2">All</button>
@@ -253,7 +303,7 @@ nextTick(() => {
                 </div>
                 <div class="flex gap-3">
                     <div class="flex items-center text-center relative">
-                        <input type="text" class="form-control border-0 py-2 px-3"
+                        <input id="external-search" type="text" class="form-control border-0 py-2 px-3"
                             style="background-color: #F2F4FB; width: 350px;" placeholder="Search">
                         <i class="fas fa-search absolute end-0 me-3"></i>
                     </div>
@@ -332,6 +382,18 @@ nextTick(() => {
                     </tr>
                 </tbody>
             </table>
+            
+            <!-- External Entries Dropdown and Pagination Info -->
+            <div class="flex gap-2 items-center !mt-0">
+                <p v-if="paginationInfoData" id="pagination-info" class="mb-0">Showing {{ paginationInfoData?.start }} to {{ paginationInfoData?.end }} of {{ paginationInfoData?.recordsTotal }} entries</p>
+                <select id="entries-dropdown" class="form-select form-select-sm" style="width: auto;">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
         </div>
     </div>
 
@@ -402,6 +464,24 @@ nextTick(() => {
 </template>
 
 <style scoped>
+
+/* Custom styles for DataTable */
+#example_wrapper .dataTables_filter {
+    float: none;
+    text-align: left;
+}
+
+#example_wrapper .dataTables_length {
+    float: none;
+    text-align: right;
+}
+
+#example_wrapper .dataTables_paginate {
+    float: none;
+    text-align: center;
+}
+
+
 .custom-table .mail {
     max-width: 80px !important;
 }

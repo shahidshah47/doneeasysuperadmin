@@ -140,6 +140,35 @@ body {
   font-size: 12px !important;
 }
 
-.vendor-table-body {
-  
+#example_wrapper .dt-length, #example_wrapper .dt-info {
+  display: none;
 }
+#example_wrapper .top {
+  display: none;
+}
+#example_wrapper .bottom {
+  float: right;
+  margin: 0;
+}
+.pagination {
+  margin-bottom: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+#example_wrapper .pagination .dt-paging-button button { 
+  background: transparent !important; 
+  border: none !important; 
+}
+#example_wrapper .pagination .dt-paging-button.page-item.active button { 
+  background: #5825eb !important; 
+  padding-left: 16px !important; 
+  padding-right: 16px !important; 
+  border-radius: 10px !important;
+}
+#example_wrapper .pagination .dt-paging-button.page-item.disabled button {
+
+}
+
