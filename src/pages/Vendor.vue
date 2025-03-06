@@ -1,195 +1,15 @@
-<template>
-    <div>
-        <div class="flex justify-between items-center mb-4">
-            <div class="fs-4 fw-bold">Vendor</div>
-            <div class="fs-4">
-                <button class="btn btn-primary py-2 px-4">Add Vendor</button>
-            </div>
-        </div>
-
-        <div class="row mb-4" id="dashboard-stats">
-            <div v-for="(stat, index) in dashboardStats" :key="index" class="col-md-3">
-                <div class="card border-0 shadow p-2">
-                    <div class="card-header bg-white fw-bold border-bottom-0 mt-1">{{ stat.title }}
-                        <img class="float-end" :src="getImagePath('Frame 48096300.png')">
-                    </div>
-                    <div class="card-body flex justify-between">
-                        <div>
-                            <p class="fs-3 fw-bold mb-0 !text-[3.5rem] leading-24">
-                                {{ stat.number }}
-                            </p>
-                            <p class="fs-6 text-muted">{{ stat.timePeriod }}</p>
-                        </div>
-                        <div v-if="stat.percentage"
-                            class="self-center fs-6 p-2 rounded-2 fw-bold text-center ms-2"
-                            :style="{ backgroundColor: stat.percentageColor || '#fff', color: stat.textColor }">
-                            {{ stat.percentage }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-3 bg-white rounded-3 shadow">
-            <div class="flex justify-between items-center">
-                <div class="flex gap-3">
-                    <button class="btn btn-primary rounded-3 px-3 py-2">All</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2">Approved</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2">Pending</button>
-                </div>
-                <div class="flex gap-3">
-                    <div class="flex items-center text-center relative">
-                        <input type="text" class="form-control border-0 py-2 px-3"
-                            style="background-color: #F2F4FB; width: 350px;" placeholder="Search">
-                        <i class="fas fa-search absolute end-0 me-3"></i>
-                    </div>
-                    <div class="flex items-center">
-                        <button class="btn btn-light bg-white border-0">
-                            Filters by <i class="fas fa-filter"></i>
-                        </button>
-                        <span class="border-start mx-2" style="height: 24px;"></span>
-                        <button class="btn btn-light bg-white border-0">
-                            Columns <i class="fas fa-columns"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <table class="table custom-table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th class="">ID</th>
-                        <th>Company Name</th>
-                        <th>CEO / Manager</th>
-                        <th>Contact / Email</th>
-                        <th>Total Revenue <br>Generated</th>
-                        <th>Total Spending</th>
-                        <th>Status</th>
-                        <th>List of vertical subscribed</th>
-                        <th>Registered on DE date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="vendor-table-body">
-                    <tr v-for="(vendor, index) in vendorData" :key="index">
-                        <td><input type="checkbox" class="w-5 h-5"></td>
-                        <td>{{ vendor.id }}</td>
-                        <td class="font-theme-bold">
-                            <img :src="getImagePath(vendor.companyImage)" />
-                            {{ vendor.companyName }}
-                        </td>
-                        <td class="font-theme-bold">
-                            <img :src="getImagePath(vendor.managerImage)" alt="Profile Picture" />
-                            {{ vendor.ceoManager }}
-                        </td>
-                        <td class="mail" v-html="vendor.contactEmail"></td>
-                        <td>{{ vendor.totalRevenue }}</td>
-                        <td>{{ vendor.totalSpending }}</td>
-                        <td>
-                            <select class="form-select" :style="{ backgroundColor: vendor.statusColor }">
-                                <option :value="vendor.status.toLowerCase()" selected>{{ vendor.status }}</option>
-                                <option value="banned">Banned</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="monitory">Monitory</option>
-                            </select>
-                        </td>
-                        <td class="vertivelsubscribe">{{ vendor.verticalSubscribed }}</td>
-                        <td v-html="vendor.registeredDate"></td>
-                        <td class="d-flex gap-1">
-                            <div class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-                                data-bs-toggle="modal" data-bs-target="#analyticsModal">
-
-                                <i class="fa-regular fa-eye text-primary"></i>
-                            </div>
-                            <div
-                                class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
-
-                                <i class="fa-regular fa-trash-can text-primary"></i>
-                            </div>
-                            <div
-                                class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
-
-                                <i class="fa-regular fa-share-from-square text-primary"></i>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="modal fade" id="analyticsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="analyticsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="analyticsModalLabel">Yearly Analytics</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <table class="table table-hover table-striped mb-0">
-                        <thead class="bg-body-secondary">
-                            <tr class="table-active text-center">
-                                <th>Month</th>
-                                <th>Total Vendor</th>
-                                <th>Active Members</th>
-                                <th>New Subscribe</th>
-                                <th>Inactive</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data, index) in yearlyAnalyticsData" :key="index">
-                                <td>{{ data.month }}</td>
-                                <td class="text-center">{{ data.totalVendor }}
-                                    <span class="text-success">
-                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
-                                            {{ data.totalVendorPercentage }}
-                                        </span>
-                                    </span>
-                                </td>
-                                <td class="text-center">{{ data.activeMembers }}
-                                    <span class="text-success">
-                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
-                                            {{ data.activeMembersPercentage }}
-                                        </span>
-                                    </span>
-                                </td>
-                                <td class="text-center">{{ data.newSubscribe }}
-                                    <span class="text-success">
-                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
-                                            {{ data.newSubscribePercentage }}
-                                        </span>
-                                    </span>
-                                </td>
-                                <td class="text-center">{{ data.inactive }}
-                                    <span class="text-danger">
-                                        <span class="border-0 rounded-2 p-1" style="background-color: #FFE5E5;">
-                                            {{ data.inactivePercentage }}
-                                        </span>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="table-active text-center fw-bold">
-                                <td>Total</td>
-                                <td>1747025.14</td>
-                                <td>26557581.00</td>
-                                <td>1747025.14</td>
-                                <td>1747025.14</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, onMounted, nextTick } from "vue";
 import api from "../api";
+import DataTable from "datatables.net-bs5";
+import { transformData } from "../utils/helper";
+import { useRouter } from "vue-router";
+const companiesData = ref([]);
+const loading = ref(true);
+const error = ref(null);
 
-// Utility function to generate image path
+const router = useRouter();
+
 const getImagePath = (imageName) => {
     return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
 };
@@ -226,65 +46,6 @@ const dashboardStats = ref([
     },
 
 
-]);
-
-const vendorData = ref([
-    {
-        id: "OFC 001",
-        companyName: "ABS Company Pvt.",
-        companyImage: "Avatar.png",
-        ceoManager: "Floyd Miles",
-        managerImage: "Avatar (5).png",
-        contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-        totalRevenue: "AED 32,100",
-        totalSpending: "AED 32,100",
-        status: "Active",
-        verticalSubscribed: 16,
-        registeredDate: "2020-05-17<br>10:00 AM",
-        statusColor: "lightgreen",
-    },
-    {
-        id: "OFC 002",
-        companyName: "Big Kahuna Ltd.",
-        companyImage: "Avatar.png",
-        ceoManager: "Kristin Watson",
-        managerImage: "Avatar (4).png",
-        contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-        totalRevenue: "AED 32,100",
-        totalSpending: "AED 32,100",
-        status: "Banned",
-        verticalSubscribed: 23,
-        registeredDate: "2020-05-17<br>10:00 AM",
-        statusColor: "#ffb09c",
-    },
-    {
-        id: "OFC 003",
-        companyName: "Barone LLC.",
-        companyImage: "Avatar (5).png",
-        ceoManager: "Albert Flores",
-        managerImage: "Avatar (4).png",
-        contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-        totalRevenue: "AED 32,100",
-        totalSpending: "AED 32,100",
-        status: "Inactive",
-        verticalSubscribed: 23,
-        registeredDate: "2020-05-17<br>10:00 AM",
-        statusColor: "lightgrey",
-    },
-    {
-        id: "OFC 004",
-        companyName: "Biffco Enterprises Ltd.",
-        companyImage: "Avatar.png",
-        ceoManager: "Dianne Russell",
-        managerImage: "Avatar (4).png",
-        contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-        totalRevenue: "AED 32,100",
-        totalSpending: "AED 32,100",
-        status: "Monitory",
-        verticalSubscribed: 23,
-        registeredDate: "2020-05-17<br>10:00 AM",
-        statusColor: "lightyellow",
-    },
 ]);
 
 const yearlyAnalyticsData = ref([
@@ -422,35 +183,227 @@ const yearlyAnalyticsData = ref([
     },
 ]);
 
-const data = ref([]);
-const loading = ref(true);
-const error = ref(null);
-
-// Fetch Data
 const fetchData = async () => {
-  try {
-    const response = await api.get("/superadmin/dashboard?status=1", { headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } }); // Replace with your API URL
-    data.value = response.data;
-    console.log(response.data, "response data");
-  } catch (err) {
-    error.value = "Error fetching data";
-    console.error(err);
-  } finally {
-    loading.value = false;
-  }
+    try {
+        const response = await api.get("/superadmin/dashboard?status=1", { headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } }); // Replace with your API URL
+        const { data } = response.data;
+        // console.log(transformData(data.data), "response data");
+        companiesData.value = transformData(data.data);
+    } catch (err) {
+        error.value = "Error fetching data";
+        console.error(err);
+    } finally {
+        loading.value = false;
+    }
 };
 
-// Fetch data when component mounts
-onMounted(fetchData);
+const handleClickToDetails = (id) => {
+    router.push("/super-admin/company-details/" + id + "/info");
+};
+
+onMounted(() => {
+    fetchData();
+});
+
+nextTick(() => {
+    setTimeout(() => {
+        new DataTable("#example");
+    }, 1000)
+});
+
 </script>
 
+<template>
+    <div>
+        <div class="flex justify-between items-center mb-4">
+            <div class="fs-4 fw-bold">Vendor</div>
+            <div class="fs-4">
+                <button class="btn btn-primary py-2 px-4">Add Vendor</button>
+            </div>
+        </div>
+
+        <div class="row mb-4" id="dashboard-stats">
+            <div v-for="(stat, index) in dashboardStats" :key="index" class="col-md-3">
+                <div class="card border-0 shadow p-2">
+                    <div class="card-header bg-white fw-bold border-bottom-0 mt-1">{{ stat.title }}
+                        <img class="float-end" :src="getImagePath('Frame 48096300.png')">
+                    </div>
+                    <div class="card-body flex justify-between">
+                        <div>
+                            <p class="fs-3 fw-bold mb-0 !text-[3.5rem] leading-24">
+                                {{ stat.number }}
+                            </p>
+                            <p class="fs-6 text-muted">{{ stat.timePeriod }}</p>
+                        </div>
+                        <div v-if="stat.percentage" class="self-center fs-6 p-2 rounded-2 fw-bold text-center ms-2"
+                            :style="{ backgroundColor: stat.percentageColor || '#fff', color: stat.textColor }">
+                            {{ stat.percentage }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-3 bg-white rounded-3 shadow">
+            <div class="flex justify-between items-center">
+                <div class="flex gap-3">
+                    <button class="btn btn-primary rounded-3 px-3 py-2">All</button>
+                    <button class="btn btn-light rounded-3 px-3 py-2">Approved</button>
+                    <button class="btn btn-light rounded-3 px-3 py-2">Pending</button>
+                </div>
+                <div class="flex gap-3">
+                    <div class="flex items-center text-center relative">
+                        <input type="text" class="form-control border-0 py-2 px-3"
+                            style="background-color: #F2F4FB; width: 350px;" placeholder="Search">
+                        <i class="fas fa-search absolute end-0 me-3"></i>
+                    </div>
+                    <div class="flex items-center">
+                        <button class="btn btn-light bg-white border-0">
+                            Filters by <i class="fas fa-filter"></i>
+                        </button>
+                        <span class="border-start mx-2" style="height: 24px;"></span>
+                        <button class="btn btn-light bg-white border-0">
+                            Columns <i class="fas fa-columns"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table id="example" class="table custom-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>ID</th>
+                        <th>Company Name</th>
+                        <th>Full Name</th>
+                        <th>Role</th>
+                        <th>Contact / <br />Email</th>
+                        <th>Total Revenue <br>Generated</th>
+                        <th>Total <br />Spending</th>
+                        <th>Status</th>
+                        <th>List of vertical<br /> subscribed</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="vendor-table-body">
+                    <tr v-for="(vendor, index) in companiesData" :key="index">
+                        <td><input type="checkbox" class="w-5 h-5"></td>
+                        <td>{{ vendor.id }}</td>
+                        <td class="font-theme-bold">
+                            <div class="flex gap-2 items-center min-w-32">
+                                <img :src="vendor.companyImage" class="m-0 w-10 !h-10 rounded-lg object-cover" />
+                                <span class="line-clamp-1">{{ vendor.companyName }}</span>
+                            </div>
+                        </td>
+                        <td class="font-theme-bold">
+                            <div class="flex gap-2 items-center min-w-32">
+                                <img :src="vendor.managerImage" class="m-0 w-10 !h-10 rounded-lg object-cover" />
+                                <span class="line-clamp-1">{{ vendor.name }}</span>
+                            </div>
+                        </td>
+                        <td>Admin</td>
+                        <td class="mail" v-html="vendor.contactEmail"></td>
+                        <td v-html="vendor.totalRevenue"></td>
+                        <td v-html="vendor.totalSpending"></td>
+                        <td>
+                            <select class="form-select" :style="{ backgroundColor: vendor.statusColor }">
+                                <option :value="vendor.status.toLowerCase()" selected>{{ vendor.status }}</option>
+                                <option value="banned">Banned</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="monitory">Monitory</option>
+                            </select>
+                        </td>
+                        <td>{{ vendor.verticalSubscribed }}</td>
+                        <td>
+                            <div class="flex gap-2">
+                                <button
+                                    class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
+                                    <i class="fa-regular fa-eye text-primary"></i>
+                                </button>
+                                <button
+                                    class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
+                                    <i class="fa-regular fa-trash-can text-primary"></i>
+                                </button>
+                                <button @click="handleClickToDetails(vendor?.id)"
+                                    class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
+                                    <i class="fa-regular fa-share-from-square text-primary"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="analyticsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="analyticsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="analyticsModalLabel">Yearly Analytics</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="bg-body-secondary">
+                            <tr class="table-active text-center">
+                                <th>Month</th>
+                                <th>Total Vendor</th>
+                                <th>Active Members</th>
+                                <th>New Subscribe</th>
+                                <th>Inactive</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(data, index) in yearlyAnalyticsData" :key="index">
+                                <td>{{ data.month }}</td>
+                                <td class="text-center">{{ data.totalVendor }}
+                                    <span class="text-success">
+                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
+                                            {{ data.totalVendorPercentage }}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="text-center">{{ data.activeMembers }}
+                                    <span class="text-success">
+                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
+                                            {{ data.activeMembersPercentage }}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="text-center">{{ data.newSubscribe }}
+                                    <span class="text-success">
+                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
+                                            {{ data.newSubscribePercentage }}
+                                        </span>
+                                    </span>
+                                </td>
+                                <td class="text-center">{{ data.inactive }}
+                                    <span class="text-danger">
+                                        <span class="border-0 rounded-2 p-1" style="background-color: #FFE5E5;">
+                                            {{ data.inactivePercentage }}
+                                        </span>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="table-active text-center fw-bold">
+                                <td>Total</td>
+                                <td>1747025.14</td>
+                                <td>26557581.00</td>
+                                <td>1747025.14</td>
+                                <td>1747025.14</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
 <style scoped>
-.mail {
-    font-family: "Roboto", sans-serif;
-    font-size: 14px;
-    color: purple;
-    padding: 8px;
-    line-height: 1.5;
+.custom-table .mail {
+    max-width: 80px !important;
 }
 
 .mail:hover {
@@ -473,9 +426,10 @@ td {
 }
 
 .custom-table thead th {
-    background-color: #f2f4fb;
+    background-color: #F2F4FB;
     font-weight: 700;
     font-size: 16px;
+    color: #6E6E86;
 }
 
 .custom-table tbody tr {

@@ -52,7 +52,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/info",
+        path: "/super-admin/company-details/:companyId/info",
         component: () => import("../pages/CompanyDetails/Info.vue"),
         meta: {
           breadcrumb: [
