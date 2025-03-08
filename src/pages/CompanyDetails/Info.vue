@@ -537,14 +537,14 @@ import { onMounted, ref } from 'vue';
 import CompanyHeader from '../../components/CompanyHeader.vue';
 import { useRoute, useRouter } from 'vue-router';
 import api from '../../api';
+import { useCompanyStore } from '../../store';
 const route = useRoute();
 const companyDetails = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const companyData = ref(null);
+const store = useCompanyStore();
 
-// const router = useRouter();
-
-console.log(route.params.companyId);
 const getImagePath = (imageName) => {
     return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
 };
@@ -601,6 +601,7 @@ const fetchCompanyDetailsById = async (id) => {
             } 
         });
         console.log(response.data, "response data");
+        store.setCompanyData(response.data?.data);
         // companyDetails.value = transformData(data.data);
     } catch (err) {
         error.value = "Error fetching data";
@@ -608,10 +609,15 @@ const fetchCompanyDetailsById = async (id) => {
     } finally {
         loading.value = false;
     }
-}
+};
 
 onMounted(() => {
-    fetchCompanyDetailsById(route.params.companyId);
+    console.log(JSON.parse(JSON.stringify(store.companies)), "store companies");
+    const company = JSON.parse(JSON.stringify(store.companies)).find(item => item.id === Number(route.params.companyId));
+    companyData.value = company;
+    if (company) {
+        fetchCompanyDetailsById(company?.organization_id);
+    }
 });
 </script>
 

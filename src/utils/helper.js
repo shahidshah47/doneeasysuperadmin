@@ -19,6 +19,7 @@ export const transformData = (data) => {
         }
 
         return {
+            ...item,
             id: item.id,
             companyName: item.company.company_name,
             companyImage: item.company.company_logo.file_path,

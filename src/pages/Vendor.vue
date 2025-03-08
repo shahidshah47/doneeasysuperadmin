@@ -4,7 +4,9 @@ import api from "../api";
 import DataTable from "datatables.net-bs5";
 import { transformData } from "../utils/helper";
 import { useRouter } from "vue-router";
+import { useCompanyStore } from "../store";
 
+const store = useCompanyStore();
 const companiesData = ref([]);
 const loading = ref(true);
 const error = ref(null);
@@ -193,6 +195,7 @@ const fetchData = async () => {
         const response = await api.get("/superadmin/dashboard?status=1", { headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } });
         const { data } = response.data;
         companiesData.value = transformData(data.data);
+        store.setCompanies(transformData(data.data));
     } catch (err) {
         error.value = "Error fetching data";
         console.error(err);

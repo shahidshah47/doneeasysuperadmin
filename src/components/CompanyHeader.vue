@@ -1,6 +1,6 @@
 <template>
     <div class="col-md-12 company-header shadow mb-5 rounded-3">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center" v-if="store.companyData">
             <div class="company-info">
                 <div class="d-flex align-items-center">
                     <img :src="getImagePath('LoveClipLogo.png')" class="company-logo" alt="Company Logo" />
@@ -8,7 +8,7 @@
                         <div class="company-status">
                             <span class="badge badge-success mb-2">Active</span>
                         </div>
-                        <h3>ABS Company Pvt Ltd</h3>
+                        <h3>{{ store?.companyData?.company_name }}</h3>
                         <p>ID OFC 903823</p>
                     </div>
                 </div>
@@ -40,6 +40,8 @@
 
 <script setup>
 import TabNavigation from '../components/TabNavigation.vue';
+import { useCompanyStore } from '../store';
+const store = useCompanyStore();
 
 const getImagePath = (imageName) => {
     return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
