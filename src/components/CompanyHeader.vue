@@ -1,34 +1,34 @@
 <template>
-    <div class="col-md-12 company-header shadow mb-5 rounded-3">
-        <div class="d-flex justify-content-between align-items-center" v-if="store.companyData">
+    <div class="col-md-12 company-header mb-5 rounded-3">
+        <div class="flex justify-between items-center" v-if="store.companyData">
             <div class="company-info">
-                <div class="d-flex align-items-center">
-                    <img :src="getImagePath('LoveClipLogo.png')" class="company-logo" alt="Company Logo" />
+                <div class="flex items-center gap-6">
+                    <img :src="getCompanyUserImage(store?.companyData?.user?.profile_picture)" class="w-32 h-32 object-cover rounded-xl" alt="Company Logo" />
                     <div class="company-details-text">
                         <div class="company-status">
                             <span class="badge badge-success mb-2">Active</span>
                         </div>
-                        <h3>{{ store?.companyData?.company_name }}</h3>
+                        <h3>{{ store?.companyData?.company?.company_name }}</h3>
                         <p>ID OFC 903823</p>
                     </div>
                 </div>
             </div>
-            <div class="company-stats d-flex gap-5">
-                <div class="stat-item">
-                    <p>Total Revenue Generated</p>
-                    <h5>AED 32,100</h5>
+            <div class="inline-flex gap-6">
+                <div class="inline-flex flex-col gap-2">
+                    <p class="theme-label font-theme-bold">Total Revenue Generated</p>
+                    <h5 class="font-theme-bold">AED {{ store?.companyData?.company?.org_revenue_sum || 0 }}</h5>
                 </div>
-                <div class="stat-item">
-                    <p>No. of Order Completed</p>
-                    <h5>2190</h5>
+                <div class="inline-flex flex-col gap-2">
+                    <p class="theme-label font-theme-bold">No. of Order Completed</p>
+                    <h5 class="font-theme-bold">{{ store?.companyData?.company?.completed_order }}</h5>
                 </div>
-                <div class="stat-item">
-                    <p>No. of Verticals</p>
-                    <h5>16</h5>
+                <div class="inline-flex flex-col gap-2">
+                    <p class="theme-label font-theme-bold">No. of Verticals</p>
+                    <h5 class="font-theme-bold">{{ store?.companyData?.company?.verticles_count }}</h5>
                 </div>
-                <div class="stat-item">
-                    <p>Rating</p>
-                    <h5><span class="stars">★★★★☆</span> 4.5</h5>
+                <div class="inline-flex flex-col gap-2">
+                    <p class="theme-label font-theme-bold">Rating</p>
+                    <h5 class="font-theme-bold"><span class="stars">★★★★☆</span> {{ store?.companyData?.company?.reviews_avg_rating }}</h5>
                 </div>
             </div>
         </div>
@@ -46,6 +46,11 @@ const store = useCompanyStore();
 const getImagePath = (imageName) => {
     return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
 };
+
+const getCompanyUserImage = (img) => { 
+    return img.file_path;
+}
+
 </script>
 
 <style scoped>

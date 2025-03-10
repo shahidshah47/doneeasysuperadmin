@@ -1,176 +1,111 @@
 <template>
-    <div class="container-fluid company-details">
-        <div class="row">
-            <!-- Company Info and Stats -->
-            <CompanyHeader />
+    <div class="company-details">
+        <!-- Company Info and Stats -->
+        <CompanyHeader />
 
-            <!-- Company Details -->
-            <div class="col-md-12 company-details-section">
-                <div class="row">
-                    <!-- Left Section (Company & Legal Details) -->
-                    <div class="col-md-6">
-                        <h5 class="fw-bold">Company Details</h5>
-                        <div class="company-details-box gap-5 position-relative">
-                            <div class="position-absolute top-0 end-0 me-2 mt-2">
-                                <a href="/super-admin/company-details/info/authentication" class="text-reset">
-                                    <i class="fa-solid fa-pen text-primary text-decoration-underline"></i>
-                                </a>
-                            </div>
-                            <div class="details-item">
-                                <p>Company ID</p>
-                                <p>ID OFC 903823</p>
-                            </div>
-                            <div class="details-item">
-                                <p>No. of Employees</p>
-                                <p>50-100</p>
-                            </div>
-                            <div class="details-item">
-                                <p>HQ Phone No.</p>
-                                <p>+971 983402031</p>
-                            </div>
-                            <div class="details-item">
-                                <p>HQ Email</p>
-                                <p>johnthompson15@gmail.com</p>
-                            </div>
-                            <div class="details-item">
-                                <p>Joined Date</p>
-                                <p>Jan 2020</p>
-                            </div>
-                            <div class="details-item">
-                                <p>Added By</p>
-                                <p>Alex Smith</p>
-                            </div>
-                        </div>
-
-                        <h5 class="fw-bold">Legal Documents Details</h5>
-                        <div class="company-details-box gap-5 position-relative">
-                            <div class="position-absolute top-0 end-0 me-2 mt-2 cursor-pointer" data-bs-toggle="modal"
-                                data-bs-target="#legalDocsModal">
+        <!-- Company Details -->
+        <div class="grid grid-cols-12 gap-6">
+            <!-- Left Section (Company & Legal Details) -->
+            <div class="col-span-6 flex flex-col gap-4">
+                <div class="flex flex-col w-full gap-1">
+                    <h5 class="fw-bold">Company Details</h5>
+                    <div class="bg-white rounded-xl p-4 flex gap-4 flex-wrap relative">
+                        <div class="position-absolute top-0 end-0 me-2 mt-2">
+                            <a href="/super-admin/company-details/info/authentication" class="text-reset">
                                 <i class="fa-solid fa-pen text-primary text-decoration-underline"></i>
-                            </div>
-                            <div class="details-item">
-                                <p>Emirates ID</p>
-                                <p>98734-3423-21</p>
-                            </div>
-                            <div class="details-item">
-                                <p>TRN</p>
-                                <p>98734-3423-21</p>
-                            </div>
-                            <div class="details-item">
-                                <p>Trade License No. 1</p>
-                                <p>98734-3423-21</p>
-                            </div>
-                            <div class="details-item">
-                                <p>Trade License No. 2</p>
-                                <p>98734-3423-21</p>
-                            </div>
+                            </a>
                         </div>
+                        <div v-for="(company, index) in companyDetails" class="flex-1/3">
+                            <p class="theme-label">{{ company?.label }}</p>
+                            <p class="font-theme-bold m-0">{{ company?.value || "---" }}</p>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="flex flex-col w-full gap-1">
+                    <h5 class="fw-bold">Legal Documents Details</h5>
+                    <div class="bg-white rounded-xl p-4 flex gap-4 flex-wrap relative">
+                        <div class="position-absolute top-0 end-0 me-2 mt-2 cursor-pointer" data-bs-toggle="modal"
+                            data-bs-target="#legalDocsModal">
+                            <i class="fa-solid fa-pen text-primary text-decoration-underline"></i>
+                        </div>
+                        <div v-for="(legalDoc, index) in legalDocsDetails" class="flex-1/3">
+                            <p class="theme-label">{{ legalDoc?.label }}</p>
+                            <p class="font-theme-bold m-0">{{ legalDoc?.value || "---" }}</p>
+                        </div>
+                        <div v-for="(trade, index) in store.companyData?.user?.trade_licenses" :key="index" class="flex-1/3">
+                            <p class="theme-label">Trade License No. {{ trade.id }}</p>
+                            <p class="font-theme-bold m-0">{{ trade?.license_number }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col w-full gap-1">
+                    <div class="flex justify-between items-center">
                         <h5 class="fw-bold">Pin Location</h5>
-                        <div class="bg-white p-3 position-relative">
-                            <div class="position-absolute top-0 end-0 me-2 mt-2">
-                                <div class="d-flex gap-2 position-absolute top-0 end-0 me-3 mt-3">
-                                    <i class="fa-solid fa-pen text-primary text-decoration-underline cursor-pointer"
-                                        data-bs-toggle="modal" data-bs-target="#locationModal"></i>
-                                    <i class="fa-solid fa-share text-primary"></i>
-                                </div>
-                            </div>
-                            <img :src="getImagePath('maps.png')" width="700" alt="Company Logo" />
-                        </div>
+                        <p class="m-0">
+                            <i class="fa-solid fa-pen text-primary text-decoration-underline cursor-pointer"
+                                data-bs-toggle="modal" data-bs-target="#locationModal"></i>
+                            <i class="fa-solid fa-share text-primary ml-2"></i>
+                        </p>
                     </div>
-
-                    <!-- Right Section (Admin/Manager & Location) -->
-                    <div class="col-md-3">
-                        <div class="d-flex justify-content-between">
-                            <h5 class="fw-bold">Admin/Manager</h5>
-                            <a href="#" class="add-new text-decoration-none" data-bs-toggle="modal"
-                                data-bs-target="#addAdminModal">+ Add New</a>
-                        </div>
-                        <div class="company-details-box">
-                            <div class="details-item gap-4">
-                                <div class="grey-box">
-                                    <p>Role - Admin</p>
-                                    <p>Shaam Idress</p>
-                                    <p class="mb-3">CEO</p>
-                                    <p class="fw-bold">+971 983402031</p>
-                                    <p>johnthompson15@gmail.com</p>
-                                    <button type="button" class="btn btn-primary w-75 mt-3">
-                                        View Details
-                                    </button>
-                                </div>
-                                <div class="grey-box">
-                                    <p>Role - Admin</p>
-                                    <p>Shaam Idress</p>
-                                    <p class="mb-3">CEO</p>
-                                    <p class="fw-bold">+971 983402031</p>
-                                    <p>johnthompson15@gmail.com</p>
-                                    <button type="button" class="btn btn-primary w-75 mt-3">
-                                        View Details
-                                    </button>
-                                </div>
-                                <div class="grey-box">
-                                    <p>Role - Admin</p>
-                                    <p>Shaam Idress</p>
-                                    <p class="mb-3">CEO</p>
-                                    <p class="fw-bold">+971 983402031</p>
-                                    <p>johnthompson15@gmail.com</p>
-                                    <button type="button" class="btn btn-primary w-75 mt-3">
-                                        View Details
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="d-flex justify-content-between">
-                            <h5 class="fw-bold">Location</h5>
-                            <a href="#" class="add-new text-decoration-none">+ Add New</a>
-                        </div>
-                        <div class="company-details-box">
-                            <div class="details-item gap-4">
-                                <div class="grey-box">
-                                    <p>Main Office</p>
-                                    <p>Jebel Ali Free Zone, Zip Code 61327</p>
-                                    <button type="button" class="btn btn-primary w-75 mt-3">
-                                        View Details
-                                    </button>
-                                </div>
-                                <div class="grey-box">
-                                    <p>Branch No.2</p>
-                                    <p>Jebel Ali Free Zone, Zip Code 61327</p>
-                                    <button type="button" class="btn btn-primary w-75 mt-3">
-                                        View Details
-                                    </button>
-                                </div>
-                                <div class="grey-box">
-                                    <p>Branch No.3</p>
-                                    <p>Jebel Ali Free Zone, Zip Code 61327</p>
-                                    <button type="button" class="btn btn-primary w-75 mt-3">
-                                        View Details
-                                    </button>
-                                </div>
-                                <div class="grey-box">
-                                    <p>Branch No.4</p>
-                                    <p>Jebel Ali Free Zone, Zip Code 61327</p>
-                                    <button type="button" class="btn btn-primary w-75 mt-3">
-                                        View Details
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="bg-white p-3 position-relative rounded-xl">
+                        <img :src="getImagePath('maps.png')" class="rounded-xl w-full" alt="Company Logo" />
                     </div>
                 </div>
             </div>
 
-            <!-- Quick Actions -->
-            <div class="col-md-12 d-flex justify-content-center align-items-center gap-3 mt-3">
-                <p class="fw-bold mb-0">Quick Actions</p>
-                <button class="btn btn-outline-primary px-4">Edit</button>
-                <button class="btn btn-outline-primary px-4">Delete</button>
-                <button class="btn btn-outline-primary px-4">Organization Mode</button>
-                <button class="btn btn-outline-primary px-4">Share Profile</button>
+            <!-- Right Section (Admin/Manager & Location) -->
+            <div class="col-span-3">
+                <div class="flex justify-between">
+                    <h5 class="fw-bold">Admin/Manager</h5>
+                    <a href="#" class="text-primary text-sm text-decoration-none" data-bs-toggle="modal"
+                        data-bs-target="#addAdminModal">+ Add New</a>
+                </div>
+                <div class="bg-white p-4 rounded-xl">
+                    <div v-for="(user, index) in store?.companyData?.company?.users" class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
+                        <p class="theme-label">Role - Admin</p>
+                        <div class="inline-flex gap-1 flex-col">
+                            <p class="m-0 font-theme-bold">{{ user?.name }}</p>
+                            <p class="m-0">{{ user?.designation }}</p>
+                        </div>
+                        <div class="inline-flex gap-1 flex-col">
+                            <h4 class="!text-base font-theme-bold mb-0">+971 {{ user?.mobile_number }}</h4>
+                            <h4 class="!text-base mb-0">{{ user?.email }}</h4>
+                        </div>
+                        <button type="button" class="btn btn-primary w-50">
+                            View Details
+                        </button>
+                    </div>
+                </div>
             </div>
+
+            <div class="col-span-3">
+                <div class="d-flex justify-content-between">
+                    <h5 class="fw-bold">Location</h5>
+                    <a href="#" class="text-primary text-sm text-decoration-none">+ Add New</a>
+                </div>
+                <div class="bg-white p-4 rounded-xl">
+                    <div v-for="(address, index) in store?.companyData?.company?.addresses" class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
+                        <div class="inline-flex gap-1 flex-col">
+                            <p class="theme-label">Main Office</p>
+                            <p class="font-theme-bold m-0">{{ address?.address }}</p>
+                        </div>
+                        <button type="button" class="btn btn-primary w-50">
+                            View Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-md-12 d-flex justify-content-center align-items-center gap-3 mt-3">
+            <p class="fw-bold mb-0">Quick Actions</p>
+            <button class="btn btn-outline-primary px-4">Edit</button>
+            <button class="btn btn-outline-primary px-4">Delete</button>
+            <button class="btn btn-outline-primary px-4">Organization Mode</button>
+            <button class="btn btn-outline-primary px-4">Share Profile</button>
         </div>
     </div>
 
@@ -535,21 +470,30 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import CompanyHeader from '../../components/CompanyHeader.vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import api from '../../api';
 import { useCompanyStore } from '../../store';
+import { formatToMonthDayYear } from "../../utils/helper";
+
 const route = useRoute();
-const companyDetails = ref([]);
 const loading = ref(true);
 const error = ref(null);
-const companyData = ref(null);
+const companyDetails = ref(null);
+const legalDocsDetails = ref(null);
 const store = useCompanyStore();
+
+const getUserAddedBy = () => {
+    return "Steve Smith" || "---";
+};
 
 const getImagePath = (imageName) => {
     return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
 };
 
-// Data for the form
+const getJoinedDate = (date) => {
+    return formatToMonthDayYear(date) || "---";
+};
+
 const admin = ref({
     fullName: 'John Thompson',
     designation: 'CEO',
@@ -595,14 +539,24 @@ const addAdmin = () => {
 
 const fetchCompanyDetailsById = async (id) => {
     try {
-        const response = await api.post("/superadmin/company/details/" + id, {}, { 
-            headers: { 
-                Authorization: `Bearer ${localStorage?.getItem("token")}` 
-            } 
+        const response = await api.get("/superadmin/user/details/" + id, { 
+            headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } 
         });
-        console.log(response.data, "response data");
         store.setCompanyData(response.data?.data);
-        // companyDetails.value = transformData(data.data);
+        const company = response?.data?.data?.company;
+        const user = response?.data?.data?.user;
+        companyDetails.value = [
+            { label: "Company ID", value: `ID ${company?.id}` },
+            { label: "No. of Employees", value: company?.company_size },
+            { label: "HQ Phone No.", value: company?.phone },
+            { label: "HQ Email", value: company?.email },
+            { label: "Joined Date", value: getJoinedDate(company?.created_at) },
+            { label: "Added By", value: getUserAddedBy(company?.added_by) }
+        ];
+        legalDocsDetails.value = [
+            { label: "Emirates ID", value: user?.emirates_id },
+            { label: "TRN", value: user?.trn }
+        ];
     } catch (err) {
         error.value = "Error fetching data";
         console.error(err);
@@ -612,12 +566,8 @@ const fetchCompanyDetailsById = async (id) => {
 };
 
 onMounted(() => {
-    console.log(JSON.parse(JSON.stringify(store.companies)), "store companies");
-    const company = JSON.parse(JSON.stringify(store.companies)).find(item => item.id === Number(route.params.companyId));
-    companyData.value = company;
-    if (company) {
-        fetchCompanyDetailsById(company?.organization_id);
-    }
+    window.scroll(0, 0);
+    fetchCompanyDetailsById(route.params.companyId);
 });
 </script>
 
@@ -629,26 +579,6 @@ onMounted(() => {
     margin-bottom: 20px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-}
-
-.details-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.details-item p {
-    margin: 0;
-}
-
-.details-item p:first-child {
-    font-size: 12px;
-    color: #5825eb;
-}
-
-.details-item p:nth-child(2) {
-    font-size: 16px;
-    font-weight: 600;
 }
 
 .grey-box {

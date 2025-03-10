@@ -1,9 +1,10 @@
 <template>
     <div class="tabs-section mt-5">
         <ul class="nav nav-tabs d-flex justify-content-around border-0">
-            <li class="nav-item">
-                <router-link to="/super-admin/company-details/info" class="nav-link" active-class="active-tab"
-                    exact>Info</router-link>
+            <li class="nav-item" :class="{'active-tab': $route.path.includes('/super-admin/company-details/') && $route.path.includes('/info')}">
+                <router-link :to="`/super-admin/company-details/${companyId}/info`" class="nav-link">
+                    Info
+                </router-link>
             </li>
             <li class="nav-item">
                 <router-link to="/super-admin/company-details/appointment" class="nav-link"

@@ -35,3 +35,8 @@ export const transformData = (data) => {
         };
     });
 }
+
+export const formatToMonthDayYear = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}

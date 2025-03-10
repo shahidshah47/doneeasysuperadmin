@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import './style.css'
+import './assets/css/index.css';
 import './assets/css/styles.css'
 import './assets/css/form.css'
 import './assets/css/LogoSlider.module.css'
