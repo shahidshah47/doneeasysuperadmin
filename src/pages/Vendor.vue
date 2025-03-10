@@ -358,7 +358,7 @@ const handleInitComplete = () => {
                         <td v-html="vendor.totalRevenue"></td>
                         <td v-html="vendor.totalSpending"></td>
                         <td>
-                            <select class="form-select" :style="{ backgroundColor: vendor.statusColor }">
+                            <select class="border-0 p-2.5 rounded-xl" :style="{ backgroundColor: vendor.statusColor, color: vendor.textColor }">
                                 <option :value="vendor.status.toLowerCase()" selected>{{ vendor.status }}</option>
                                 <option value="banned">Banned</option>
                                 <option value="inactive">Inactive</option>
@@ -542,15 +542,6 @@ td {
     margin-left: 11px;
 }
 
-.custom-table td select {
-    max-width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    outline: none;
-    font-size: 14px;
-    padding: 5px;
-}
-
 .custom-table td button {
     margin: auto;
     align-items: center;
@@ -561,15 +552,6 @@ td {
     max-width: 100%;
     padding: 5px;
     font-size: 13px;
-}
-
-.custom-table td .status-select {
-    max-width: 100%;
-    padding: 5px 15px;
-    font-size: 15px;
-    margin-right: 12px;
-    margin-left: 14px;
-    border-radius: 12px;
 }
 
 .custom-table td {

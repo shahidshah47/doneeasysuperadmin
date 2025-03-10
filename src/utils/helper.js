@@ -3,19 +3,33 @@ export const transformData = (data) => {
         // Determine the status based on the 'status' field
         let status;
         let statusColor;
+        let textColor;
         switch (item.status) {
             case 1:
                 status = "Active";
-                statusColor = "lightgreen";
+                statusColor = "#D6FFEF";
+                textColor = "#00995C";
                 break;
             case 0:
                 status = "Inactive";
-                statusColor = "lightgrey";
+                statusColor = "#E7E7EB";
+                textColor = "#0E0D35";
+                break;
+            case 2:
+                status = "Monitory";
+                statusColor = "#FCEED9";
+                textColor = "#DC8B13";
+                break;
+            case 3:
+                status = "Banned";
+                statusColor = "#FFE5E5";
+                textColor = "#FF5555";
                 break;
             // Add more cases if there are other status values
             default:
                 status = "Unknown";
                 statusColor = "lightgrey";
+                textColor = "#000";
         }
 
         return {
@@ -32,6 +46,7 @@ export const transformData = (data) => {
             verticalSubscribed: item.verticles_count,
             registeredDate: `${item.created_at.split('T')[0]}<br>${item.created_at.split('T')[1].split('.')[0]}`,
             statusColor: statusColor,
+            textColor: textColor
         };
     });
 }

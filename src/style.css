@@ -123,6 +123,20 @@ body {
   margin: 0;
 }
 
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("/src/assets/image/icons/dropdown-icon.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 90% 50%;
+  background-size: 12px;
+  font-size: 14px;
+  padding: 10px;
+  width: 100px;
+}
+
 .bg-primary {
   background: linear-gradient(
     98.24deg,
