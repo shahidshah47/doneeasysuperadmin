@@ -26,6 +26,64 @@ div {
   font-family: Averta, sans-serif !important;
 }
 
+:root {
+  --color-primary: #5825EB;
+  --color-body: #64748B;
+  --color-primary: #5925EB;
+  --color-graydark: #333A48;
+  --color-whiten: #F1F5F9;
+  --color-whiter: #F5F7FD;
+  --color-grayColor: #868599;
+  --color-grayColor2: #82899B;
+  --color-dm-blue: #0E0D35;
+  --color-vivid-purple: #5825EB;
+  --color-teal: #38E0B2;
+  --color-ds-blue: #575672;
+  --color-soft-lilac: #EDE8FD;
+  --color-light-lilac: #F2F4FB;
+  --color-dl-gray: #868599;
+  --color-light-purple: #7871F7;
+  --color-lavender: #E7E7EB;
+  --color-grayish-purple: #6E6E86;
+  --color-lavender-gray: #CFCFD7;
+  --color-rich-navy: #051547;
+  --color-lavender-gray-2: #B7B7C3;
+  --color-gray-blue-100: #9F9EAE;
+  --color-barely-peach: #FFE9C7;
+  --color-pale-pink-100: #FFD7D7;
+  --color-seafair-green: #AEF7D3;
+  --color-py-green: #F1F7AE;
+  --color-lavender-mist: #;
+  --color-gray-100: #F1F6FF;
+  --color-warning-50: #DC8B13;
+  --color-danger-50: #FB1E1E;
+  --color-green-200: #D6FFEF;
+  --color-white-500: #FCFDFFB2;
+  --color-white-100: #FCFDFF;
+  --color-blue-200: #CCDDFF;
+  --color-file-extension: #00C650;
+  --color-light-orange: #ff5555;
+  --color-dark-indigo-100: #3E3D5D;
+  --color-accent-green: #00995C;
+  --color-blush-100: #FFE5E5;
+  --color-chat-green: #39F7AC;
+  --color-profile-indicator: #079E62;
+  --color-info-warning: #FCEED9;
+  --color-peach-100: #FCEED9;
+  --color-lightBlue: #EBF3FA;
+  --color-failedColor: #FF5555;
+  --color-neutral-gray: #D9D9D9;
+  --color-silver-lining: #EEF2F7;
+  --color-bg-pdf-color: #FF3E4C;
+  --color-vibrant-Purple: #A321EE;
+  --color-light-blue: #EAF1F8;
+  --color-deep-indigo: #27264A;
+  --color-blue-gray: #2B3F5A;
+  --color-slate-700: #5D6F7D;
+  --color-electric-indigo: #2B20E8;
+  --color-blue-700: #005FAD;
+}
+
 body {
   background-color: #f2f4fb;
   min-height: 100vh;
@@ -82,6 +140,11 @@ body {
   transition: background 0.4s ease, transform 0.2s ease !important;
   text-transform: uppercase !important;
 }
+
+/* .btn-primary-1 {
+  background-color: #5825EB !important;
+  color: white !important;
+} */
 
 .btn-primary:hover {
   background: linear-gradient(

@@ -300,9 +300,9 @@ const handleInitComplete = () => {
         <div class="p-4 bg-white rounded-3 shadow relative">
             <div class="flex justify-between items-center">
                 <div class="flex gap-3">
-                    <button class="btn btn-primary rounded-3 px-3 py-2">All</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2">Approved</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2">Pending</button>
+                    <button class="btn bg-primary text-white rounded-3 px-3 py-2 active:bg-primary">All</button>
+                    <button class="btn btn-light rounded-3 px-3 py-2 active:bg-primary">Approved</button>
+                    <button class="btn btn-light rounded-3 px-3 py-2 active:bg-primary">Pending</button>
                 </div>
                 <div class="flex gap-3">
                     <div class="flex items-center text-center relative">
