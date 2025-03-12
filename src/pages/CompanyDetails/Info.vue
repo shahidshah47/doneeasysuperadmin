@@ -11,9 +11,9 @@
                     <h5 class="fw-bold">Company Details</h5>
                     <div class="bg-white rounded-xl p-4 flex gap-4 flex-wrap relative">
                         <div class="position-absolute top-0 end-0 me-2 mt-2">
-                            <a href="/super-admin/company-details/info/authentication" class="text-reset">
+                            <button type="button" class="text-reset" @click="openCreateModal()">
                                 <i class="fa-solid fa-pen text-primary text-decoration-underline"></i>
-                            </a>
+                            </button>
                         </div>
                         <div v-for="(company, index) in companyDetails" class="flex-1/3">
                             <p class="theme-label">{{ company?.label }}</p>
@@ -33,7 +33,8 @@
                             <p class="theme-label">{{ legalDoc?.label }}</p>
                             <p class="font-theme-bold m-0">{{ legalDoc?.value || "---" }}</p>
                         </div>
-                        <div v-for="(trade, index) in store.companyData?.user?.trade_licenses" :key="index" class="flex-1/3">
+                        <div v-for="(trade, index) in store.companyData?.user?.trade_licenses" :key="index"
+                            class="flex-1/3">
                             <p class="theme-label">Trade License No. {{ trade.id }}</p>
                             <p class="font-theme-bold m-0">{{ trade?.license_number }}</p>
                         </div>
@@ -62,8 +63,9 @@
                     <a href="#" class="text-primary text-sm text-decoration-none" data-bs-toggle="modal"
                         data-bs-target="#addAdminModal">+ Add New</a>
                 </div>
-                <div class="bg-white p-4 rounded-xl">
-                    <div v-for="(user, index) in store?.companyData?.company?.users" class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
+                <div class="bg-white p-4 rounded-xl flex flex-col gap-3 min-h-[10rem] max-h-[20rem] overflow-auto">
+                    <div v-for="(user, index) in store?.companyData?.company?.users"
+                        class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
                         <p class="theme-label">Role - Admin</p>
                         <div class="inline-flex gap-1 flex-col">
                             <p class="m-0 font-theme-bold">{{ user?.name }}</p>
@@ -85,8 +87,9 @@
                     <h5 class="fw-bold">Location</h5>
                     <a href="#" class="text-primary text-sm text-decoration-none">+ Add New</a>
                 </div>
-                <div class="bg-white p-4 rounded-xl">
-                    <div v-for="(address, index) in store?.companyData?.company?.addresses" class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
+                <div class="bg-white p-4 rounded-xl flex flex-col gap-3">
+                    <div v-for="(address, index) in store?.companyData?.company?.addresses"
+                        class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
                         <div class="inline-flex gap-1 flex-col">
                             <p class="theme-label">Main Office</p>
                             <p class="font-theme-bold m-0">{{ address?.address }}</p>
@@ -465,6 +468,10 @@
         </div>
 
     </div>
+
+    
+    <!-- Modal Component -->
+    <CompanyForm :showModal="showModal" :companyData="editingCompany" @submit="handleSubmit" @close="showModal = false" />
 </template>
 
 <script setup>
@@ -474,6 +481,7 @@ import { useRoute } from 'vue-router';
 import api from '../../api';
 import { useCompanyStore } from '../../store';
 import { formatToMonthDayYear } from "../../utils/helper";
+import CompanyForm from '../../components/CompanyForm/CompanyForm.vue';
 
 const route = useRoute();
 const loading = ref(true);
@@ -481,6 +489,25 @@ const error = ref(null);
 const companyDetails = ref(null);
 const legalDocsDetails = ref(null);
 const store = useCompanyStore();
+
+// For Company Modal
+
+const editingCompany = ref(null);
+const showModal = ref(false);
+
+// Open Modal for New Company
+const openCreateModal = () => {
+    console.log(store?.companyData?.company, "dsapdsa");
+    editingCompany.value = { ...store?.companyData?.company };
+    showModal.value = true;
+};
+
+// Handle Form Submission
+const handleSubmit = (company) => {
+    console.log(company, "company handle submit")
+    showModal.value = false;
+    editingCompany.value = null;
+};
 
 const getUserAddedBy = () => {
     return "Steve Smith" || "---";
@@ -539,8 +566,8 @@ const addAdmin = () => {
 
 const fetchCompanyDetailsById = async (id) => {
     try {
-        const response = await api.get("/superadmin/user/details/" + id, { 
-            headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } 
+        const response = await api.get("/superadmin/user/details/" + id, {
+            headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` }
         });
         store.setCompanyData(response.data?.data);
         const company = response?.data?.data?.company;
