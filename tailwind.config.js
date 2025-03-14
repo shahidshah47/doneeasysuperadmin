@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     mode: 'jit',
     content: [
         "./index.html",
@@ -7,8 +7,6 @@ export default {
     theme: {
         extend: {
             colors: {
-                current: "currentColor",
-                transparent: "transparent",
                 white: "#FFFFFF",
                 body: "#64748B",
                 primary: "#5925EB",

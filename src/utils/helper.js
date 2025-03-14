@@ -55,3 +55,25 @@ export const formatToMonthDayYear = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
+
+export const getUserAddedBy = (addedBy) => {
+    return addedBy || "Steve Smith" || "---";
+};
+
+export const getCompanyDetails = (company) => {
+    return [
+        { label: "Company ID", value: `ID ${company?.id}` },
+        { label: "No. of Employees", value: company?.company_size },
+        { label: "HQ Phone No.", value: company?.phone },
+        { label: "HQ Email", value: company?.email },
+        { label: "Joined Date", value: formatToMonthDayYear(company?.created_at) },
+        { label: "Added By", value: getUserAddedBy(company?.added_by) }
+    ];
+}
+
+export const getLegalDocsDetails = (user) => {
+    return [
+        { label: "Emirates ID", value: user?.emirates_id },
+        { label: "TRN", value: user?.trn }
+    ]
+}

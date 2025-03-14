@@ -480,7 +480,7 @@ import CompanyHeader from '../../components/CompanyHeader.vue';
 import { useRoute } from 'vue-router';
 import api from '../../api';
 import { useCompanyStore } from '../../store';
-import { formatToMonthDayYear } from "../../utils/helper";
+import { formatToMonthDayYear, getCompanyDetails, getLegalDocsDetails } from "../../utils/helper";
 import CompanyForm from '../../components/CompanyForm/CompanyForm.vue';
 
 const route = useRoute();
@@ -489,36 +489,37 @@ const error = ref(null);
 const companyDetails = ref(null);
 const legalDocsDetails = ref(null);
 const store = useCompanyStore();
-
-// For Company Modal
-
 const editingCompany = ref(null);
 const showModal = ref(false);
 
-// Open Modal for New Company
 const openCreateModal = () => {
-    console.log(store?.companyData?.company, "dsapdsa");
     editingCompany.value = { ...store?.companyData?.company };
     showModal.value = true;
 };
 
-// Handle Form Submission
-const handleSubmit = (company) => {
-    console.log(company, "company handle submit")
-    showModal.value = false;
-    editingCompany.value = null;
-};
-
-const getUserAddedBy = () => {
-    return "Steve Smith" || "---";
+const handleSubmit = async (company) => {
+    try {
+        const response = await api.post("/superadmin/company/details/" + store?.companyData?.user?.organization_id, {
+            company_name: company.name,
+            company_size: company.companySize,
+            phone: company.phone,
+            email: company.email
+        });
+        if (response.status === 200) {
+            companyDetails.value = getCompanyDetails(response?.data?.data);
+            showModal.value = false;
+            editingCompany.value = null;
+        }
+    } catch (err) {
+        console.error(err);
+        error.value = "Error fetching data";
+    } finally {
+        loading.value = false;
+    }
 };
 
 const getImagePath = (imageName) => {
     return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
-};
-
-const getJoinedDate = (date) => {
-    return formatToMonthDayYear(date) || "---";
 };
 
 const admin = ref({
@@ -566,24 +567,13 @@ const addAdmin = () => {
 
 const fetchCompanyDetailsById = async (id) => {
     try {
-        const response = await api.get("/superadmin/user/details/" + id, {
-            headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` }
-        });
-        store.setCompanyData(response.data?.data);
-        const company = response?.data?.data?.company;
-        const user = response?.data?.data?.user;
-        companyDetails.value = [
-            { label: "Company ID", value: `ID ${company?.id}` },
-            { label: "No. of Employees", value: company?.company_size },
-            { label: "HQ Phone No.", value: company?.phone },
-            { label: "HQ Email", value: company?.email },
-            { label: "Joined Date", value: getJoinedDate(company?.created_at) },
-            { label: "Added By", value: getUserAddedBy(company?.added_by) }
-        ];
-        legalDocsDetails.value = [
-            { label: "Emirates ID", value: user?.emirates_id },
-            { label: "TRN", value: user?.trn }
-        ];
+        const response = await api.get("/superadmin/user/details/" + id);
+        if (response.status === 200) {
+            store.setCompanyData(response.data?.data);
+            const user = response?.data?.data?.user;
+            companyDetails.value = getCompanyDetails(response?.data?.data?.company);
+            legalDocsDetails.value = getLegalDocsDetails(user);
+        }
     } catch (err) {
         error.value = "Error fetching data";
         console.error(err);

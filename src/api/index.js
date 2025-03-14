@@ -20,7 +20,7 @@ export const authApi = axios.create({
 api.interceptors.request.use(
   (config) => {
     // Add authentication token if needed
-    // config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+    config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
     return config;
   },
   (error) => Promise.reject(error)
