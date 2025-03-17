@@ -1,17 +1,21 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-export const useCompanyStore = defineStore('companyStore', {
-    state: () => ({
-        companies: JSON.parse(localStorage.getItem('companies')) || [],
-        companyData: null
-    }),
-    actions: {
-        setCompanies(data) {
-            this.companies = data;
-            localStorage.setItem('companies', JSON.stringify(data));
-        },
-        setCompanyData(data) {
-            this.companyData = data;
-        }
-    }
+export const useCompanyStore = defineStore("companyStore", {
+  state: () => ({
+    companies: JSON.parse(localStorage.getItem("companies")) || [],
+    companyId: "",
+    companyData: null,
+  }),
+  actions: {
+    setCompanies(data) {
+      this.companies = data;
+      localStorage.setItem("companies", JSON.stringify(data));
+    },
+    setCompanyData(data) {
+      this.companyData = data;
+    },
+    setCompanyId(id) {
+      this.companyId = id;
+    },
+  },
 });

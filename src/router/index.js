@@ -77,7 +77,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/appointment",
+        path: "/super-admin/company-details/:companyId/appointment",
         component: () => import("../pages/CompanyDetails/Appointment.vue"),
         meta: {
           breadcrumb: [
@@ -108,7 +108,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/site-survey",
+        path: "/super-admin/company-details/:companyId/site-survey",
         component: () => import("../pages/CompanyDetails/SiteSurvey.vue"),
         meta: {
           breadcrumb: [
@@ -139,7 +139,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/offers",
+        path: "/super-admin/company-details/:companyId/offers",
         component: () => import("../pages/CompanyDetails/Offers.vue"),
         meta: {
           breadcrumb: [
@@ -166,7 +166,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/employees",
+        path: "/super-admin/company-details/:companyId/employees",
         component: () => import("../pages/CompanyDetails/Employees.vue"),
         meta: {
           breadcrumb: [
@@ -269,7 +269,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/verticals",
+        path: "/super-admin/company-details/:companyId/verticals",
         component: () => import("../pages/CompanyDetails/Verticals.vue"),
         meta: {
           breadcrumb: [
@@ -300,7 +300,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/chat-history",
+        path: "/super-admin/company-details/:companyId/chat-history",
         component: () => import("../pages/CompanyDetails/ChatHistory.vue"),
         meta: {
           breadcrumb: [
@@ -313,7 +313,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/finance",
+        path: "/super-admin/company-details/:companyId/finance",
         component: () => import("../pages/CompanyDetails/Finance.vue"),
         meta: {
           breadcrumb: [
