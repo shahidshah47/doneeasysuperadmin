@@ -7,7 +7,7 @@ import { formatToMonthDayYear } from "../../utils/helper";
 
 const employees = ref(["1-10", "10-20", "20-50", "50-100", "100-500", "500+"]);
 const props = defineProps({
-    showModal: Boolean,
+    showCompanyModal: Boolean,
     companyData: Object,
     employees: Array,
     fieldIndex: Number,
@@ -20,7 +20,6 @@ const emit = defineEmits(["submit", "close"]);
 const schema = yup.object({
     name: yup.string().required("Company name is required"),
     email: yup.string().email("Invalid email").required("Email is required"),
-    phone: yup.string().matches(/^[0-9]{10}$/, "Phone must be 10 digits").required("Phone is required"),
 });
 
 const { 
@@ -58,7 +57,7 @@ watch(
             setFieldValue("name", newData?.company_name);
             setFieldValue("email", newData?.email);
             setFieldValue("phone", newData?.phone);
-            setFieldValue("addedBy", newData?.added_by || "John Smith");
+            setFieldValue("addedBy", newData?.added_by?.name || "John Smith");
             setFieldValue("joinedDate", formatToMonthDayYear(newData?.created_at));
             setFieldValue("companySize", newData?.company_size);
         }
@@ -82,15 +81,12 @@ const handleCompSizeSelect = (heading) => {
 
 <template>
     <!-- Modal Overlay -->
-    <div v-if="showModal"
+    <div v-if="showCompanyModal"
         class="z-[99999] left-0 right-0 bottom-0 top-0 overflow-auto backdrop-blur-[12px] bg-opacity-10 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div class="relative bg-white rounded-3xl overflow-hidden">
-            <div class="bg-gray-200 px-4 py-2 relative">
+            <div class="bg-gray-200 px-4 py-3 relative flex gap-2 justify-between items-center">
                 <h2 class="!text-lg !font-bold mb-0">{{ companyData ? "Edit Company" : "Create Company" }}</h2>
-                <button @click="emit('close')"
-                    class="absolute top-1/2 -translate-y-1/2 right-5 text-gray-600 hover:text-gray-900 !text-2xl leading-12">
-                    x
-                </button>
+                <button type="button" @click="emit('close')" class="btn-close"></button>
             </div>
 
             <form @submit.prevent="onSubmit">

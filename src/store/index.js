@@ -15,3 +15,14 @@ export const useCompanyStore = defineStore('companyStore', {
         }
     }
 });
+
+export const useUserStore = defineStore('userStore', {
+    state: () => ({
+        legDocDetails: null,
+    }),
+    actions: {
+        setLegDocDetails(data) {
+            this.legDocDetails = data;
+        }
+    }
+});

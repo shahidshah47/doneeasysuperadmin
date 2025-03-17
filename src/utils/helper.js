@@ -67,7 +67,7 @@ export const getCompanyDetails = (company) => {
         { label: "HQ Phone No.", value: company?.phone },
         { label: "HQ Email", value: company?.email },
         { label: "Joined Date", value: formatToMonthDayYear(company?.created_at) },
-        { label: "Added By", value: getUserAddedBy(company?.added_by) }
+        { label: "Added By", value: getUserAddedBy(company?.added_by?.name) }
     ];
 }
 

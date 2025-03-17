@@ -25,15 +25,15 @@
                 <div class="flex flex-col w-full gap-1">
                     <h5 class="fw-bold">Legal Documents Details</h5>
                     <div class="bg-white rounded-xl p-4 flex gap-4 flex-wrap relative">
-                        <div class="position-absolute top-0 end-0 me-2 mt-2 cursor-pointer" data-bs-toggle="modal"
-                            data-bs-target="#legalDocsModal">
+                        <!--  data-bs-toggle="modal" data-bs-target="#legalDocsModal" -->
+                        <div class="position-absolute top-0 end-0 me-2 mt-2 cursor-pointer" @click="openLegDocModal()">
                             <i class="fa-solid fa-pen text-primary text-decoration-underline"></i>
                         </div>
                         <div v-for="(legalDoc, index) in legalDocsDetails" class="flex-1/3">
                             <p class="theme-label">{{ legalDoc?.label }}</p>
                             <p class="font-theme-bold m-0">{{ legalDoc?.value || "---" }}</p>
                         </div>
-                        <div v-for="(trade, index) in store.companyData?.user?.trade_licenses" :key="index"
+                        <div v-for="(trade, index) in companyStore.companyData?.user?.trade_licenses" :key="index"
                             class="flex-1/3">
                             <p class="theme-label">Trade License No. {{ trade.id }}</p>
                             <p class="font-theme-bold m-0">{{ trade?.license_number }}</p>
@@ -64,7 +64,7 @@
                         data-bs-target="#addAdminModal">+ Add New</a>
                 </div>
                 <div class="bg-white p-4 rounded-xl flex flex-col gap-3 min-h-[10rem] max-h-[20rem] overflow-auto">
-                    <div v-for="(user, index) in store?.companyData?.company?.users"
+                    <div v-for="(user, index) in companyStore?.companyData?.company?.users"
                         class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
                         <p class="theme-label">Role - Admin</p>
                         <div class="inline-flex gap-1 flex-col">
@@ -88,7 +88,7 @@
                     <a href="#" class="text-primary text-sm text-decoration-none">+ Add New</a>
                 </div>
                 <div class="bg-white p-4 rounded-xl flex flex-col gap-3">
-                    <div v-for="(address, index) in store?.companyData?.company?.addresses"
+                    <div v-for="(address, index) in companyStore?.companyData?.company?.addresses"
                         class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
                         <div class="inline-flex gap-1 flex-col">
                             <p class="theme-label">Main Office</p>
@@ -109,160 +109,6 @@
             <button class="btn btn-outline-primary px-4">Delete</button>
             <button class="btn btn-outline-primary px-4">Organization Mode</button>
             <button class="btn btn-outline-primary px-4">Share Profile</button>
-        </div>
-    </div>
-
-    <div class="modal fade" id="legalDocsModal" tabindex="-1" aria-labelledby="legalDocsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="legalDocsModalLabel">Legal Documents Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <!-- Tabs for sections -->
-                    <ul class="nav nav-pills mb-3 gap-3" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-license1-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-license1" type="button" role="tab" aria-controls="pills-license1"
-                                aria-selected="true">Trade License 1</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-license2-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-license2" type="button" role="tab" aria-controls="pills-license2"
-                                aria-selected="false">Trade License 2</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-emiratesid-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-emiratesid" type="button" role="tab"
-                                aria-controls="pills-emiratesid" aria-selected="false">Emirates ID</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-trn-tab" data-bs-toggle="pill"
-                                data-bs-target="#pills-trn" type="button" role="tab" aria-controls="pills-trn"
-                                aria-selected="false">TRN</button>
-                        </li>
-                    </ul>
-
-                    <!-- Tab content -->
-                    <div class="tab-content" id="pills-tabContent">
-                        <!-- License 1 Content -->
-                        <div class="tab-pane fade show active" id="pills-license1" role="tabpanel"
-                            aria-labelledby="pills-license1-tab">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label for="licenseNo" class="form-label">License No</label>
-                                    <input type="text" class="form-control" id="licenseNo" value="DMCC-070547"
-                                        placeholder="please enter license number ">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="address" class="form-label">Address</label>
-                                    <input type="text" class="form-control" id="address"
-                                        value="Bur Dubai Dubai Investments Park 1"
-                                        placeholder="please enter complete address">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="legalForm" class="form-label">Legal Form</label>
-                                    <input type="text" class="form-control" id="legalForm"
-                                        value="شركة ذات مسؤولية محدودة" placeholder="please enter your legal form">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label for="cbisNo" class="form-label">Cbls No.</label>
-                                    <input type="text" class="form-control" id="cbisNo" value="11457714"
-                                        placeholder="please enter Cbls No.">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="expiryDate" class="form-label">Expiry Date</label>
-                                    <input type="text" class="form-control" id="expiryDate" value="2024-09-14"
-                                        placeholder="please enter Expiry Date">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="phoneNo" class="form-label">Phone No</label>
-                                    <input type="text" class="form-control" id="phoneNo" value="+973 375412"
-                                        placeholder="please enter Phone No">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label for="licenseStatus" class="form-label">License Status</label>
-                                    <input type="text" class="form-control" id="licenseStatus" value="فعال"
-                                        placeholder="Please enter License Status">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="establishmentDate" class="form-label">Establishment Date</label>
-                                    <input type="text" class="form-control" id="establishmentDate" value="2015-09-15"
-                                        placeholder="please enter Establishment Date">
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="licenseAuthority" class="form-label">License Authority</label>
-                                    <input type="text" class="form-control" id="licenseAuthority"
-                                        value="مركز في السلعة المتحدة	" placeholder="please enter License Authority">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="activityArabic" class="form-label">Activity Name Arabic</label>
-                                    <input type="text" class="form-control" id="activityArabic"
-                                        value="Delivery Services">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="businessArabic" class="form-label">Business Name Arabic</label>
-                                    <input type="text" class="form-control" id="businessArabic"
-                                        value="إنستاشوب دي إم سي سي">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="businessName" class="form-label">Business Name</label>
-                                    <input type="text" class="form-control" id="businessName" value="INSTASHOP DMCC">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="businessZone" class="form-label">Business Zone</label>
-                                    <select class="form-select" id="businessZone">
-                                        <option value="1" selected>Dubai</option>
-                                        <option value="2">Saudi Arabia</option>
-                                        <option value="3">Abu Dhabi</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="activity" class="form-label">Activity</label>
-                                <textarea class="form-control" id="activity"
-                                    rows="2">Software House, Computer Systems Consultancies, Web-Design, Internet Content Provider (DMCC), Delivery</textarea>
-                            </div>
-                        </div>
-
-                        <!-- Add content for other tabs as necessary -->
-                        <div class="tab-pane fade" id="pills-license2" role="tabpanel"
-                            aria-labelledby="pills-license2-tab">
-                            <!-- Add your fields for Trade License 2 here -->
-                        </div>
-
-                        <div class="tab-pane fade" id="pills-emiratesid" role="tabpanel"
-                            aria-labelledby="pills-emiratesid-tab">
-                            <!-- Add your fields for Emirates ID here -->
-                        </div>
-
-                        <div class="tab-pane fade" id="pills-trn" role="tabpanel" aria-labelledby="pills-trn-tab">
-                            <!-- Add your fields for TRN here -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary"
-                        style="text-transform: none !important;">Commit</button>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -471,7 +317,8 @@
 
     
     <!-- Modal Component -->
-    <CompanyForm :showModal="showModal" :companyData="editingCompany" @submit="handleSubmit" @close="showModal = false" />
+    <CompanyForm :showCompanyModal="showCompanyModal" :companyData="editingCompany" @submit="handleCompanySubmit" @close="closeModal" />
+    <LegalDocDetailsForm :showLegDocModal="showLegDocModal" @submit="handleLegDocSubmit" @close="closeModal" />
 </template>
 
 <script setup>
@@ -479,27 +326,57 @@ import { onMounted, ref } from 'vue';
 import CompanyHeader from '../../components/CompanyHeader.vue';
 import { useRoute } from 'vue-router';
 import api from '../../api';
-import { useCompanyStore } from '../../store';
+import { useCompanyStore, useUserStore } from '../../store';
 import { formatToMonthDayYear, getCompanyDetails, getLegalDocsDetails } from "../../utils/helper";
 import CompanyForm from '../../components/CompanyForm/CompanyForm.vue';
+import LegalDocDetailsForm from '../../components/LegalDocDetailsForm/LegalDocDetailsForm.vue';
 
 const route = useRoute();
 const loading = ref(true);
 const error = ref(null);
 const companyDetails = ref(null);
 const legalDocsDetails = ref(null);
-const store = useCompanyStore();
+const companyStore = useCompanyStore();
+const userStore = useUserStore();
 const editingCompany = ref(null);
-const showModal = ref(false);
+const showCompanyModal = ref(false);
+const showLegDocModal = ref(false);
 
 const openCreateModal = () => {
-    editingCompany.value = { ...store?.companyData?.company };
-    showModal.value = true;
+    editingCompany.value = { ...companyStore?.companyData?.company };
+    showCompanyModal.value = true;
+    document.body.classList.add("overflow-hidden");
 };
 
-const handleSubmit = async (company) => {
+const closeModal = () => {
+    showCompanyModal.value = false;
+    showLegDocModal.value = false;
+    document.body.classList.remove("overflow-hidden");
+}
+
+const openLegDocModal = () => {
+    handleFetchLegDocDetails();
+    document.body.classList.add("overflow-hidden");
+};
+
+const handleFetchLegDocDetails = async () => {
     try {
-        const response = await api.post("/superadmin/company/details/" + store?.companyData?.user?.organization_id, {
+        const response = await api.get("/superadmin/user/docs/" + route.params.companyId);
+        if (response.status === 200) {
+            userStore.setLegDocDetails(response?.data?.data);
+            showLegDocModal.value = true;
+        }
+    } catch (err) {
+        console.error(err);
+        error.value = "Error fetching data";
+    } finally {
+        loading.value = false;
+    }
+}
+
+const handleCompanySubmit = async (company) => {
+    try {
+        const response = await api.post("/superadmin/company/details/" + companyStore?.companyData?.user?.organization_id, {
             company_name: company.name,
             company_size: company.companySize,
             phone: company.phone,
@@ -507,7 +384,7 @@ const handleSubmit = async (company) => {
         });
         if (response.status === 200) {
             companyDetails.value = getCompanyDetails(response?.data?.data);
-            showModal.value = false;
+            showCompanyModal.value = false;
             editingCompany.value = null;
         }
     } catch (err) {
@@ -569,7 +446,7 @@ const fetchCompanyDetailsById = async (id) => {
     try {
         const response = await api.get("/superadmin/user/details/" + id);
         if (response.status === 200) {
-            store.setCompanyData(response.data?.data);
+            companyStore.setCompanyData(response.data?.data);
             const user = response?.data?.data?.user;
             companyDetails.value = getCompanyDetails(response?.data?.data?.company);
             legalDocsDetails.value = getLegalDocsDetails(user);
@@ -580,6 +457,10 @@ const fetchCompanyDetailsById = async (id) => {
     } finally {
         loading.value = false;
     }
+};
+
+const handleLegDocSubmit = async (values) => {
+    console.log(values, "values");
 };
 
 onMounted(() => {
