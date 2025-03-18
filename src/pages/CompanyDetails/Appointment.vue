@@ -1,238 +1,144 @@
 <template>
-    <div class="container-fluid company-details">
-        <div class="row">
-            <!-- Company Info and Stats -->
-            <CompanyHeader />
-        </div>
-        <div class="p-3 mb-1 bg-white rounded-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex gap-3">
-                    <button class="btn btn-primary rounded-3 px-3 py-2">All</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2">Approved</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2">Pending</button>
-                </div>
-                <div class="d-flex gap-3">
-                    <div class="d-flex align-items-center text-center position-relative">
-                        <input type="text" class="form-control border-0 py-2 px-3"
-                            style="background-color: #F2F4FB; width: 350px;" placeholder="Search">
-                        <i class="fas fa-search position-absolute end-0 me-3"></i>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-light bg-white border-0">
-                            Filters by <i class="fas fa-filter"></i>
-                        </button>
-                        <span class="border-start mx-2" style="height: 24px;"></span>
-                        <button class="btn btn-light bg-white border-0">
-                            Columns <i class="fas fa-columns"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="table-responsive">
-                <table class="table align-middle mt-5">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>ID</th>
-                            <th>Organization <br> Name</th>
-                            <th>Title & Description</th>
-                            <th>Vertical</th>
-                            <th>Order Type</th>
-                            <th>Expected <br> Delivery Date & Time</th>
-                            <th>Payment</th>
-                            <th>Order Amount</th>
-                            <th>Payment State</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="text-center ">
-                            <td><input type="checkbox" class="form-check-input"></td>
-                            <td>98374861</td>
-                            <td>
-                                <img src="../../assets/images2/Avatar (1).png" />
-                                Acme Co.
-                            </td>
-                            <td>
-                                Need business consultant for my startup
-                            </td>
-                            <td>
-                                <img src="../../assets/images2/vertical_img.png" alt="" />
-                                Event <br> Management
-                            </td>
-                            <td>One-Time</td>
-                            <td>2020-05-17, 10:00 AM</td>
-                            <td>
-                                <span class="badge bg-success-subtle text-success">Half Done</span>
-                            </td>
-                            <td><span class="small-font text-primary">AED</span>32,100</td>
-                            <td><span class="badge bg-success-subtle text-success">In Progress</span></td>
-                            <td class="d-flex gap-1 py-4">
-                                <a href="/super-admin/company-details/appointment/details"
-                                    class="text-reset text-decoration-none">
-                                    <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                        <i class="fa fa-eye text-primary"></i>
-                                    </div>
-                                </a>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-trash text-primary"></i>
-                                </div>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-share text-primary"></i>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="text-center ">
-                            <td><input type="checkbox" class="form-check-input"></td>
-                            <td>98374861</td>
-                            <td>
-                                <img src="../../assets/images2/Avatar (1).png" />
-                                Acme Co.
-                            </td>
-                            <td>
-                                Need business consultant for my startup
-                            </td>
-                            <td>
-                                <img src="../../assets/images2/vertical_img.png" alt="" />
-                                Event <br> Management
-                            </td>
-                            <td>One-Time</td>
-                            <td>2020-05-17, 10:00 AM</td>
-                            <td>
-                                <span class="badge bg-danger-subtle text-danger">Pending</span>
-                            </td>
-                            <td><span class="small-font text-primary">AED</span>32,100</td>
-                            <td><span class="badge bg-success-subtle text-success">In Progress</span></td>
-                            <td class="d-flex gap-1 py-4">
-                                <a href="/super-admin/company-details/appointment/details"
-                                    class="text-reset text-decoration-none">
-                                    <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                        <i class="fa fa-eye text-primary"></i>
-                                    </div>
-                                </a>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-trash text-primary"></i>
-                                </div>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-share text-primary"></i>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="text-center ">
-                            <td><input type="checkbox" class="form-check-input"></td>
-                            <td>98374861</td>
-                            <td>
-                                <img src="../../assets/images2/Avatar (1).png" />
-                                Acme Co.
-                            </td>
-                            <td>
-                                Need business consultant for my startup
-                            </td>
-                            <td>
-                                <img src="../../assets/images2/vertical_img.png" alt="" />
-                                Event <br> Management
-                            </td>
-                            <td>One-Time</td>
-                            <td>2020-05-17, 10:00 AM</td>
-                            <td>
-                                <span class="badge bg-success-subtle text-success">Half Done</span>
-                            </td>
-                            <td><span class="small-font text-primary">AED</span>32,100</td>
-                            <td><span class="badge bg-success-subtle text-success">In Progress</span></td>
-                            <td class="d-flex gap-1 py-4">
-                                <a href="/super-admin/company-details/appointment/details"
-                                    class="text-reset text-decoration-none">
-                                    <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                        <i class="fa fa-eye text-primary"></i>
-                                    </div>
-                                </a>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-trash text-primary"></i>
-                                </div>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-share text-primary"></i>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="text-center ">
-                            <td><input type="checkbox" class="form-check-input"></td>
-                            <td>98374861</td>
-                            <td>
-                                <img src="../../assets/images2/Avatar (1).png" />
-                                Acme Co.
-                            </td>
-                            <td>
-                                Need business consultant for my startup
-                            </td>
-                            <td>
-                                <img src="../../assets/images2/vertical_img.png" alt="" />
-                                Event <br> Management
-                            </td>
-                            <td>One-Time</td>
-                            <td>2020-05-17, 10:00 AM</td>
-                            <td>
-                                <span class="badge bg-success-subtle text-success">Half Done</span>
-                            </td>
-                            <td><span class="small-font text-primary">AED</span>32,100</td>
-                            <td><span class="badge bg-warning-subtle text-warning">Waiting</span></td>
-                            <td class="d-flex gap-1 py-4">
-                                <a href="/super-admin/company-details/appointment/details"
-                                    class="text-reset text-decoration-none">
-                                    <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                        <i class="fa fa-eye text-primary"></i>
-                                    </div>
-                                </a>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-trash text-primary"></i>
-                                </div>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-share text-primary"></i>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="text-center ">
-                            <td><input type="checkbox" class="form-check-input"></td>
-                            <td>98374861</td>
-                            <td>
-                                <img src="../../assets/images2/Avatar (1).png" />
-                                Acme Co.
-                            </td>
-                            <td>
-                                Need business consultant for my startup
-                            </td>
-                            <td>
-                                <img src="../../assets/images2/vertical_img.png" alt="" />
-                                Event <br> Management
-                            </td>
-                            <td>One-Time</td>
-                            <td>2020-05-17, 10:00 AM</td>
-                            <td>
-                                <span class="badge bg-success-subtle text-success">Half Done</span>
-                            </td>
-                            <td><span class="small-font text-primary">AED</span>32,100</td>
-                            <td><span class="badge bg-danger-subtle text-danger">Cancelled</span></td>
-                            <td class="d-flex gap-1 py-4">
-                                <a href="/super-admin/company-details/appointment/details"
-                                    class="text-reset text-decoration-none">
-                                    <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                        <i class="fa fa-eye text-primary"></i>
-                                    </div>
-                                </a>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-trash text-primary"></i>
-                                </div>
-                                <div class="p-2 border border-1 border-primary rounded-3 d-flex align-items-center">
-                                    <i class="fa fa-share text-primary"></i>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+  <div class="container-fluid company-details">
+    <div class="row">
+      <!-- Company Info and Stats -->
+      <CompanyHeader />
     </div>
+    <div class="p-3 mb-1 bg-white rounded-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <FilterButtons
+          :filters="['All', 'In Progress', 'Schedule', 'Completed']"
+          v-model:activeFilter="selectedFilter"
+        />
+        <div class="d-flex gap-3">
+          <SearchInput v-model="searchTerm" placeholder="Search" />
+
+          <div class="d-flex align-items-center">
+            <FilterAction />
+            <span
+              class="w-0.5 bg-lavender-gray mx-2"
+              style="height: 24px"
+            ></span>
+            <ColumnAction />
+          </div>
+        </div>
+      </div>
+      <DataTable :columns="columns" :data="tableData" :actions="actions" />
+    </div>
+  </div>
 </template>
 
 <script setup>
-import CompanyHeader from '../../components/CompanyHeader.vue';
+import { ref } from "vue";
+import CompanyHeader from "../../components/CompanyHeader.vue";
+
+const getImagePath = (imageName) => {
+  return new URL(`../../assets/image/icons/${imageName}`, import.meta.url).href;
+};
+
+const columns = [
+  { key: "id", label: "ID" },
+  { key: "organization", label: "Organization Name" },
+  { key: "description", label: "Title & Description" },
+  { key: "vertical", label: "Vertical" },
+  { key: "orderType", label: "Order Type" },
+  { key: "expectedDelivery", label: "Expected Delivery Date & Time" },
+  { key: "payment", label: "Payment" },
+  { key: "orderAmount", label: "Order Amount" },
+  { key: "paymentState", label: "Payment State" },
+];
+
+const tableData = [
+  {
+    id: 98374861,
+    org_image: "../../../assets/images2/Avatar (1).png",
+    vertical_image: "../assets/images2/vertical_img.png",
+    organization: "Acme Co.",
+    description: "Need business consultant for my startup",
+    vertical: "Event Management",
+    orderType: "One-Time",
+    expectedDelivery: "2020-05-17, 10:00 AM",
+    payment: "Half Done",
+    orderAmount: "AED 32,100",
+    paymentState: "Cancelled",
+  },
+  {
+    id: 93827462,
+    organization: "Beta Corp.",
+    description: "Marketing Strategy Development",
+    vertical: "Marketing",
+    orderType: "Subscription",
+    expectedDelivery: "2024-07-15, 02:00 PM",
+    payment: "Completed",
+    orderAmount: "AED 50,000",
+    paymentState: "Paid",
+  },
+];
+
+const actions = [
+  {
+    icon: "eye.svg",
+    action: (item) => console.log("View", item),
+  },
+  {
+    icon: "trash.svg",
+    action: (item) => console.log("Delete", item),
+  },
+  {
+    icon: "share.svg",
+    action: (item) => console.log("Share", item),
+  },
+];
+</script>
+
+<script>
+import FilterButtons from "../../components/common/FilterButtons/FilterButtons.vue";
+import SearchInput from "../../components/common/SearchInput/SearchInput.vue";
+import FilterAction from "../../components/common/FilterAction/FilterAction.vue";
+import ColumnAction from "../../components/common/ColumnAction/ColumnAction.vue";
+import DataTable from "../../components/common/DataTable/DataTable.vue";
+
+export default {
+  components: {
+    FilterButtons,
+    SearchInput,
+    FilterAction,
+    ColumnAction,
+    DataTable,
+  },
+  data() {
+    return {
+      searchTerm: "",
+      selectedFilter: "All",
+      items: [
+        {
+          id: 1,
+          organization: "Acme Co.",
+          description: "Business Consulting",
+          status: "In Progress",
+        },
+        {
+          id: 2,
+          organization: "Beta Corp.",
+          description: "Marketing Strategy",
+          status: "Schedule",
+        },
+        {
+          id: 3,
+          organization: "Gamma Ltd.",
+          description: "Tech Consulting",
+          status: "Completed",
+        },
+      ],
+    };
+  },
+  computed: {
+    filteredItems() {
+      if (this.selectedFilter === "All") {
+        return this.items;
+      }
+      return this.items.filter((item) => item.status === this.selectedFilter);
+    },
+  },
+};
 </script>

@@ -26,62 +26,120 @@ div {
   font-family: Averta, sans-serif !important;
 }
 
-:root {
-  --color-primary: #5825EB;
-  --color-body: #64748B;
-  --color-primary: #5925EB;
-  --color-graydark: #333A48;
-  --color-whiten: #F1F5F9;
-  --color-whiter: #F5F7FD;
+@theme {
+  --color-white: #ffffff;
+  --color-body: #64748b;
+  --color-primary: #5925eb;
+  --color-graydark: #333a48;
+  --color-whiten: #f1f5f9;
+  --color-whiter: #f5f7fd;
   --color-grayColor: #868599;
-  --color-grayColor2: #82899B;
-  --color-dm-blue: #0E0D35;
-  --color-vivid-purple: #5825EB;
-  --color-teal: #38E0B2;
+  --color-grayColor2: #82899b;
+  --color-dm-blue: #0e0d35;
+  --color-vivid-purple: #5825eb;
+  --color-teal: #38e0b2;
   --color-ds-blue: #575672;
-  --color-soft-lilac: #EDE8FD;
-  --color-light-lilac: #F2F4FB;
+  --color-soft-lilac: #ede8fd;
+  --color-light-lilac: #f2f4fb;
   --color-dl-gray: #868599;
-  --color-light-purple: #7871F7;
-  --color-lavender: #E7E7EB;
-  --color-grayish-purple: #6E6E86;
-  --color-lavender-gray: #CFCFD7;
+  --color-light-purple: #7871f7;
+  --color-lavender: #e7e7eb;
+  --color-grayish-purple: #6e6e86;
+  --color-lavender-gray: #cfcfd7;
   --color-rich-navy: #051547;
-  --color-lavender-gray-2: #B7B7C3;
-  --color-gray-blue-100: #9F9EAE;
-  --color-barely-peach: #FFE9C7;
-  --color-pale-pink-100: #FFD7D7;
-  --color-seafair-green: #AEF7D3;
-  --color-py-green: #F1F7AE;
-  --color-lavender-mist: #;
-  --color-gray-100: #F1F6FF;
-  --color-warning-50: #DC8B13;
-  --color-danger-50: #FB1E1E;
-  --color-green-200: #D6FFEF;
-  --color-white-500: #FCFDFFB2;
-  --color-white-100: #FCFDFF;
-  --color-blue-200: #CCDDFF;
-  --color-file-extension: #00C650;
+  --color-lavender-gray-2: #b7b7c3;
+  --color-gray-blue-100: #9f9eae;
+  --color-barely-peach: #ffe9c7;
+  --color-pale-pink-100: #ffd7d7;
+  --color-seafair-green: #aef7d3;
+  --color-py-green: #f1f7ae;
+  --color-gray-100: #f1f6ff;
+  --color-warning-50: #dc8b13;
+  --color-danger-50: #fb1e1e;
+  --color-green-200: #d6ffef;
+  --color-white-500: #fcfdffb2;
+  --color-white-100: #fcfdff;
+  --color-blue-200: #ccddff;
+  --color-file-extension: #00c650;
   --color-light-orange: #ff5555;
-  --color-dark-indigo-100: #3E3D5D;
-  --color-accent-green: #00995C;
-  --color-blush-100: #FFE5E5;
-  --color-chat-green: #39F7AC;
-  --color-profile-indicator: #079E62;
-  --color-info-warning: #FCEED9;
-  --color-peach-100: #FCEED9;
-  --color-lightBlue: #EBF3FA;
-  --color-failedColor: #FF5555;
-  --color-neutral-gray: #D9D9D9;
-  --color-silver-lining: #EEF2F7;
-  --color-bg-pdf-color: #FF3E4C;
-  --color-vibrant-Purple: #A321EE;
-  --color-light-blue: #EAF1F8;
-  --color-deep-indigo: #27264A;
-  --color-blue-gray: #2B3F5A;
-  --color-slate-700: #5D6F7D;
-  --color-electric-indigo: #2B20E8;
-  --color-blue-700: #005FAD;
+  --color-dark-indigo-100: #3e3d5d;
+  --color-accent-green: #00995c;
+  --color-blush-100: #ffe5e5;
+  --color-chat-green: #39f7ac;
+  --color-profile-indicator: #079e62;
+  --color-info-warning: #fceed9;
+  --color-peach-100: #fceed9;
+  --color-lightBlue: #ebf3fa;
+  --color-failedColor: #ff5555;
+  --color-neutral-gray: #d9d9d9;
+  --color-silver-lining: #eef2f7;
+  --color-bg-pdf-color: #ff3e4c;
+  --color-vibrant-purple: #a321ee;
+  --color-light-blue: #eaf1f8;
+  --color-deep-indigo: #27264a;
+  --color-blue-gray: #2b3f5a;
+  --color-slate-700: #5d6f7d;
+  --color-electric-indigo: #2b20e8;
+  --color-blue-700: #005fad;
+}
+
+:root {
+  --color-primary: #5825eb;
+  --color-body: #64748b;
+  --color-primary: #5925eb;
+  --color-graydark: #333a48;
+  --color-whiten: #f1f5f9;
+  --color-whiter: #f5f7fd;
+  --color-grayColor: #868599;
+  --color-grayColor2: #82899b;
+  --color-dm-blue: #0e0d35;
+  --color-vivid-purple: #5825eb;
+  --color-teal: #38e0b2;
+  --color-ds-blue: #575672;
+  --color-soft-lilac: #ede8fd;
+  --color-light-lilac: #f2f4fb;
+  --color-dl-gray: #868599;
+  --color-light-purple: #7871f7;
+  --color-lavender: #e7e7eb;
+  --color-grayish-purple: #6e6e86;
+  --color-lavender-gray: #cfcfd7;
+  --color-rich-navy: #051547;
+  --color-lavender-gray-2: #b7b7c3;
+  --color-gray-blue-100: #9f9eae;
+  --color-barely-peach: #ffe9c7;
+  --color-pale-pink-100: #ffd7d7;
+  --color-seafair-green: #aef7d3;
+  --color-py-green: #f1f7ae;
+  --color-lavender-mist: #;
+  --color-gray-100: #f1f6ff;
+  --color-warning-50: #dc8b13;
+  --color-danger-50: #fb1e1e;
+  --color-green-200: #d6ffef;
+  --color-white-500: #fcfdffb2;
+  --color-white-100: #fcfdff;
+  --color-blue-200: #ccddff;
+  --color-file-extension: #00c650;
+  --color-light-orange: #ff5555;
+  --color-dark-indigo-100: #3e3d5d;
+  --color-accent-green: #00995c;
+  --color-blush-100: #ffe5e5;
+  --color-chat-green: #39f7ac;
+  --color-profile-indicator: #079e62;
+  --color-info-warning: #fceed9;
+  --color-peach-100: #fceed9;
+  --color-lightBlue: #ebf3fa;
+  --color-failedColor: #ff5555;
+  --color-neutral-gray: #d9d9d9;
+  --color-silver-lining: #eef2f7;
+  --color-bg-pdf-color: #ff3e4c;
+  --color-vibrant-Purple: #a321ee;
+  --color-light-blue: #eaf1f8;
+  --color-deep-indigo: #27264a;
+  --color-blue-gray: #2b3f5a;
+  --color-slate-700: #5d6f7d;
+  --color-electric-indigo: #2b20e8;
+  --color-blue-700: #005fad;
+  --spacing-percentage-120: 120%;
 }
 
 body {
@@ -222,7 +280,8 @@ select {
   font-size: 12px !important;
 }
 
-#example_wrapper .dt-length, #example_wrapper .dt-info {
+#example_wrapper .dt-length,
+#example_wrapper .dt-info {
   display: none;
 }
 #example_wrapper .top {
@@ -240,17 +299,15 @@ select {
   justify-content: center;
 }
 
-#example_wrapper .pagination .dt-paging-button button { 
-  background: transparent !important; 
-  border: none !important; 
+#example_wrapper .pagination .dt-paging-button button {
+  background: transparent !important;
+  border: none !important;
 }
-#example_wrapper .pagination .dt-paging-button.page-item.active button { 
-  background: #5825eb !important; 
-  padding-left: 16px !important; 
-  padding-right: 16px !important; 
+#example_wrapper .pagination .dt-paging-button.page-item.active button {
+  background: #5825eb !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
   border-radius: 10px !important;
 }
 #example_wrapper .pagination .dt-paging-button.page-item.disabled button {
-
 }
-
