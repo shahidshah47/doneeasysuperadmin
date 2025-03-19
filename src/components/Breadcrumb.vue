@@ -1,59 +1,81 @@
 <template>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb font-theme-bold">
-            <li class="breadcrumb-item">
-                <router-link to="/" class="text-dark"><i class="fas fa-home"></i></router-link>
-            </li>
-            <li v-for="(crumb, index) in crumbs" :key="index" class="breadcrumb-item"
-                :class="{ 'active': index === crumbs.length - 1 }" aria-current="page">
-                <router-link v-if="index !== crumbs.length - 1" :to="crumb.link" class="text-dark text-decoration-none font-theme-bold">
-                    {{ crumb.label }}
-                </router-link>
-                <span v-else class="font-theme-bold">{{ crumb.label }}</span>
-            </li>
-        </ol>
-    </nav>
+  <nav aria-label="breadcrumb">
+    <ol
+      class="custom-breadcrumb font-theme-bold flex items-center gap-4 !text-base"
+    >
+      <li class="custom-breadcrumb-item">
+        <router-link to="/" class="custom-text-dark">
+          <i class="fas fa-home"></i>
+        </router-link>
+      </li>
+      <li
+        v-for="(crumb, index) in crumbs"
+        :key="index"
+        class="custom-breadcrumb-item"
+        :class="{ active: index === crumbs.length - 1 }"
+        aria-current="page"
+      >
+        <img
+          v-if="index !== 0"
+          src="../assets/image/icons/chevron-right.svg"
+          alt="separator"
+          class="custom-breadcrumb-separator"
+        />
+        <router-link
+          v-if="index !== crumbs.length - 1"
+          :to="crumb.link"
+          class="custom-text-dark text-decoration-none font-theme-bold"
+        >
+          {{ crumb.label }}
+        </router-link>
+        <span v-else class="font-theme-bold ml-4">{{ crumb.label }}</span>
+      </li>
+    </ol>
+  </nav>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 
-// Extract breadcrumbs from route meta or prop
 const route = useRoute();
-const crumbs = computed(() => {
-    return route.meta.breadcrumb || [];
-});
+const crumbs = computed(() => route.meta.breadcrumb || []);
 </script>
 
 <style scoped>
-.breadcrumb {
-    background-color: transparent;
-    padding: 0;
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
+.custom-breadcrumb {
+  background-color: transparent;
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
 }
 
-.breadcrumb-item+.breadcrumb-item::before {
-    content: ">";
-    color: #495057;
-    padding: 0 5px;
+.custom-breadcrumb-item {
+  display: flex;
+  align-items: center;
 }
 
-.breadcrumb-item.active {
-    font-weight: 600;
-    color: #495057;
+.custom-breadcrumb-separator {
+  width: 20px;
+  height: auto;
 }
 
-.text-dark {
-    color: #1f2937 !important;
+.custom-breadcrumb-item.active {
+  font-weight: 600;
+  color: #0e0d35;
 }
 
-.text-dark:hover {
-    text-decoration: none;
+.custom-text-dark {
+  color: #0e0d35 !important;
 }
 
-.breadcrumb i {
-    font-size: 0.9rem;
+.custom-text-dark:hover {
+  text-decoration: none;
+}
+
+.custom-breadcrumb i {
+  font-size: 0.9rem;
 }
 </style>
