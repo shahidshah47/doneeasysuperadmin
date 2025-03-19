@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <DataTable :columns="columns" :data="tableData" :actions="actions" />
+      <DataTable />
     </div>
   </div>
 </template>
@@ -31,64 +31,6 @@
 <script setup>
 import { ref } from "vue";
 import CompanyHeader from "../../components/CompanyHeader.vue";
-
-const getImagePath = (imageName) => {
-  return new URL(`../../assets/image/icons/${imageName}`, import.meta.url).href;
-};
-
-const columns = [
-  { key: "id", label: "ID" },
-  { key: "organization", label: "Organization Name" },
-  { key: "description", label: "Title & Description" },
-  { key: "vertical", label: "Vertical" },
-  { key: "orderType", label: "Order Type" },
-  { key: "expectedDelivery", label: "Expected Delivery Date & Time" },
-  { key: "payment", label: "Payment" },
-  { key: "orderAmount", label: "Order Amount" },
-  { key: "paymentState", label: "Payment State" },
-];
-
-const tableData = [
-  {
-    id: 98374861,
-    org_image: "../../../assets/images2/Avatar (1).png",
-    vertical_image: "../assets/images2/vertical_img.png",
-    organization: "Acme Co.",
-    description: "Need business consultant for my startup",
-    vertical: "Event Management",
-    orderType: "One-Time",
-    expectedDelivery: "2020-05-17, 10:00 AM",
-    payment: "Half Done",
-    orderAmount: "AED 32,100",
-    paymentState: "Cancelled",
-  },
-  {
-    id: 93827462,
-    organization: "Beta Corp.",
-    description: "Marketing Strategy Development",
-    vertical: "Marketing",
-    orderType: "Subscription",
-    expectedDelivery: "2024-07-15, 02:00 PM",
-    payment: "Completed",
-    orderAmount: "AED 50,000",
-    paymentState: "Paid",
-  },
-];
-
-const actions = [
-  {
-    icon: "eye.svg",
-    action: (item) => console.log("View", item),
-  },
-  {
-    icon: "trash.svg",
-    action: (item) => console.log("Delete", item),
-  },
-  {
-    icon: "share.svg",
-    action: (item) => console.log("Share", item),
-  },
-];
 </script>
 
 <script>
