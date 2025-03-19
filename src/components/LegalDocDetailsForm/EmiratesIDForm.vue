@@ -5,6 +5,10 @@ import { watch, defineProps, defineEmits, ref } from "vue";
 
 const emit = defineEmits(["submit", "close"]);
 
+const props = defineProps({
+    emiratesData: Object
+})
+
 // ✅ Define validation schema
 const schema = yup.object({
     client_id: yup.string().required("Company ID is required"),
@@ -33,37 +37,38 @@ const [nationality, nationalityAttrs] = defineField('nationality');
 const [dob, dobAttrs] = defineField('dob');
 
 // ✅ Watch for changes in props.companyData and update form
-// watch(
-//     () => props.companyData,
-//     (newData) => {
-//         if (newData) {
-//             setFieldValue("companyId", `ID: ${newData?.id}`);
-//             setFieldValue("name", newData?.company_name);
-//             setFieldValue("email", newData?.email);
-//             setFieldValue("phone", newData?.phone);
-//             setFieldValue("addedBy", newData?.added_by?.name || "John Smith");
-//             setFieldValue("joinedDate", formatToMonthDayYear(newData?.created_at));
-//             setFieldValue("companySize", newData?.company_size);
-//         }
-//     },
-//     { deep: true, immediate: true }
-// );
+watch(
+    () => props.emiratesData,
+    (newData) => {
+        if (newData) {
+            const { verification_result: { response } } = newData;
+            const { success, data } = JSON.parse(response);
+            if (success) {
+                setFieldValue("dob", data?.dob);
+                setFieldValue("client_id", data?.client_id);
+                setFieldValue("emirates_id", data?.emirates_id);
+                setFieldValue("nationality", data?.nationality);
+            }
+        }
+    },
+    { deep: true, immediate: true }
+);
 
 // ✅ Handle form submission correctly
-const onSubmit = handleSubmit((values) => {
-    emit("submit", values);
-    resetForm();
-});
+// const onSubmit = handleSubmit((values) => {
+//     emit("submit", values);
+//     resetForm();
+// });
 
 </script>
 
 <template>
-    <form @submit.prevent="onSubmit">
+    <!-- <form @submit.prevent="onSubmit"> -->
         <div class="p-6 flex flex-wrap flex-col gap-2">
             <div class="flex-1 inline-flex flex-row gap-4">
                 <div class="w-full">
                     <label class="block text-sm !font-bold">Entered Emirates ID Number:</label>
-                    <input type="text" v-model="clientId"
+                    <input type="text" v-model="clientId" disabled
                         class="w-full border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0" />
                 </div>
                 <div class="w-full">
@@ -84,7 +89,7 @@ const onSubmit = handleSubmit((values) => {
 
                 <div class="flex-1">
                     <label class="block text-sm !font-bold">DOB:</label>
-                    <input type="text" v-model="dob" v-bind="dobAttrs" name="dob"
+                    <input type="date" v-model="dob" v-bind="dobAttrs" name="dob"
                         class="w-full border p-2 rounded outline-0 focus:outline-0" />
                     <span class="text-red-500 text-sm">{{ errors?.dob }}</span>
                 </div>
@@ -96,5 +101,5 @@ const onSubmit = handleSubmit((values) => {
                 class="px-4 py-2 bg-transparent border !rounded-xl text-gray-400">Cancel</button>
             <button type="submit" class="btn btn-primary min-w-24 !font-bold">Save</button>
         </div>
-    </form>
+    <!-- </form> -->
 </template>

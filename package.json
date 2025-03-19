@@ -22,6 +22,7 @@
     "vee-validate": "^4.15.0",
     "vue": "^3.4.35",
     "vue-router": "^4.4.3",
+    "vue3-google-map": "^0.21.1",
     "yup": "^1.6.1"
   },
   "devDependencies": {

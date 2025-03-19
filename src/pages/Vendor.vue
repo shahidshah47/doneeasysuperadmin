@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick, onUnmounted } from "vue";
 import api from "../api";
 import DataTable from "datatables.net-bs5";
 import { transformData } from "../utils/helper";
@@ -11,6 +11,7 @@ const companiesData = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const searchQuery = ref("");
+const statusBtn = ref(1);
 const tableRef = ref(null);
 const entriesPerPage = ref(10); // Default entries per page
 const paginationInfoData = ref(null);
@@ -190,17 +191,52 @@ const yearlyAnalyticsData = ref([
     },
 ]);
 
-const fetchData = async () => {
+const fetchData = async (id) => {
     try {
-        const response = await api.get("/superadmin/dashboard?status=1", { headers: { Authorization: `Bearer ${localStorage?.getItem("token")}` } });
-        const { data } = response.data;
-        companiesData.value = transformData(data.data);
-        store.setCompanies(transformData(data.data));
+        const response = await api.get(`/superadmin/dashboard?status=${id}`, { 
+            headers: { 
+                Authorization: `Bearer ${localStorage?.getItem("token")}` 
+            } 
+        });
+
+        if (response?.status === 200) {
+            const { data } = response.data;
+            companiesData.value = transformData(data.data);
+            store.setCompanies(transformData(data.data));
+        }
+
+        // Destroy existing DataTable instance
+        if (tableRef.value) {
+            tableRef.value.destroy(); // Properly destroy DataTable instance
+            tableRef.value = null;
+        }
+
+        // Wait for DOM updates
+        await nextTick();
+
+        // Ensure the table exists before initializing DataTable
+        const tableElement = document.querySelector("#example");
+        if (!tableElement) {
+            console.error("Table element not found, delaying DataTable initialization.");
+            return;
+        }
+
+        console.log("Initializing new DataTable instance");
+
+        setTimeout(() => {
+            // Initialize DataTable safely
+            tableRef.value = new DataTable("#example", {
+                dom: '<"top"f>rt<"bottom"lip><"clear">',
+                pageLength: entriesPerPage.value,
+                lengthMenu: [10, 25, 50, 100],
+                initComplete: handleInitComplete
+            });
+
+            paginationInfoData.value = tableRef.value.page.info();
+        }, 2000);
     } catch (err) {
         error.value = "Error fetching data";
-        console.error(err);
-    } finally {
-        loading.value = false;
+        console.error("Error in fetchData:", err);
     }
 };
 
@@ -208,21 +244,8 @@ const handleClickToDetails = (id) => {
     router.push("/super-admin/company-details/" + id + "/info");
 };
 
-onMounted(() => {
-    fetchData();
-});
-
-nextTick(() => {
-    setTimeout(() => {
-        const table = new DataTable("#example", {
-            dom: '<"top"f>rt<"bottom"lip><"clear">', // Remove built-in length and pagination controls
-            pageLength: entriesPerPage.value, // Set initial page length
-            lengthMenu: [10, 25, 50, 100], // Define available entries per page options
-            initComplete: handleInitComplete
-        });
-        tableRef.value = table;
-        paginationInfoData.value = table.page.info();
-    }, 1000);
+onMounted(() => { 
+    fetchData(1);
 });
 
 const handleInitComplete = () => {
@@ -262,8 +285,12 @@ const handleInitComplete = () => {
 
     // Trigger initial pagination info update
     tableRef?.value?.draw();
-}
+};
 
+const handleFetchVendor = (id) => {
+    fetchData(id);
+    statusBtn.value = id;
+};
 </script>
 
 <template>
@@ -300,9 +327,9 @@ const handleInitComplete = () => {
         <div class="p-4 bg-white rounded-3 shadow relative">
             <div class="flex justify-between items-center">
                 <div class="flex gap-3">
-                    <button class="btn bg-primary text-white rounded-3 px-3 py-2 active:bg-primary">All</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2 active:bg-primary">Approved</button>
-                    <button class="btn btn-light rounded-3 px-3 py-2 active:bg-primary">Pending</button>
+                    <button @click="handleFetchVendor(1)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'}`">All</button>
+                    <button @click="handleFetchVendor(2)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'}`">Approved</button>
+                    <button @click="handleFetchVendor(3)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'}`">Pending</button>
                 </div>
                 <div class="flex gap-3">
                     <div class="flex items-center text-center relative">

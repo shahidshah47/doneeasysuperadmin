@@ -51,19 +51,28 @@
                         </p>
                     </div>
                     <div class="bg-white p-3 position-relative rounded-xl">
-                        <img :src="getImagePath('maps.png')" class="rounded-xl w-full" alt="Company Logo" />
+                        <!-- <GoogleMap
+                            api-key="AIzaSyB8iGeBjvYsaGeV66adjFtXmEmF9dgGxuI"
+                            style="width: 100%; height: 300px"
+                            :center="locationData"
+                            :zoom="15"
+                        >
+                            <Marker :options="{ position: locationData }" />
+                        </GoogleMap> -->
+                        <GoogleMapComponent :mapCustomStyles="true" :height="300" :location="locationData" :iconUrl="'/location-marker.svg'" />
+                        <!-- <img :src="getImagePath('maps.png')" class="rounded-xl w-full" alt="Company Logo" /> -->
                     </div>
                 </div>
             </div>
 
             <!-- Right Section (Admin/Manager & Location) -->
-            <div class="col-span-3">
+            <div class="col-span-3 flex flex-col w-full">
                 <div class="flex justify-between">
                     <h5 class="fw-bold">Admin/Manager</h5>
                     <a href="#" class="text-primary text-sm text-decoration-none" data-bs-toggle="modal"
                         data-bs-target="#addAdminModal">+ Add New</a>
                 </div>
-                <div class="bg-white p-4 rounded-xl flex flex-col gap-3 min-h-[10rem] max-h-[20rem] overflow-auto">
+                <div class="bg-white p-4 rounded-xl flex flex-col gap-3 overflow-auto flex-1 max-h-[45rem]">
                     <div v-for="(user, index) in companyStore?.companyData?.company?.users"
                         class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
                         <p class="theme-label">Role - Admin</p>
@@ -82,12 +91,12 @@
                 </div>
             </div>
 
-            <div class="col-span-3">
+            <div class="col-span-3 flex flex-col w-full">
                 <div class="d-flex justify-content-between">
                     <h5 class="fw-bold">Location</h5>
                     <a href="#" class="text-primary text-sm text-decoration-none">+ Add New</a>
                 </div>
-                <div class="bg-white p-4 rounded-xl flex flex-col gap-3">
+                <div class="bg-white p-4 rounded-xl flex flex-col gap-3 overflow-auto flex-1 max-h-[45rem]">
                     <div v-for="(address, index) in companyStore?.companyData?.company?.addresses"
                         class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3" :key="index">
                         <div class="inline-flex gap-1 flex-col">
@@ -318,7 +327,7 @@
     
     <!-- Modal Component -->
     <CompanyForm :showCompanyModal="showCompanyModal" :companyData="editingCompany" @submit="handleCompanySubmit" @close="closeModal" />
-    <LegalDocDetailsForm :showLegDocModal="showLegDocModal" @submit="handleLegDocSubmit" @close="closeModal" />
+    <LegalDocDetailsForm :showLegDocModal="showLegDocModal" :legDocDetails="userStore?.legDocDetails" @submit="handleLegDocSubmit" @close="closeModal" />
 </template>
 
 <script setup>
@@ -330,6 +339,8 @@ import { useCompanyStore, useUserStore } from '../../store';
 import { formatToMonthDayYear, getCompanyDetails, getLegalDocsDetails } from "../../utils/helper";
 import CompanyForm from '../../components/CompanyForm/CompanyForm.vue';
 import LegalDocDetailsForm from '../../components/LegalDocDetailsForm/LegalDocDetailsForm.vue';
+import GoogleMapComponent from '../../components/common/GoogleMapComponent.vue';
+import { GoogleMap, Marker } from 'vue3-google-map';
 
 const route = useRoute();
 const loading = ref(true);
@@ -339,6 +350,7 @@ const legalDocsDetails = ref(null);
 const companyStore = useCompanyStore();
 const userStore = useUserStore();
 const editingCompany = ref(null);
+const locationData = ref(null);
 const showCompanyModal = ref(false);
 const showLegDocModal = ref(false);
 
@@ -449,6 +461,9 @@ const fetchCompanyDetailsById = async (id) => {
             companyStore.setCompanyData(response.data?.data);
             const user = response?.data?.data?.user;
             companyDetails.value = getCompanyDetails(response?.data?.data?.company);
+            locationData.value = { lat: Number(response?.data?.data?.company?.latitude), lng: Number(response?.data?.data?.company?.longitude) }
+            console.log(locationData, "locationData");
+            
             legalDocsDetails.value = getLegalDocsDetails(user);
         }
     } catch (err) {
@@ -461,6 +476,18 @@ const fetchCompanyDetailsById = async (id) => {
 
 const handleLegDocSubmit = async (values) => {
     console.log(values, "values");
+    try {
+        const response = await api.post("/superadmin/user/docs/" + route.params.companyId, values);
+        if (response.status === 200) {
+            userStore.setLegDocDetails(response?.data?.data);
+            fetchCompanyDetailsById(route.params.companyId);
+        }
+    } catch (err) {
+        error.value = "Error fetching data";
+        console.error(err);
+    } finally {
+        loading.value = false;
+    }
 };
 
 onMounted(() => {

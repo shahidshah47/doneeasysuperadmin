@@ -1,156 +1,203 @@
 <script setup>
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
-import { watch, defineProps, defineEmits, ref } from "vue";
+import { watch, defineProps, defineEmits, ref, toRaw } from "vue";
 
-const emit = defineEmits(["submit", "close"]);
+const emit = defineEmits(["update"]);
 
 const props = defineProps({
     tradeLicense: Object
 });
 
-// ✅ Define validation schema
-const schema = yup.object({
-    trn_number: yup.string().required("TRN number is required"),
-    legal_name: yup.string().required("Legal name is required"),
-    legal_name_list: yup.string().required("Legal name list is required"),
-});
-
-const { 
-    handleSubmit, values, errors, setValues, 
-    resetForm, defineField, setFieldValue 
+const {
+    handleSubmit, values, errors, setValues,
+    resetForm, defineField, setFieldValue
 } = useForm({
-    validationSchema: schema,
     initialValues: {
-        trn_number: "",
-        legal_name: "",
-        legal_name_list: "",
+        license_number: "",
+        address: "",
+        legal_form: "",
+        cbls_number: "",
+        expiry_date: "",
+        phone_number: "",
+        license_status: "",
+        establishment_date: "",
+        licensing_authority: "",
+        activity_name_arabic: "",
+        business_name_arabic: "",
+        business_name: "",
+        region: "",
+        activity: "",
     }
 });
 
 // ✅ Use fields correctly
-const [trnNumber, trnNumberAttrs] = defineField('trn_number');
-const [legalName, legalNameAttrs] = defineField('legal_name');
-const [legalNameList, legalNameListAttrs] = defineField('legal_name_list');
+const [licenseNumber, licenseNumberAttrs] = defineField("license_number")
+const [address, addressAttrs] = defineField("address")
+const [legalForm, legalFormAttrs] = defineField("legal_form")
+const [cblsNumber, cblsNumberAttrs] = defineField("cbls_number")
+const [expiryDate, expiryDateAttrs] = defineField("expiry_date")
+const [phoneNumber, phoneNumberAttrs] = defineField("phone_number")
+const [activity, activityAttrs] = defineField("activity_name")
+const [businessName, businessNameAttrs] = defineField("business_name")
+const [licenseStatus, licenseStatusAttrs] = defineField("license_status")
+const [establishmentDate, establishmentDateAttrs] = defineField("establishment_date")
+const [licensingAuthority, licensingAuthorityAttrs] = defineField("licensing_authority")
+const [activityNameArabic, activityNameArabicAttrs] = defineField("activity_name_arabic")
+const [businessNameArabic, businessNameArabicAttrs] = defineField("business_name_arabic")
+const [stateId, stateIdAttrs] = defineField("state_id")
+const [region, regionAttrs] = defineField("region")
 
 // ✅ Watch for changes in props.companyData and update form
 watch(
     () => props.tradeLicense,
     (newData) => {
         if (newData) {
-            console.log(newData, "new data trade license");
+            console.log(newData, "trade lincense");
+            setFieldValue("license_number", newData.license_number);
+            setFieldValue("address", newData.address);
+            setFieldValue("legal_form", newData.legal_form);
+            setFieldValue("cbls_number", newData.cbls_number);
+            setFieldValue("expiry_date", newData.expiry_date);
+            setFieldValue("phone_number", newData.phone_number);
+            setFieldValue("license_status", newData.license_status);
+            setFieldValue("establishment_date", newData.establishment_date);
+            setFieldValue("licensing_authority", newData.licensing_authority);
+            setFieldValue("activity_name_arabic", newData.activity_name_arabic);
+            setFieldValue("business_name_arabic", newData.business_name_arabic);
+            setFieldValue("business_name", newData.business_name);
+            setFieldValue("activity_name", newData.activity_name);
+            setFieldValue("state_id", newData?.state_id);
+            setFieldValue("region", newData?.region);
         }
     },
     { deep: true, immediate: true }
 );
 
-// ✅ Handle form submission correctly
-const onSubmit = handleSubmit((values) => {
-    emit("submit", values);
-    resetForm();
-});
+watch(
+    () => values, 
+    (newVals) => {
+        const rawValues = toRaw(newVals);
+        emit("update", rawValues);
+    },
+    { deep: true }
+);
 
+const handleChangePhoneNumber = (e) => {
+    let value = e.target.value.replace(/\D/g, "").slice(0, 9);
+    if (value && value[0] !== "5") {
+        value = "5" + value.slice(1);
+    }
+    e.target.value = value;
+    if (value.length <= 9) {
+        setFieldValue("phone_number", e.target.value);
+    }
+}
 </script>
 
 <template>
-    <form @submit.prevent="onSubmit">
-        <div class="p-6 flex flex-wrap flex-col gap-2">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label for="licenseNo" class="form-label">License No</label>
-                    <input type="text" class="form-control" id="licenseNo" value="DMCC-070547"
-                        placeholder="please enter license number ">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address"
-                        value="Bur Dubai Dubai Investments Park 1"
-                        placeholder="please enter complete address">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="legalForm" class="form-label">Legal Form</label>
-                    <input type="text" class="form-control" id="legalForm"
-                        value="شركة ذات مسؤولية محدودة" placeholder="please enter your legal form">
-                </div>
+    <div class="flex flex-wrap flex-col gap-2">
+        <div class="flex-1 inline-flex flex-row gap-4">
+            <div class="w-full">
+                <label class="block text-sm !font-bold">License No:</label>
+                <input type="text" v-model="licenseNumber" v-bind="licenseNumberAttrs"
+                    class="w-full border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0" />
             </div>
-
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label for="cbisNo" class="form-label">Cbls No.</label>
-                    <input type="text" class="form-control" id="cbisNo" value="11457714"
-                        placeholder="please enter Cbls No.">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="expiryDate" class="form-label">Expiry Date</label>
-                    <input type="text" class="form-control" id="expiryDate" value="2024-09-14"
-                        placeholder="please enter Expiry Date">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="phoneNo" class="form-label">Phone No</label>
-                    <input type="text" class="form-control" id="phoneNo" value="+973 375412"
-                        placeholder="please enter Phone No">
-                </div>
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Address:</label>
+                <input type="text" v-model="address" v-bind="addressAttrs"
+                    class="w-full border p-2 rounded outline-0 focus:outline-0" />
+                <span class="text-red-500 text-sm">{{ errors?.address }}</span>
             </div>
-
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label for="licenseStatus" class="form-label">License Status</label>
-                    <input type="text" class="form-control" id="licenseStatus" value="فعال"
-                        placeholder="Please enter License Status">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="establishmentDate" class="form-label">Establishment Date</label>
-                    <input type="text" class="form-control" id="establishmentDate"
-                        value="2015-09-15" placeholder="please enter Establishment Date">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="licenseAuthority" class="form-label">License Authority</label>
-                    <input type="text" class="form-control" id="licenseAuthority"
-                        value="مركز في السلعة المتحدة	"
-                        placeholder="please enter License Authority">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="activityArabic" class="form-label">Activity Name Arabic</label>
-                    <input type="text" class="form-control" id="activityArabic"
-                        value="Delivery Services">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="businessArabic" class="form-label">Business Name Arabic</label>
-                    <input type="text" class="form-control" id="businessArabic"
-                        value="إنستاشوب دي إم سي سي">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="businessName" class="form-label">Business Name</label>
-                    <input type="text" class="form-control" id="businessName"
-                        value="INSTASHOP DMCC">
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="businessZone" class="form-label">Business Zone</label>
-                    <select class="form-select" id="businessZone">
-                        <option value="1" selected>Dubai</option>
-                        <option value="2">Saudi Arabia</option>
-                        <option value="3">Abu Dhabi</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="activity" class="form-label">Activity</label>
-                <textarea class="form-control" id="activity"
-                    rows="2">Software House, Computer Systems Consultancies, Web-Design, Internet Content Provider (DMCC), Delivery</textarea>
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Legal Form:</label>
+                <input type="text" v-model="legalForm" v-bind="legalFormAttrs"
+                    class="w-full border p-2 rounded outline-0 focus:outline-0" />
+                <span class="text-red-500 text-sm">{{ errors?.legal_form }}</span>
             </div>
         </div>
 
-        <div class="flex justify-end gap-2 space-x-2 flex-1/2 p-4 border-t">
-            <button type="button" @click="emit('close')"
-                class="px-4 py-2 bg-transparent border !rounded-xl text-gray-400">Cancel</button>
-            <button type="submit" class="btn btn-primary min-w-24 !font-bold">Save</button>
+        <div class="flex-1 inline-flex flex-row gap-4">
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Cbls No:</label>
+                <input type="text" v-model="cblsNumber" v-bind="cblsNumberAttrs"
+                    class="w-full border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0" />
+            </div>
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Expiry Date:</label>
+                <input type="date" v-model="expiryDate" v-bind="expiryDateAttrs"
+                    class="w-full border p-2 rounded outline-0 focus:outline-0" />
+                <span class="text-red-500 text-sm">{{ errors?.expiry_date }}</span>
+            </div>
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Phone No:</label>
+                <input type="number" @change="handleChangePhoneNumber" v-model="phoneNumber" v-bind="phoneNumberAttrs"
+                    class="w-full border p-2 rounded outline-0 focus:outline-0" />
+                <span class="text-red-500 text-sm">{{ errors?.phone_number }}</span>
+            </div>
         </div>
-    </form>
+
+        <div class="flex-1 inline-flex flex-row gap-4">
+            <div class="w-full">
+                <label class="block text-sm !font-bold">License Status:</label>
+                <input type="text" v-model="licenseStatus" v-bind="licenseStatusAttrs"
+                    class="w-full border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0" />
+            </div>
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Establishment Date:</label>
+                <input type="date" v-model="establishmentDate" v-bind="establishmentDateAttrs"
+                    class="w-full border p-2 rounded outline-0 focus:outline-0" />
+                <span class="text-red-500 text-sm">{{ errors?.establishment_date }}</span>
+            </div>
+            <div class="w-full">
+                <label class="block text-sm !font-bold">License Authority:</label>
+                <input type="text" v-model="licensingAuthority" v-bind="licensingAuthorityAttrs"
+                    class="w-full border p-2 rounded outline-0 focus:outline-0" />
+                <span class="text-red-500 text-sm">{{ errors?.licensing_authority }}</span>
+            </div>
+        </div>
+
+        <div class="flex-1 inline-flex flex-row gap-4">
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Activity Name Arabic:</label>
+                <input type="text" v-model="activityNameArabic" v-bind="activityNameArabicAttrs"
+                    class="w-full border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0" />
+            </div>
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Business Name Arabic:</label>
+                <input type="text" v-model="businessNameArabic" v-bind="businessNameArabicAttrs"
+                    class="w-full border p-2 rounded outline-0 focus:outline-0" />
+                <span class="text-red-500 text-sm">{{ errors?.business_name_arabic }}</span>
+            </div>
+        </div>
+
+        <div class="flex-1 inline-flex flex-row gap-4">
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Business Name:</label>
+                <input type="text" v-model="businessName" v-bind="businessNameAttrs"
+                    class="w-full border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0" />
+            </div>
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Business Zone:</label>
+                <select v-model="region" v-bind="regionAttrs" class="!w-full !text-[16px] border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0">
+                    <option value="Abu Dhabi">Abu Dhabi</option>
+                    <option value="Dhabi">Dubai</option>
+                    <option value="Sharjah">Sharjah</option>
+                    <option value="Ajman">Ajman</option>
+                    <option value="Umm AI Quwain">Umm AI Quwain</option>
+                    <option value="Ras AI Khaimah">Ras AI Khaimah</option>
+                    <option value="Fujairah">Fujairah</option>
+                </select>
+                <span class="text-red-500 text-sm">{{ errors?.region }}</span>
+            </div>
+        </div>
+
+        <div class="flex-1 inline-flex flex-row gap-4">
+            <div class="w-full">
+                <label class="block text-sm !font-bold">Activity:</label>
+                <textarea rows="2" v-model="activity" v-bind="activityAttrs"
+                    class="w-full border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0"></textarea>
+            </div>
+        </div>
+    </div>
 </template>
