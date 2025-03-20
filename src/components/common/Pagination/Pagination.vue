@@ -1,83 +1,52 @@
 <template>
-  <div
-    class="flex items-center justify-between py-4 px-6 bg-white shadow-md rounded-lg"
-  >
-    <div class="text-sm text-gray-600">
-      <span class="!text-grayColor text-sm leading-5 font-normal">
+  <div class="flex bg-white justify-between rounded-lg shadow-md items-center px-6 py-4 relative">
+    <div class="text-gray-600 text-sm">
+      <span class="text-sm !text-grayColor font-normal leading-5">
         Showing
       </span>
-      <span class="!text-dm-blue text-sm leading-5 font-semibold">{{
-        start
-      }}</span>
-      <span class="!text-grayColor text-sm leading-5 font-normal"> to </span>
-      <span class="!text-dm-blue text-sm leading-5 font-semibold">{{
-        end
-      }}</span>
-      <span class="!text-grayColor text-sm leading-5 font-normal">
-        of Entries</span
-      >
+      <span class="text-sm !text-dm-blue font-semibold leading-5">{{ start }}</span>
+      <span class="text-sm !text-grayColor font-normal leading-5"> to </span>
+      <span class="text-sm !text-dm-blue font-semibold leading-5">{{ end }}</span>
+      <span class="text-sm !text-grayColor font-normal leading-5"> of Entries </span>
 
-      <div class="relative inline-block">
-        <select
-          v-model="selectedEntries"
-          @change="updateEntries"
-          class="appearance-none text-sm focus:outline-none focus:ring-0 !w-13"
-        >
-          <option
-            v-for="option in entriesOptions"
-            :key="option"
-            :value="option"
-          >
+      <div class="inline-block relative" ref="dropdownContainer">
+        <button @click="toggleDropdown"
+          class="flex bg-white justify-between rounded-md text-sm !text-dm-blue focus:outline-none focus:ring-0 font-semibold gap-2 items-center leading-5">
+          {{ selectedEntries }}
+          <img src="../../../assets/image/icons/chevron-down.svg" alt="Dropdown Icon" class="h-3 w-3" />
+        </button>
+
+        <ul v-if="isDropdownOpen" :style="dropdownStyle"
+          class="bg-white border border-gray-200 p-2 rounded-md shadow-md !w-28 absolute z-50">
+          <li v-for="option in entriesOptions" :key="option" @click="selectEntry(option)" :class="['rounded-sm text-sm text-vivid-purple cursor-pointer font-semibold hover:bg-light-lilac px-2 py-1',
+            option === selectedEntries ? 'bg-light-lilac font-bold' : '']">
             {{ option }}
-          </option>
-        </select>
-        <img
-          src="../../../assets/image/icons/chevron-down.svg"
-          alt="Dropdown Icon"
-          class="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 pointer-events-none"
-        />
+          </li>
+        </ul>
       </div>
     </div>
 
-    <div class="flex items-center gap-2">
-      <button
-        :disabled="currentPage === 1"
-        @click="prevPage"
-        class="px-3 py-2 text-sm rounded-md"
-        :class="
-          currentPage === 1
-            ? 'text-gray-400 cursor-not-allowed'
-            : 'text-gray-700 hover:bg-gray-200'
-        "
-      >
+    <div class="flex gap-2 items-center">
+      <button :disabled="currentPage === 1" @click="prevPage" class="rounded-md text-sm font-normal px-3 py-2" :class="currentPage === 1
+        ? 'text-grayColor cursor-not-allowed'
+        : 'text-dm-blue hover:bg-gray-200'
+        ">
         &lt; Previous
       </button>
 
-      <button
-        v-for="page in pages"
-        :key="page"
-        @click="page !== '...' && goToPage(page)"
-        class="px-3 py-2 text-sm !font-semibold leading-5 !rounded-md"
-        :class="
-          currentPage === page
-            ? 'bg-vivid-purple text-white'
-            : 'text-gray-700 hover:bg-gray-200'
-        "
-        :disabled="page === '...'"
-      >
+      <button v-for="page in pages" :key="page" @click="page !== '...' && goToPage(page)"
+        class="text-sm !font-semibold !rounded-md leading-5 px-3 py-2" :class="currentPage === page
+          ? 'bg-vivid-purple text-white'
+          : 'text-grayColor hover:bg-gray-200'
+          " :disabled="page === '...'">
         {{ page }}
       </button>
 
-      <button
-        :disabled="currentPage === totalPages"
-        @click="nextPage"
-        class="px-3 py-2 text-sm rounded-md"
-        :class="
-          currentPage === totalPages
-            ? 'text-gray-400 cursor-not-allowed'
-            : 'text-gray-700 hover:bg-gray-200'
-        "
-      >
+      <button :disabled="currentPage === totalPages" @click="nextPage" class="rounded-md text-sm font-normal px-3 py-2"
+        :class="currentPage === totalPages
+          ? 'text-grayColor cursor-not-allowed'
+          : 'text-dm-blue hover:bg-gray-200'
+          ">
         Next &gt;
       </button>
     </div>
@@ -93,6 +62,8 @@ export default {
       entriesOptions: [25, 50, 100, 200],
       currentPage: 1,
       perPage: 50,
+      isDropdownOpen: false,
+      dropdownPosition: { top: "0px", left: "0px" },
     };
   },
   computed: {
@@ -108,7 +79,7 @@ export default {
     pages() {
       const total = this.totalPages;
       const current = this.currentPage;
-      const pagesToShow = 4; // Number of pages before "..."
+      const pagesToShow = 5;
 
       if (total <= pagesToShow + 2) {
         return Array.from({ length: total }, (_, i) => i + 1);
@@ -121,14 +92,11 @@ export default {
           "...",
           total,
         ];
-      } else if (current >= total - pagesToShow + 1) {
+      } else if (current >= total - pagesToShow) {
         pageNumbers = [
           1,
           "...",
-          ...Array.from(
-            { length: pagesToShow },
-            (_, i) => total - pagesToShow + i + 1
-          ),
+          ...Array.from({ length: pagesToShow }, (_, i) => total - pagesToShow + i + 1),
         ];
       } else {
         pageNumbers = [
@@ -144,8 +112,48 @@ export default {
 
       return pageNumbers;
     },
+    dropdownStyle() {
+      return {
+        position: "absolute",
+        top: this.dropdownPosition.top,
+        left: this.dropdownPosition.left,
+        width: "100%",
+      };
+    },
   },
   methods: {
+    toggleDropdown() {
+      this.isDropdownOpen = !this.isDropdownOpen;
+      this.calculateDropdownPosition();
+    },
+    selectEntry(option) {
+      this.selectedEntries = option;
+      this.isDropdownOpen = false;
+      this.updateEntries();
+    },
+    calculateDropdownPosition() {
+      this.$nextTick(() => {
+        const button = this.$refs.dropdownContainer.querySelector("button");
+        const dropdown = this.$refs.dropdownContainer.querySelector("ul");
+        if (!button || !dropdown) return;
+
+        const rect = button.getBoundingClientRect();
+        const spaceAbove = rect.top;
+        const spaceBelow = window.innerHeight - rect.bottom;
+
+        if (spaceBelow < dropdown.clientHeight && spaceAbove > dropdown.clientHeight) {
+          this.dropdownPosition = {
+            top: `-${dropdown.clientHeight + 5}px`,
+            left: "0px",
+          };
+        } else {
+          this.dropdownPosition = {
+            top: `${rect.height + 5}px`,
+            left: "0px",
+          };
+        }
+      });
+    },
     prevPage() {
       if (this.currentPage > 1) this.currentPage--;
     },
@@ -159,18 +167,28 @@ export default {
       this.perPage = this.selectedEntries;
       this.currentPage = 1;
     },
+    closeDropdown(event) {
+      if (this.$refs.dropdownContainer && !this.$refs.dropdownContainer.contains(event.target)) {
+        this.isDropdownOpen = false;
+      }
+    },
+  },
+  mounted() {
+    document.addEventListener("click", this.closeDropdown);
+  },
+  beforeUnmount() {
+    document.removeEventListener("click", this.closeDropdown);
   },
 };
 </script>
 
 <style>
-select::-webkit-inner-spin-button,
-select::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.relative {
+  position: relative;
 }
 
-select {
-  background-image: none !important;
+.absolute {
+  position: absolute;
+  z-index: 50;
 }
 </style>

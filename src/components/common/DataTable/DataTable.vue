@@ -6,14 +6,14 @@
           <th
             v-for="header in tableHeaders"
             :key="header"
-            class="!text-grayish-purple text-base font-semibold font-theme leading-3.5 !bg-light-lilac"
+            class="text-base !bg-light-lilac !text-grayish-purple font-semibold font-theme leading-3.5"
           >
-            <div v-if="header.includes('Sort')" class="flex items-center gap-3">
+            <div v-if="header.includes('Sort')" class="flex gap-3 items-center">
               {{ header.replace("Sort", "") }}
               <img
                 src="../../../assets/image/icons/chevron-down.svg"
                 alt="chevron-down"
-                class="w-2.5 h-2.5"
+                class="h-2.5 w-2.5"
               />
             </div>
             <span v-else>{{ header }}</span>
@@ -24,45 +24,45 @@
         <tr v-for="(order, index) in orders" :key="index" class="text-center">
           <td>
             <label
-              class="relative flex justify-center items-center w-6 h-6 border-[1.5px] border-[#CFCFD7] rounded cursor-pointer"
+              class="flex border-[#CFCFD7] border-[1.5px] h-6 justify-center rounded w-6 cursor-pointer items-center relative"
             >
               <input type="checkbox" class="hidden peer" />
               <span
-                class="absolute w-full h-full bg-vivid-purple rounded hidden peer-checked:flex peer-checked:items-center peer-checked:justify-center text-white"
+                class="bg-vivid-purple h-full rounded text-white w-full absolute hidden peer-checked:flex peer-checked:items-center peer-checked:justify-center"
               >
                 ✔
               </span>
             </label>
           </td>
           <td
-            class="!text-rich-navy text-sm font-theme font-semibold text-left"
+            class="text-left text-sm !text-rich-navy font-semibold font-theme"
           >
             {{ order.id }}
           </td>
           <td
-            class="!text-rich-navy text-sm font-theme font-semibold text-left flex items-center"
+            class="flex text-left text-sm !text-rich-navy font-semibold font-theme items-center"
           >
             <img :src="order.avatar" alt="Avatar" class="me-2" />
             {{ order.organization }}
           </td>
           <td
-            class="!text-rich-navy text-sm font-theme font-semibold text-left"
+            class="text-left text-sm !text-rich-navy font-semibold font-theme"
           >
             {{ order.title }}
           </td>
           <td
-            class="!text-rich-navy text-sm font-theme font-semibold text-left flex items-center"
+            class="flex text-left text-sm !text-rich-navy font-semibold font-theme items-center"
           >
             <img :src="order.verticalImg" alt="Vertical" class="me-2" />
             {{ order.vertical }}
           </td>
           <td
-            class="!text-rich-navy text-sm font-theme font-semibold text-left"
+            class="text-left text-sm !text-rich-navy font-semibold font-theme"
           >
             {{ order.orderType }}
           </td>
           <td
-            class="!text-dark-indigo-100 text-sm font-theme font-normal text-left"
+            class="text-left text-sm !text-dark-indigo-100 font-normal font-theme"
           >
             {{ order.deliveryDate }}
           </td>
@@ -80,13 +80,13 @@
                   'In Progress',
                 ].includes(order.payment),
               }"
-              class="!px-2 text-sm font-theme font-semibold rounded-lg py-1"
+              class="rounded-lg text-sm !px-2 font-semibold font-theme py-1"
             >
               {{ order.payment }}
             </span>
           </td>
 
-          <td class="!text-dm-blue font-semibold text-base font-theme">
+          <td class="text-base !text-dm-blue font-semibold font-theme">
             <span class="text-vivid-purple text-xs font-normal">AED</span>
             {{ order.amount }}
           </td>
@@ -108,7 +108,7 @@
                   'Completed',
                 ].includes(order.paymentState),
               }"
-              class="!px-2 text-sm font-theme font-semibold rounded-lg py-1"
+              class="rounded-lg text-sm !px-2 font-semibold font-theme py-1"
             >
               {{ order.paymentState }}
             </span>
@@ -117,31 +117,31 @@
           <td class="d-flex gap-2 py-4">
             <a :href="order.detailsLink" class="text-decoration-none">
               <div
-                class="border !border-vivid-purple py-1.5 px-2.5 rounded-[10px] d-flex align-items-center"
+                class="d-flex align-items-center border rounded-[10px] !border-vivid-purple px-2.5 py-1.5"
               >
                 <img
                   src="../../../assets/image/icons/eye.svg"
                   alt="View"
-                  class="w-4 h-6"
+                  class="h-6 w-5"
                 />
               </div>
             </a>
             <div
-              class="border !border-vivid-purple py-1.5 px-2.5 rounded-[10px] d-flex align-items-center cursor-pointer"
+              class="d-flex align-items-center border rounded-[10px] !border-vivid-purple cursor-pointer px-2.5 py-1.5"
             >
               <img
                 src="../../../assets/image/icons/trash.svg"
                 alt="Delete"
-                class="w-4 h-6"
+                class="h-6 w-5"
               />
             </div>
             <div
-              class="border !border-vivid-purple py-1.5 px-2.5 rounded-[10px] d-flex align-items-center cursor-pointer"
+              class="d-flex align-items-center border rounded-[10px] !border-vivid-purple cursor-pointer px-2.5 py-1.5"
             >
               <img
                 src="../../../assets/image/icons/share.svg"
                 alt="Share"
-                class="w-4 h-6"
+                class="h-6 w-5"
               />
             </div>
           </td>

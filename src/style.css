@@ -81,6 +81,7 @@ div {
   --color-slate-700: #5d6f7d;
   --color-electric-indigo: #2b20e8;
   --color-blue-700: #005fad;
+  --shadow-lavendar-card: 0px 3px 24px 0px #c4c3f726;
 }
 
 :root {
@@ -310,4 +311,8 @@ select {
   border-radius: 10px !important;
 }
 #example_wrapper .pagination .dt-paging-button.page-item.disabled button {
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(95.35deg, #396cf1 24.64%, #39c5f1 74.69%);
 }

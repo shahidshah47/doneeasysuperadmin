@@ -1,0 +1,40 @@
+<template>
+  <div>
+    <p class="text-vivid-purple text-sm leading-4 font-normal mb-0 font-theme">
+      {{ title }}
+    </p>
+    <p class="text-dm-blue font-sm leading-5 font-normal font-theme">
+      {{ description }}
+      <a
+        v-if="readMoreLink"
+        :href="readMoreLink"
+        class="!text-vivid-purple font-semibold text-sm font-theme appearance-none !no-underline hover:underline"
+      >
+        {{ readMoreText }}
+      </a>
+    </p>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    readMoreText: {
+      type: String,
+      default: "read more",
+    },
+    readMoreLink: {
+      type: String,
+      default: null,
+    },
+  },
+};
+</script>
