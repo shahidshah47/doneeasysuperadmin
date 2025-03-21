@@ -19,3 +19,14 @@ export const useCompanyStore = defineStore("companyStore", {
   },
   persist: true,
 });
+
+export const useUserStore = defineStore("userStore", {
+  state: () => ({
+    legDocDetails: null,
+  }),
+  actions: {
+    setLegDocDetails(data) {
+      this.legDocDetails = data;
+    },
+  },
+});

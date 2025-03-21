@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-col items-center justify-between gap-0 py-8 pt-4 px-3 h-full">
-    <div class="flex flex-col items-center justify-center gap-4">
+  <div class="flex flex-col items-center justify-between gap-0 px-3 h-full">
+    <div class="flex flex-col items-center justify-between gap-4 py-8 h-full">
       <img :src="getImagePath('Logo.png')" alt="Logo" class="w-14">
       <ul class="nav flex-col items-center gap-2 bg-gray-100 rounded-full px-2 py-3" id="sidebar-menu">
         <li v-for="(item, index) in sidebarItems" :key="index" class="list-item">
@@ -9,10 +9,11 @@
           </a>
         </li>
       </ul>
-    </div>
-    <div class="bg-gray-100 rounded-full flex flex-col gap-2 items-center px-2 py-4 w-full">
-      <img :src="getImagePath('Frame 48096327.png')" class="w-10 shadow rounded-full" />
-      <img @click="handleLogout" src="../assets/images2/logout.svg" class="cursor-pointer" />
+      
+      <div class="bg-gray-100 rounded-full flex flex-col gap-2 items-center px-2 py-4 w-full">
+        <img :src="getImagePath('Frame 48096327.png')" class="w-10 shadow rounded-full" />
+        <img @click="handleLogout" src="../assets/images2/logout.svg" class="cursor-pointer" />
+      </div>
     </div>
   </div>
 </template>
