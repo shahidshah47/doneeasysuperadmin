@@ -1,10 +1,21 @@
 <script setup>
-import { ref, onMounted, nextTick, onUnmounted } from "vue";
+import { ref, onMounted, nextTick, onUnmounted, computed } from "vue";
 import api from "../api";
-import DataTable from "datatables.net-bs5";
-import { transformData } from "../utils/helper";
-import { useRouter } from "vue-router";
+// import DataTable from "datatables.net-bs5";
+import { convertUserData, transformData } from "../utils/helper";
+import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore } from "../store";
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import { IconField, InputIcon, InputText } from "primevue";
+import { FilterMatchMode } from '@primevue/core/api';
+import { productsContants } from "../utils/constants";
+
+import Dropdown from "primevue/dropdown";
+import Calendar from "primevue/calendar";
+import Button from "primevue/button";
+
+
 
 const store = useCompanyStore();
 const companiesData = ref([]);
@@ -17,6 +28,7 @@ const entriesPerPage = ref(10); // Default entries per page
 const paginationInfoData = ref(null);
 
 const router = useRouter();
+const route = useRoute();
 
 const getImagePath = (imageName) => {
     return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
@@ -201,39 +213,11 @@ const fetchData = async (id) => {
 
         if (response?.status === 200) {
             const { data } = response.data;
-            companiesData.value = transformData(data.data);
+            // console.log(data?.data, "data from companies");
+            companiesData.value = data.data?.map(item => convertUserData(item));
             store.setCompanies(transformData(data.data));
         }
 
-        // Destroy existing DataTable instance
-        if (tableRef.value) {
-            tableRef.value.destroy(); // Properly destroy DataTable instance
-            tableRef.value = null;
-        }
-
-        // Wait for DOM updates
-        await nextTick();
-
-        // Ensure the table exists before initializing DataTable
-        const tableElement = document.querySelector("#example");
-        if (!tableElement) {
-            console.error("Table element not found, delaying DataTable initialization.");
-            return;
-        }
-
-        console.log("Initializing new DataTable instance");
-
-        setTimeout(() => {
-            // Initialize DataTable safely
-            tableRef.value = new DataTable("#example", {
-                dom: '<"top"f>rt<"bottom"lip><"clear">',
-                pageLength: entriesPerPage.value,
-                lengthMenu: [10, 25, 50, 100],
-                initComplete: handleInitComplete
-            });
-
-            paginationInfoData.value = tableRef.value.page.info();
-        }, 2000);
     } catch (err) {
         error.value = "Error fetching data";
         console.error("Error in fetchData:", err);
@@ -248,49 +232,93 @@ onMounted(() => {
     fetchData(1);
 });
 
-const handleInitComplete = () => {
-    // Bind external search input to DataTable search
-    const externalSearch = document.getElementById('external-search');
-    if (externalSearch) {
-        externalSearch.addEventListener('keyup', function () {
-            tableRef.value.search(this.value).draw();
-        });
-    }
+// const handleInitComplete = () => {
+//     // Bind external search input to DataTable search
+//     const externalSearch = document.getElementById('external-search');
+//     if (externalSearch) {
+//         externalSearch.addEventListener('keyup', function () {
+//             tableRef.value.search(this.value).draw();
+//         });
+//     }
 
-    // Bind external dropdown to DataTable page length
-    const entriesDropdown = document.getElementById('entries-dropdown');
-    if (entriesDropdown) {
-        entriesDropdown.addEventListener('change', function () {
-            tableRef.value.page.len(this.value).draw();
-            // console.log(tableRef.value, this.value, tableRef.value.page.info(), "Dasdasd");
-            const info = tableRef.value.page.info();
-            paginationInfoData.value = info;
-            const paginationInfo = document.getElementById('pagination-info');
-            if (paginationInfo) {
-                paginationInfo.textContent = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
-            }
-        });
-    }
+//     // Bind external dropdown to DataTable page length
+//     const entriesDropdown = document.getElementById('entries-dropdown');
+//     if (entriesDropdown) {
+//         entriesDropdown.addEventListener('change', function () {
+//             tableRef.value.page.len(this.value).draw();
+//             // console.log(tableRef.value, this.value, tableRef.value.page.info(), "Dasdasd");
+//             const info = tableRef.value.page.info();
+//             paginationInfoData.value = info;
+//             const paginationInfo = document.getElementById('pagination-info');
+//             if (paginationInfo) {
+//                 paginationInfo.textContent = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
+//             }
+//         });
+//     }
 
-    // Update external pagination info on table redraw
-    tableRef?.value?.on('draw', function () {
-        const info = tableRef.value.page.info();
+//     // Update external pagination info on table redraw
+//     tableRef?.value?.on('draw', function () {
+//         const info = tableRef.value.page.info();
 
-        paginationInfoData.value = info;
-        const paginationInfo = document.getElementById('pagination-info');
-        if (paginationInfo) {
-            paginationInfo.textContent = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
-        }
-    });
+//         paginationInfoData.value = info;
+//         const paginationInfo = document.getElementById('pagination-info');
+//         if (paginationInfo) {
+//             paginationInfo.textContent = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
+//         }
+//     });
 
-    // Trigger initial pagination info update
-    tableRef?.value?.draw();
-};
+//     // Trigger initial pagination info update
+//     tableRef?.value?.draw();
+// };
 
 const handleFetchVendor = (id) => {
     fetchData(id);
     statusBtn.value = id;
 };
+
+const selectedCompany = ref();
+
+const copyUrl = (id) => {
+    const location = window.location;
+    navigator.clipboard.writeText(location.origin + "/super-admin/company-details/" + id + "/info");
+    alert('URL copied to clipboard!');
+};
+
+// Status dropdown options
+const statusOptions = ["Active", "Deactivated", "Inactive", "Monitory", "Banned"];
+
+// Filters for all fields
+const filters = ref({
+    id: { value: null, matchMode: FilterMatchMode.EQUALS },
+    "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "fullName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
+    role: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    totalRevenue: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
+    totalSpending: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    verticlesSubscribed: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
+    registeredOn: { value: null, matchMode: FilterMatchMode.DATE_IS },
+});
+
+// Function to get status-based styling
+const getStatusClass = (status) => {
+    switch (status) {
+        case "Active":
+            return { backgroundColor: "#D6FFEF", color: "#00995C" }; // Green
+        case "Deactivated":
+            return { backgroundColor: "#E7E7EB", color: "#0E0D35" }; // Yellow
+        case "Inactive":
+            return { backgroundColor: "#E7E7EB", color: "#575672" }; // Red
+        case "Monitory":
+            return { backgroundColor: "#FCEED9", color: "#DC8B13" }; // Red
+        case "Banned":
+            return { backgroundColor: "#FFE5E5", color: "#FF5555" }; // Red
+        default:
+            return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
+    }
+};
+
 </script>
 
 <template>
@@ -325,105 +353,133 @@ const handleFetchVendor = (id) => {
         </div>
 
         <div class="p-4 bg-white rounded-3 shadow relative">
-            <div class="flex justify-between items-center">
-                <div class="flex gap-3">
-                    <button @click="handleFetchVendor(1)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'}`">All</button>
-                    <button @click="handleFetchVendor(2)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'}`">Approved</button>
-                    <button @click="handleFetchVendor(3)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'}`">Pending</button>
-                </div>
-                <div class="flex gap-3">
-                    <div class="flex items-center text-center relative">
-                        <input id="external-search" type="text" class="form-control border-0 py-2 px-3"
-                            style="background-color: #F2F4FB; width: 350px;" placeholder="Search">
-                        <i class="fas fa-search absolute end-0 me-3"></i>
+            <DataTable 
+                :value="companiesData" 
+                v-model:selection="selectedCompany" 
+                dataKey="id" 
+                v-model:filters="filters" 
+                paginator 
+                :rows="5"
+                :globalFilterFields="['companyName.name', 'fullName.name', 'role']"
+                :rowsPerPageOptions="[5, 10, 20, 50]" 
+                tableStyle="min-width: 50rem" 
+                class="custom-datatable"
+                paginatorTemplate="CurrentPageReport RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} Entries">
+                <template #header>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex gap-3">
+                            <button @click="handleFetchVendor(1)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'}`">All</button>
+                            <button @click="handleFetchVendor(2)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'}`">Approved</button>
+                            <button @click="handleFetchVendor(3)" :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'}`">Pending</button>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="flex justify-end">
+                                <IconField>
+                                    <InputText v-model="filters['companyName.name'].value" placeholder="Search" class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5" />
+                                    <InputIcon>
+                                        <i class="fas fa-search"></i>
+                                    </InputIcon>
+                                </IconField>
+                            </div>
+                            <div class="flex items-center">
+                                <button class="btn btn-light bg-white border-0">
+                                    Filters by <i class="fas fa-filter"></i>
+                                </button>
+                                <span class="border-start mx-2" style="height: 24px;"></span>
+                                <button class="btn btn-light bg-white border-0">
+                                    Columns <i class="fas fa-columns"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex items-center">
-                        <button class="btn btn-light bg-white border-0">
-                            Filters by <i class="fas fa-filter"></i>
-                        </button>
-                        <span class="border-start mx-2" style="height: 24px;"></span>
-                        <button class="btn btn-light bg-white border-0">
-                            Columns <i class="fas fa-columns"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <table id="example" class="table custom-table">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>ID</th>
-                        <th>Company Name</th>
-                        <th>Full Name</th>
-                        <th>Role</th>
-                        <th>Contact / <br />Email</th>
-                        <th>Total Revenue <br>Generated</th>
-                        <th>Total <br />Spending</th>
-                        <th>Status</th>
-                        <th>List of vertical<br /> subscribed</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="vendor-table-body">
-                    <tr v-for="(vendor, index) in companiesData" :key="index">
-                        <td><input type="checkbox" class="w-5 h-5"></td>
-                        <td>{{ vendor.id }}</td>
-                        <td class="font-theme-bold">
-                            <div class="flex gap-2 items-center min-w-32">
-                                <img :src="vendor.companyImage" class="m-0 w-10 !h-10 rounded-lg object-cover" />
-                                <span class="line-clamp-1">{{ vendor.companyName }}</span>
-                            </div>
-                        </td>
-                        <td class="font-theme-bold">
-                            <div class="flex gap-2 items-center min-w-32">
-                                <img :src="vendor.managerImage" class="m-0 w-10 !h-10 rounded-lg object-cover" />
-                                <span class="line-clamp-1">{{ vendor.name }}</span>
-                            </div>
-                        </td>
-                        <td>Admin</td>
-                        <td class="mail" v-html="vendor.contactEmail"></td>
-                        <td v-html="vendor.totalRevenue"></td>
-                        <td v-html="vendor.totalSpending"></td>
-                        <td>
-                            <select class="border-0 p-2.5 rounded-xl" :style="{ backgroundColor: vendor.statusColor, color: vendor.textColor }">
-                                <option :value="vendor.status.toLowerCase()" selected>{{ vendor.status }}</option>
-                                <option value="banned">Banned</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="monitory">Monitory</option>
-                            </select>
-                        </td>
-                        <td>{{ vendor.verticalSubscribed }}</td>
-                        <td>
-                            <div class="flex gap-2">
-                                <button
-                                    class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
-                                    <i class="fa-regular fa-eye text-primary"></i>
-                                </button>
-                                <button
-                                    class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
-                                    <i class="fa-regular fa-trash-can text-primary"></i>
-                                </button>
-                                <button @click="handleClickToDetails(vendor?.id)"
-                                    class="border border-primary p-1 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
-                                    <i class="fa-regular fa-share-from-square text-primary"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <!-- External Entries Dropdown and Pagination Info -->
-            <div class="flex gap-2 items-center !mt-0">
-                <p v-if="paginationInfoData" id="pagination-info" class="mb-0">Showing {{ paginationInfoData?.start }} to {{ paginationInfoData?.end }} of {{ paginationInfoData?.recordsTotal }} entries</p>
-                <select id="entries-dropdown" class="form-select form-select-sm" style="width: auto;">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
-            </div>
+                </template>
+                <template #empty> No vendors found. </template>
+                <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
+                <Column field="id" header="ID" />
+                <Column field="companyName" header="Company Name">
+                    <template #body="slotProps">
+                        <div class="flex items-center gap-2">
+                            <img :src="slotProps.data.companyName.logo" alt="Company Logo" class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover" />
+                            <span class="font-semibold text-dm-blue">{{ slotProps.data.companyName.name }}</span>
+                        </div>
+                    </template>
+                </Column>
+
+                <Column field="fullName" header="Full Name">
+                    <template #body="slotProps">
+                        <div class="flex items-center gap-2">
+                            <img :src="slotProps.data.fullName.profilePicture" alt="Company Logo" class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover" />
+                            <span class="font-semibold text-dm-blue">{{ slotProps.data.fullName.name }}</span>
+                        </div>
+                    </template>
+                </Column>
+
+                <Column field="role" header="Role">
+                    <template #body="slotProps">
+                        <span class="font-semibold">{{ slotProps.data.role }}</span>
+                    </template>
+                </Column>
+
+                <Column field="contact" header="Contact / Email">
+                    <template #body="slotProps">
+                        <div class="mail">
+                            <span class="font-semibold text-dm-blue">{{ slotProps.data.contact.mobile }}</span> <br />
+                            <span class="text-primary font-semibold">{{ slotProps.data.contact.email }}</span>
+                        </div>
+                    </template>
+                </Column>
+
+                <Column field="totalRevenue" header="Total Revenue Generated">
+                    <template #body="slotProps">
+                        <div class="flex gap-2 items-center">
+                            <span class="text-primary font-semibold text-sm">AED</span>
+                            <span class="text-2xl font-bold">{{ slotProps.data.totalRevenue ?? 0 }}</span>
+                        </div>
+                    </template>
+                </Column>
+
+                <Column field="totalSpending" header="Total Spending">
+                    <template #body="slotProps">
+                        <div class="flex gap-2 items-center">
+                            <span class="text-primary font-semibold text-sm">AED</span>
+                            <span class="text-2xl font-bold">{{ slotProps.data.totalSpending ?? 0 }}</span>
+                        </div>
+                    </template>
+                </Column>
+
+                <Column field="status" header="Status">
+                    <template #body="slotProps">
+                        <Dropdown v-model="slotProps.data.status" :options="statusOptions" :style="getStatusClass(slotProps.data.status)"
+                            class="p-dropdown-sm font-bold"></Dropdown>
+                    </template>
+                </Column>
+
+                <Column field="verticalsSubscribed" header="List of Verticals Subscribed" class="w-40">
+                    <template #body="slotProps">
+                        <span class="px-3 py-2 rounded-xl font-semibold text-[#0E0D35] bg-light-lilac">{{ slotProps.data.verticalsSubscribed }}</span>
+                    </template>
+                </Column>
+
+                <Column field="registeredOn" header="Registered on DE Date" class="w-32">
+                    <template #body="slotProps">
+                        <span>{{ new Date(slotProps.data.registeredOn).toLocaleDateString() }}</span>
+                    </template>
+                </Column>
+
+                <Column field="actions" header="Action">
+                    <template #body="slotProps">
+                        <div class="flex gap-2">
+                            <button class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer" @click="handleClickToDetails(slotProps.data?.id)">
+                                <i class="fa-regular fa-eye text-primary"></i></button>
+                            <button class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
+                                <i class="fa-regular fa-trash-can text-primary"></i></button>
+                            <button class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer" @click="copyUrl(slotProps.data.id)">
+                                <i class="fa-regular fa-share-from-square text-primary"></i></button>
+                        </div>
+                    </template>
+                </Column>
+            </DataTable>
         </div>
     </div>
 
@@ -509,80 +565,6 @@ const handleFetchVendor = (id) => {
 #example_wrapper .dataTables_paginate {
     float: none;
     text-align: center;
-}
-
-
-.custom-table .mail {
-    max-width: 80px !important;
-}
-
-.mail:hover {
-    background-color: #f0f0f0;
-}
-
-td {
-    font-size: 14px;
-    color: #000000;
-    padding: 8px;
-    line-height: 1.5;
-}
-
-.custom-table {
-    border-collapse: collapse;
-    width: 100%;
-    font-size: 14px;
-    margin-top: 10px;
-    padding-right: 33px;
-}
-
-.custom-table thead th {
-    background-color: #F2F4FB;
-    font-weight: 700;
-    font-size: 16px;
-    color: #6E6E86;
-}
-
-.custom-table tbody tr {
-    background-color: #ffffff;
-    text-align: center;
-    border-radius: 22px;
-    font-weight: 700;
-}
-
-.custom-table th,
-.custom-table td {
-    padding: 10px;
-    text-align: left;
-    align-items: center;
-    font-weight: 700;
-}
-
-.custom-table td,
-.custom-table th {
-    border: none;
-    font-weight: 700;
-}
-
-.custom-table td img {
-    max-width: 70%;
-    height: auto;
-    margin-left: 11px;
-}
-
-.custom-table td button {
-    margin: auto;
-    align-items: center;
-    font-weight: 700;
-}
-
-.custom-table td .form-control {
-    max-width: 100%;
-    padding: 5px;
-    font-size: 13px;
-}
-
-.custom-table td {
-    font-size: 14px;
 }
 
 .custom-button img,
