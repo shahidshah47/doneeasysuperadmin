@@ -138,6 +138,7 @@ export const convertUserData = (user) => {
         verticalsSubscribed: user.verticles_count || 0,
         registeredOn: user.created_at || 'N/A',
         status,
+        statusId: user.status,
         statusColor,
         textColor,
         action: {
@@ -161,4 +162,16 @@ const handleShare = (id) => {
     const editScreenUrl = `https://yourwebsite.com/edit/${id}`;
     navigator.clipboard.writeText(editScreenUrl);
     console.log(`Copied URL: ${editScreenUrl}`);
+};
+
+export const getStatusId = (status) => {
+    const statusMap = {
+        "Active": 1,
+        "Deactivated": 2,
+        "Inactive": 3,
+        "Monitory": 4,
+        "Banned": 5
+    };
+    
+    return statusMap[status] || null; // Return null if status is not found
 };
