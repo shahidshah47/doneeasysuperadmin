@@ -98,11 +98,29 @@ const routes = [
             { label: "Vendor", link: "/super-admin/vendor" },
             {
               label: "Appointments",
-              link: "/super-admin/company-details/appointment",
+              link: "/super-admin/company-details/:companyId/appointment",
             },
             {
               label: "Details",
               link: "/super-admin/company-details/appointment/details",
+            },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/company-details/appointment/reoccurring/details",
+        component: () =>
+          import("../pages/CompanyDetails/Appointment/Reoccurring/Details.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Appointments",
+              link: "/super-admin/company-details/:companyId/appointment",
+            },
+            {
+              label: "Reoccurring Details",
+              link: "/super-admin/company-details/appointment/reoccurring/details",
             },
           ],
         },

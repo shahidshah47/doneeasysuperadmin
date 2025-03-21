@@ -39,7 +39,15 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-const crumbs = computed(() => route.meta.breadcrumb || []);
+
+const crumbs = computed(() => {
+  const companyId = route.query.companyId || route.params.companyId || "";
+
+  return (route.meta.breadcrumb || []).map((crumb) => ({
+    label: crumb.label,
+    link: crumb.link.replace(":companyId", companyId),
+  }));
+});
 </script>
 
 <style scoped>

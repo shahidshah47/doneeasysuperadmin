@@ -25,11 +25,21 @@
           </h4>
 
           <div class="row">
-            <InfoDisplay label="Date" value="Sat, 19 Nov 2023" />
-            <InfoDisplay label="Time" value="10:30 AM" />
-            <InfoDisplay label="Order Type" value="Online" />
-            <InfoDisplay label="Payment Status" value="Paid" />
-            <InfoDisplay label="Order Amount" value="$150.00" />
+            <div class="col-md-6">
+              <InfoDisplay label="Date" value="Sat, 19 Nov 2023" />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay label="Time" value="10:30 AM" />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay label="Order Type" value="Online" />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay label="Payment Status" value="Paid" />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay label="Order Amount" value="$150.00" />
+            </div>
           </div>
 
           <div class="row">
@@ -118,70 +128,73 @@
     </div>
   </div>
 
-  <div class="d-flex align-items-center justify-content-center my-4">
-    <span class="text-muted fw-bold mx-2">Offer Breakdown</span>
-    <div class="flex-grow-1 border-bottom"></div>
-    <div
-      class="d-flex align-items-center bg-white justify-content-center p-2 rounded-pill ms-3"
-    >
-      <i class="fa-chevron-up fa-solid"></i>
-    </div>
-  </div>
+  <BreakDown title="Offer Breakdown" @toggle="handleToggle" />
 
-  <div class="d-flex justify-content-between">
-    <h5 class="fw-semibold">Quote for Services</h5>
-    <a href="#" class="text-decoration-none text-primary"> + Add Service </a>
+  <div class="d-flex justify-content-between align-items-center">
+    <h5 class="fw-semibold !text-[20px] leading-5 text-dm-blue">
+      Quote for Services
+    </h5>
+    <a
+      href="#"
+      class="text-decoration-none text-primary !text-sm !font-semibold"
+    >
+      + Add Service
+    </a>
   </div>
 
   <div class="row row-gap-4 mb-5 mt-3">
     <div class="col-md-4">
-      <div class="bg-white border-0 p-4 rounded rounded-4 shadow-sm">
-        <div
-          class="d-flex align-items-center justify-content-between position-relative mb-3"
-        >
-          <div>
-            <p class="text-primary -font mb-0">Item No 1</p>
-            <p class="fs-6 mb-0">Session - Introduction</p>
-          </div>
-          <div class="position-absolute end-0 me-2 mt-2 top-0">
-            <a
-              href="/super-admin/company-details/info/authentication"
-              class="text-reset"
-            >
-              <i
-                class="text-decoration-underline text-primary fa-pen fa-solid"
-              ></i>
-            </a>
-          </div>
-        </div>
+      <ServiceCard
+        itemTitle="Item No 1"
+        sessionName="Session - Introduction"
+        serviceTitle="Service Description"
+        serviceDescription="Lorem ipsum dolor sit amet consectetur..."
+        editLink="/super-admin/company-details/info/authentication"
+        unitPriceLabel="Unit Price"
+        unitPrice="AED 12.00"
+        quantityLabel="Quantity"
+        quantity="24"
+        totalLabel="Total"
+        total="AED 288.00"
+        deliveryTimeLabel="Delivery Time"
+        deliveryTime="Not Specific"
+      />
+    </div>
+  </div>
 
-        <div
-          class="d-flex bg-light justify-content-between rounded mb-3 px-4 py-3 stats-section"
-        >
-          <div>
-            <p class="text-primary mb-0 small-font">Unit Price</p>
-            <p class="fw-semibold mb-0">AED 12.00</p>
-          </div>
-          <div>
-            <p class="text-primary mb-0 small-font">Quantity</p>
-            <p class="fw-semibold mb-0">24</p>
-          </div>
-          <div>
-            <p class="text-primary mb-0 small-font">Total</p>
-            <p class="fw-semibold mb-0">AED 288.00</p>
-          </div>
-        </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <h5 class="fw-semibold !text-[20px] leading-5 text-dm-blue">
+      Quote for Materials
+    </h5>
+    <a
+      href="#"
+      class="text-decoration-none text-primary !text-sm !font-semibold"
+    >
+      + Add Material
+    </a>
+  </div>
 
-        <div>
-          <p class="text-primary mb-0 small-font">Delivery Time</p>
-          <p class="fw-semibold mb-0">Not Specific</p>
-        </div>
-      </div>
+  <div class="row row-gap-4 mb-5 mt-3">
+    <div class="col-md-4">
+      <ServiceCard
+        itemTitle="Item No 1"
+        sessionName="Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentu"
+        editLink="/super-admin/company-details/info/authentication"
+        unitPriceLabel="Unit Price"
+        unitPrice="AED 12.00"
+        quantityLabel="Quantity"
+        quantity="24"
+        totalLabel="Total"
+        total="AED 288.00"
+        deliveryTimeLabel="Procurement/lead time"
+        deliveryTime="12 Hours"
+      />
     </div>
   </div>
 </template>
 
 <script>
+import BreakDown from "../../../components/common/BreakDown/BreakDown.vue";
 import DescriptionCard from "../../../components/common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../../../components/common/FileCard/FileCard.vue";
 import InfoDisplay from "../../../components/common/InfoDisplay/InfoDisplay.vue";
@@ -189,6 +202,7 @@ import LocationCard from "../../../components/common/LocationCard/LocationCard.v
 import PaymentCard from "../../../components/common/PaymentCard/PaymentCard.vue";
 import ProfileCard from "../../../components/common/ProfileCard/ProfileCard.vue";
 import SectionHeading from "../../../components/common/SectionHeading/SectionHeading.vue";
+import ServiceCard from "../../../components/common/ServiceCard/ServiceCard.vue";
 import StarRating from "../../../components/common/StarRating/StarRating.vue";
 import SummaryCard from "../../../components/common/SummaryCard/SummaryCard.vue";
 import UserProfileCard from "../../../components/common/UserProfileCard/UserProfileCard.vue";
@@ -204,7 +218,9 @@ export default {
     LocationCard,
     FileCard,
     DescriptionCard,
+    BreakDown,
     PaymentCard,
+    ServiceCard,
   },
 };
 </script>

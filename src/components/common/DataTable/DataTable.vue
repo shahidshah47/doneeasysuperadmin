@@ -154,13 +154,84 @@
 
 <script>
 import Pagination from "../Pagination/Pagination.vue";
+import { computed } from "vue";
+import { useRoute } from "vue-router";
 
 export default {
   components: {
     Pagination,
   },
-  data() {
+  setup() {
+    const route = useRoute();
+    const companyId = computed(() => route.params.companyId);
+
+    const orders = computed(() => [
+      {
+        id: "98374861",
+        avatar: new URL(
+          "../../../assets/images2/Avatar (1).png",
+          import.meta.url
+        ).href,
+        organization: "Acme Co.",
+        title: "Need business consultant for my startup",
+        verticalImg: new URL(
+          "../../../assets/images2/vertical_img.png",
+          import.meta.url
+        ).href,
+        vertical: "Event Management",
+        orderType: "One-Time",
+        deliveryDate: "2020-05-17, 10:00 AM",
+        payment: "Half Done",
+        amount: "32,100",
+        paymentState: "In Progress",
+        detailsLink: `/super-admin/company-details/appointment/details?companyId=${companyId.value}`,
+      },
+      {
+        id: "98374861",
+        avatar: new URL(
+          "../../../assets/images2/Avatar (1).png",
+          import.meta.url
+        ).href,
+        organization: "Acme Co.",
+        title: "Need business consultant for my startup",
+        verticalImg: new URL(
+          "../../../assets/images2/vertical_img.png",
+          import.meta.url
+        ).href,
+        vertical: "Event Management",
+        orderType: "One-Time",
+        deliveryDate: "2020-05-17, 10:00 AM",
+        payment: "Pending",
+        amount: "32,100",
+        paymentState: "Waiting",
+        detailsLink: `/super-admin/company-details/appointment/details?companyId=${companyId.value}`,
+      },
+
+      {
+        id: "98374861",
+        avatar: new URL(
+          "../../../assets/images2/Avatar (1).png",
+          import.meta.url
+        ).href,
+        organization: "Acme Co.",
+        title: "Need business consultant for my startup",
+        verticalImg: new URL(
+          "../../../assets/images2/vertical_img.png",
+          import.meta.url
+        ).href,
+        vertical: "Event Management",
+        orderType: "Reoccuring",
+        deliveryDate: "2020-05-17, 10:00 AM",
+        payment: "Pending",
+        amount: "32,100",
+        paymentState: "Waiting",
+        detailsLink: `/super-admin/company-details/appointment/reoccurring/details?companyId=${companyId.value}`,
+      },
+    ]);
+
     return {
+      companyId,
+      orders,
       tableHeaders: [
         "",
         "ID",
@@ -173,48 +244,6 @@ export default {
         "Order Amount",
         "Payment State",
         "Action",
-      ],
-      orders: [
-        {
-          id: "98374861",
-          avatar: new URL(
-            "../../../assets/images2/Avatar (1).png",
-            import.meta.url
-          ).href,
-          organization: "Acme Co.",
-          title: "Need business consultant for my startup",
-          verticalImg: new URL(
-            "../../../assets/images2/vertical_img.png",
-            import.meta.url
-          ).href,
-          vertical: "Event Management",
-          orderType: "One-Time",
-          deliveryDate: "2020-05-17, 10:00 AM",
-          payment: "Half Done",
-          amount: "32,100",
-          paymentState: "In Progress",
-          detailsLink: "/super-admin/company-details/appointment/details",
-        },
-        {
-          id: "98374861",
-          avatar: new URL(
-            "../../../assets/images2/Avatar (1).png",
-            import.meta.url
-          ).href,
-          organization: "Acme Co.",
-          title: "Need business consultant for my startup",
-          verticalImg: new URL(
-            "../../../assets/images2/vertical_img.png",
-            import.meta.url
-          ).href,
-          vertical: "Event Management",
-          orderType: "One-Time",
-          deliveryDate: "2020-05-17, 10:00 AM",
-          payment: "Pending",
-          amount: "32,100",
-          paymentState: "Waiting",
-          detailsLink: "/super-admin/company-details/appointment/details",
-        },
       ],
     };
   },

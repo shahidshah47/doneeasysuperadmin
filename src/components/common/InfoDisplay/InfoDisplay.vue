@@ -1,9 +1,11 @@
 <template>
-  <div class="col-md-6">
+  <div>
     <p class="text-vivid-purple text-sm leading-4 font-normal mb-0">
       {{ label }}
     </p>
-    <p class="fw-semibold !text-base text-dm-blue font-theme">{{ value }}</p>
+    <p class="fw-semibold !text-base text-dm-blue font-theme mb-0">
+      {{ value }}
+    </p>
   </div>
 </template>
 
