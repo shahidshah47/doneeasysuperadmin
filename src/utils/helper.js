@@ -77,3 +77,88 @@ export const getLegalDocsDetails = (user) => {
         { label: "TRN", value: user?.trn }
     ]
 }
+
+// Utility function to convert API response to table format
+export const convertUserData = (user) => {
+
+    let status;
+    let statusColor;
+    let textColor;
+    switch (user.status) {
+        case 1:
+            status = "Active";
+            statusColor = "#D6FFEF";
+            textColor = "#00995C";
+            break;
+        case 2:
+            status = "Deactivated";
+            statusColor = "#E7E7EB";
+            textColor = "#0E0D35";
+            break;
+        case 3:
+            status = "Inactive";
+            statusColor = "#E7E7EB";
+            textColor = "#575672";
+            break;
+        case 4:
+            status = "Monitory";
+            statusColor = "#FCEED9";
+            textColor = "#DC8B13";
+            break;
+        case 5:
+            status = "Banned";
+            statusColor = "#FFE5E5";
+            textColor = "#FF5555";
+            break;
+        // Add more cases if there are other status values
+        default:
+            status = "Unknown";
+            statusColor = "lightgrey";
+            textColor = "#000";
+    }
+
+
+    return {
+        id: user.id,
+        companyName: {
+            logo: user.company?.company_logo?.file_path || '',
+            name: user.company?.company_name || 'N/A',
+        },
+        fullName: {
+            profilePicture: user.profile_picture?.file_path || '',
+            name: user.name || 'N/A',
+        },
+        role: user.designation || 'N/A',
+        contact: {
+            email: user.email || 'N/A',
+            mobile: user.mobile_number || 'N/A',
+        },
+        totalRevenue: user.total_revenue || 0,
+        totalSpending: user.pending_revenue || 0,
+        verticalsSubscribed: user.verticles_count || 0,
+        registeredOn: user.created_at || 'N/A',
+        status,
+        statusColor,
+        textColor,
+        action: {
+            view: () => handleView(user.id),
+            delete: () => handleDelete(user.id),
+            share: () => handleShare(user.id),
+        },
+    };
+};
+
+// Example event handlers
+const handleView = (id) => {
+    console.log(`Viewing user ${id}`);
+};
+
+const handleDelete = (id) => {
+    console.log(`Deleting user ${id}`);
+};
+
+const handleShare = (id) => {
+    const editScreenUrl = `https://yourwebsite.com/edit/${id}`;
+    navigator.clipboard.writeText(editScreenUrl);
+    console.log(`Copied URL: ${editScreenUrl}`);
+};
