@@ -81,6 +81,10 @@ div {
   --color-slate-700: #5d6f7d;
   --color-electric-indigo: #2b20e8;
   --color-blue-700: #005fad;
+  --shadow-lavendar-card: 0px 3px 24px 0px #c4c3f726;
+  --shadow-soft-blue: 0px 8px 48px 0px #627ddd40;
+  --color-slate-gray: #6e6e8680;
+  --color-blue: #4a6d9c;
 }
 
 :root {
@@ -139,6 +143,7 @@ div {
   --color-slate-700: #5d6f7d;
   --color-electric-indigo: #2b20e8;
   --color-blue-700: #005fad;
+
   --spacing-percentage-120: 120%;
 }
 
@@ -291,6 +296,7 @@ select {
   float: right;
   margin: 0;
 }
+
 .pagination {
   margin-bottom: 0;
   display: flex;
@@ -303,13 +309,12 @@ select {
   background: transparent !important;
   border: none !important;
 }
+
 #example_wrapper .pagination .dt-paging-button.page-item.active button {
   background: #5825eb !important;
   padding-left: 16px !important;
   padding-right: 16px !important;
   border-radius: 10px !important;
-}
-#example_wrapper .pagination .dt-paging-button.page-item.disabled button {
 }
 
 .custom-datatable .p-datatable-table .p-datatable-thead tr {
@@ -443,5 +448,6 @@ select {
   border-radius: 16px !important;
 }
 
-
-
+.bg-gradient-primary {
+  background: linear-gradient(95.35deg, #396cf1 24.64%, #39c5f1 74.69%);
+}

@@ -2,14 +2,14 @@ import { defineStore } from "pinia";
 
 export const useCompanyStore = defineStore("companyStore", {
   state: () => ({
-    companies: JSON.parse(localStorage.getItem("companies")) || [],
+    companies: [],
     companyId: "",
     companyData: null,
+    isDetail: false, // Ensure it's initialized correctly
   }),
   actions: {
     setCompanies(data) {
       this.companies = data;
-      localStorage.setItem("companies", JSON.stringify(data));
     },
     setCompanyData(data) {
       this.companyData = data;
@@ -17,16 +17,22 @@ export const useCompanyStore = defineStore("companyStore", {
     setCompanyId(id) {
       this.companyId = id;
     },
+    toggleDetail() {
+      this.isDetail = !this.isDetail;
+    },
+  },
+  persist: {
+    paths: ["companies", "companyId", "companyData"],
   },
 });
 
-export const useUserStore = defineStore('userStore', {
-    state: () => ({
-        legDocDetails: null,
-    }),
-    actions: {
-        setLegDocDetails(data) {
-            this.legDocDetails = data;
-        }
-    }
+export const useUserStore = defineStore("userStore", {
+  state: () => ({
+    legDocDetails: null,
+  }),
+  actions: {
+    setLegDocDetails(data) {
+      this.legDocDetails = data;
+    },
+  },
 });

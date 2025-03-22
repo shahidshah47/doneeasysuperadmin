@@ -11,9 +11,13 @@ import router from './router'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
 import Aura from "@primeuix/themes/aura";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 createApp(App)
-    .use(createPinia())
+    .use(pinia)
     .use(router)
     .use(PrimeVue, {
         theme: {
