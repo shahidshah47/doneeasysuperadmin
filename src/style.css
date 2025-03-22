@@ -82,6 +82,8 @@ div {
   --color-electric-indigo: #2b20e8;
   --color-blue-700: #005fad;
   --shadow-lavendar-card: 0px 3px 24px 0px #c4c3f726;
+  --shadow-soft-blue: 0px 8px 48px 0px #627ddd40;
+  --color-slate-gray: #6e6e8680;
   --color-blue: #4a6d9c;
 }
 
@@ -141,6 +143,7 @@ div {
   --color-slate-700: #5d6f7d;
   --color-electric-indigo: #2b20e8;
   --color-blue-700: #005fad;
+
   --spacing-percentage-120: 120%;
 }
 

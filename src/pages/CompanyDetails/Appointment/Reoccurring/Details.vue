@@ -121,10 +121,10 @@
       />
 
       <DescriptionCard
-        title="Custom Title"
+        title="Additional terms"
         content="Custom content goes here..."
-        link="https://example.com"
         linkText="read more"
+        :lineClamp="3"
       />
     </div>
   </div>
