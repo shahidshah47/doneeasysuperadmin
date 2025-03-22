@@ -12,6 +12,7 @@ import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config';
 import Aura from "@primeuix/themes/aura";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import ToastService from 'primevue/toastservice';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -24,4 +25,5 @@ createApp(App)
             preset: Aura
         }
     })
+    .use(ToastService)
     .mount('#app')

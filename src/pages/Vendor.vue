@@ -2,33 +2,22 @@
 import { ref, onMounted, nextTick, onUnmounted, computed } from "vue";
 import api from "../api";
 // import DataTable from "datatables.net-bs5";
-import { convertUserData, transformData } from "../utils/helper";
+import { convertUserData, getStatusId, transformData } from "../utils/helper";
 import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore } from "../store";
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { IconField, InputIcon, InputText } from "primevue";
+import { IconField, InputIcon, InputText, useToast } from "primevue";
 import { FilterMatchMode } from '@primevue/core/api';
-import { productsContants } from "../utils/constants";
-
 import Dropdown from "primevue/dropdown";
-import Calendar from "primevue/calendar";
-import Button from "primevue/button";
-
-
 
 const store = useCompanyStore();
 const companiesData = ref([]);
 const loading = ref(true);
 const error = ref(null);
-const searchQuery = ref("");
 const statusBtn = ref(1);
-const tableRef = ref(null);
-const entriesPerPage = ref(10); // Default entries per page
-const paginationInfoData = ref(null);
-
 const router = useRouter();
-const route = useRoute();
+const toast = useToast();
 
 const getImagePath = (imageName) => {
     return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
@@ -76,6 +65,7 @@ const fetchData = async (id) => {
 
         if (response?.status === 200) {
             const { data } = response.data;
+            toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
             companiesData.value = data.data?.map(item => convertUserData(item));
             store.setCompanies(transformData(data.data));
         }
@@ -107,6 +97,7 @@ const copyUrl = (id) => {
 const statusOptions = ["Active", "Deactivated", "Inactive", "Monitory", "Banned"];
 const filters = ref({
     id: { value: null, matchMode: FilterMatchMode.EQUALS },
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
     "fullName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
     role: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -133,18 +124,34 @@ const getStatusClass = (status) => {
             return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
     }
 };
+
 const handleDelete = async (id) => {
     try {
         const response = await api.post(`/superadmin/del-user`, { user_id: id });
-        console.log(response, "res delete");
         if (response.status === 200) {
-            
+            toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
         }
     } catch (err) {
         error.value = "Error fetching data";
         console.error("Error in fetchData:", err);
     }
 };
+
+const updateStatus = async (data) => {
+    try {
+        const response = await api.post("/superadmin/update-status", {
+            user_id: data?.id,
+            status: getStatusId(data?.status)
+        });
+        if (response.status === 200) {
+            fetchData(statusBtn.value);
+        }
+    } catch (err) {
+        error.value = "Error fetching data";
+        console.error(err);
+    }
+};
+
 </script>
 
 <template>
@@ -186,7 +193,7 @@ const handleDelete = async (id) => {
                 v-model:filters="filters" 
                 paginator 
                 :rows="5"
-                :globalFilterFields="['companyName.name', 'fullName.name', 'role']"
+                :globalFilterFields="['id', 'companyName.name', 'fullName.name', 'role']"
                 :rowsPerPageOptions="[5, 10, 20, 50]" 
                 tableStyle="min-width: 50rem" 
                 class="custom-datatable"
@@ -202,7 +209,7 @@ const handleDelete = async (id) => {
                         <div class="flex gap-3">
                             <div class="flex justify-end">
                                 <IconField>
-                                    <InputText v-model="filters['companyName.name'].value" placeholder="Search" class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5" />
+                                    <InputText v-model="filters['global'].value" placeholder="Search" class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5" />
                                     <InputIcon>
                                         <i class="fas fa-search"></i>
                                     </InputIcon>
@@ -276,7 +283,7 @@ const handleDelete = async (id) => {
 
                 <Column field="status" header="Status">
                     <template #body="slotProps">
-                        <Dropdown v-model="slotProps.data.status" :options="statusOptions" :style="getStatusClass(slotProps.data.status)"
+                        <Dropdown v-model="slotProps.data.status" :options="statusOptions" @change="updateStatus(slotProps.data)" :style="getStatusClass(slotProps.data.status)"
                             class="p-dropdown-sm font-bold"></Dropdown>
                     </template>
                 </Column>
