@@ -63,144 +63,7 @@ const dashboardStats = ref([
         timePeriod: "Current Month",
         percentageColor: "#FFE5E5",
         textColor: "#FF5555"
-    },
-
-
-]);
-
-const yearlyAnalyticsData = ref([
-    {
-        month: "January",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "February",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "March",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "April",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "May",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "June",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "July",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "August",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "September",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "October",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "November",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
-    {
-        month: "December",
-        totalVendor: "39,7892",
-        activeMembers: "15,045",
-        newSubscribe: "1,200",
-        inactive: "200",
-        totalVendorPercentage: "20%",
-        activeMembersPercentage: "20%",
-        newSubscribePercentage: "20%",
-        inactivePercentage: "-12%",
-    },
+    }
 ]);
 
 const fetchData = async (id) => {
@@ -213,11 +76,9 @@ const fetchData = async (id) => {
 
         if (response?.status === 200) {
             const { data } = response.data;
-            // console.log(data?.data, "data from companies");
             companiesData.value = data.data?.map(item => convertUserData(item));
             store.setCompanies(transformData(data.data));
         }
-
     } catch (err) {
         error.value = "Error fetching data";
         console.error("Error in fetchData:", err);
@@ -232,62 +93,18 @@ onMounted(() => {
     fetchData(1);
 });
 
-// const handleInitComplete = () => {
-//     // Bind external search input to DataTable search
-//     const externalSearch = document.getElementById('external-search');
-//     if (externalSearch) {
-//         externalSearch.addEventListener('keyup', function () {
-//             tableRef.value.search(this.value).draw();
-//         });
-//     }
-
-//     // Bind external dropdown to DataTable page length
-//     const entriesDropdown = document.getElementById('entries-dropdown');
-//     if (entriesDropdown) {
-//         entriesDropdown.addEventListener('change', function () {
-//             tableRef.value.page.len(this.value).draw();
-//             // console.log(tableRef.value, this.value, tableRef.value.page.info(), "Dasdasd");
-//             const info = tableRef.value.page.info();
-//             paginationInfoData.value = info;
-//             const paginationInfo = document.getElementById('pagination-info');
-//             if (paginationInfo) {
-//                 paginationInfo.textContent = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
-//             }
-//         });
-//     }
-
-//     // Update external pagination info on table redraw
-//     tableRef?.value?.on('draw', function () {
-//         const info = tableRef.value.page.info();
-
-//         paginationInfoData.value = info;
-//         const paginationInfo = document.getElementById('pagination-info');
-//         if (paginationInfo) {
-//             paginationInfo.textContent = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
-//         }
-//     });
-
-//     // Trigger initial pagination info update
-//     tableRef?.value?.draw();
-// };
-
 const handleFetchVendor = (id) => {
     fetchData(id);
     statusBtn.value = id;
 };
 
 const selectedCompany = ref();
-
 const copyUrl = (id) => {
     const location = window.location;
     navigator.clipboard.writeText(location.origin + "/super-admin/company-details/" + id + "/info");
-    alert('URL copied to clipboard!');
 };
 
-// Status dropdown options
 const statusOptions = ["Active", "Deactivated", "Inactive", "Monitory", "Banned"];
-
-// Filters for all fields
 const filters = ref({
     id: { value: null, matchMode: FilterMatchMode.EQUALS },
     "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -300,8 +117,6 @@ const filters = ref({
     verticlesSubscribed: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
     registeredOn: { value: null, matchMode: FilterMatchMode.DATE_IS },
 });
-
-// Function to get status-based styling
 const getStatusClass = (status) => {
     switch (status) {
         case "Active":
@@ -318,7 +133,18 @@ const getStatusClass = (status) => {
             return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
     }
 };
-
+const handleDelete = async (id) => {
+    try {
+        const response = await api.post(`/superadmin/del-user`, { user_id: id });
+        console.log(response, "res delete");
+        if (response.status === 200) {
+            
+        }
+    } catch (err) {
+        error.value = "Error fetching data";
+        console.error("Error in fetchData:", err);
+    }
+};
 </script>
 
 <template>
@@ -472,7 +298,7 @@ const getStatusClass = (status) => {
                         <div class="flex gap-2">
                             <button class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer" @click="handleClickToDetails(slotProps.data?.id)">
                                 <i class="fa-regular fa-eye text-primary"></i></button>
-                            <button class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer">
+                            <button class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer" @click="handleDelete(slotProps.data?.id)">
                                 <i class="fa-regular fa-trash-can text-primary"></i></button>
                             <button class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer" @click="copyUrl(slotProps.data.id)">
                                 <i class="fa-regular fa-share-from-square text-primary"></i></button>
@@ -483,70 +309,6 @@ const getStatusClass = (status) => {
         </div>
     </div>
 
-    <div class="modal fade" id="analyticsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="analyticsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="analyticsModalLabel">Yearly Analytics</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <table class="table table-hover table-striped mb-0">
-                        <thead class="bg-body-secondary">
-                            <tr class="table-active text-center">
-                                <th>Month</th>
-                                <th>Total Vendor</th>
-                                <th>Active Members</th>
-                                <th>New Subscribe</th>
-                                <th>Inactive</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(data, index) in yearlyAnalyticsData" :key="index">
-                                <td>{{ data.month }}</td>
-                                <td class="text-center">{{ data.totalVendor }}
-                                    <span class="text-success">
-                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
-                                            {{ data.totalVendorPercentage }}
-                                        </span>
-                                    </span>
-                                </td>
-                                <td class="text-center">{{ data.activeMembers }}
-                                    <span class="text-success">
-                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
-                                            {{ data.activeMembersPercentage }}
-                                        </span>
-                                    </span>
-                                </td>
-                                <td class="text-center">{{ data.newSubscribe }}
-                                    <span class="text-success">
-                                        <span class="border-0 rounded-2 p-1" style="background-color: #D6FFEF;">
-                                            {{ data.newSubscribePercentage }}
-                                        </span>
-                                    </span>
-                                </td>
-                                <td class="text-center">{{ data.inactive }}
-                                    <span class="text-danger">
-                                        <span class="border-0 rounded-2 p-1" style="background-color: #FFE5E5;">
-                                            {{ data.inactivePercentage }}
-                                        </span>
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr class="table-active text-center fw-bold">
-                                <td>Total</td>
-                                <td>1747025.14</td>
-                                <td>26557581.00</td>
-                                <td>1747025.14</td>
-                                <td>1747025.14</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 </template>
 
 <style scoped>
