@@ -8,10 +8,28 @@
     <div>
       <p v-if="subText" class="text-secondary mb-0">{{ subText }}</p>
       <p class="fs-6 fw-semibold mb-0">{{ mainText }}</p>
-      <p v-if="linkText" class="text-primary text-sm mb-0">{{ linkText }}</p>
+      <p
+        v-if="linkText"
+        class="text-primary text-sm mb-0 cursor-pointer"
+        @click="handleClick"
+      >
+        {{ linkText }}
+      </p>
     </div>
   </div>
 </template>
+
+<script setup>
+import { storeToRefs } from "pinia";
+import { useCompanyStore } from "../../../store";
+
+const companyStore = useCompanyStore();
+const { isDetail } = storeToRefs(companyStore);
+
+const handleClick = () => {
+  companyStore.toggleCompanyDetail();
+};
+</script>
 
 <script>
 export default {

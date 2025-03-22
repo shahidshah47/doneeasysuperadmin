@@ -7,18 +7,20 @@ import { storeToRefs } from "pinia";
 import Breadcrumb from "../components/Breadcrumb.vue";
 import SideBar from "../components/Sidebar.vue";
 import TopBar from "../components/TopBar.vue";
-import CompanyDetailsModel from "../components/common/CompanyDetailsModel/CompanyDetailsModel.vue";
+import DetailsModel from "../components/common/DetailsModel/DetailsModel.vue";
+import CompanyModal from "../components/common/CompanyModal/CompanyModal.vue";
 
 const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
-const { isDetail } = storeToRefs(companyStore);
+const { isDetail, isCompanyDetail } = storeToRefs(companyStore);
+console.log("🚀 ~ isCompanyDetail:", isCompanyDetail.value);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
 
 // Prevent scrolling when isDetail is true
 watchEffect(() => {
-  if (isDetail.value) {
+  if (isDetail.value || isCompanyDetail.value) {
     document.body.classList.add("overflow-hidden");
   } else {
     document.body.classList.remove("overflow-hidden");
@@ -53,5 +55,9 @@ if (!localStorage?.getItem("token")) {
   </div>
 
   <!-- Company Details Modal -->
-  <CompanyDetailsModel v-if="isDetail" @close="companyStore.isDetail = false" />
+  <DetailsModel v-if="isDetail" @close="companyStore.isDetail = false" />
+  <CompanyModal
+    v-if="isCompanyDetail"
+    @close="companyStore.isCompanyDetail = false"
+  />
 </template>
