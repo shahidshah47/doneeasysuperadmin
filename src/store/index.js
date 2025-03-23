@@ -5,7 +5,8 @@ export const useCompanyStore = defineStore("companyStore", {
     companies: [],
     companyId: "",
     companyData: null,
-    isDetail: false, // Ensure it's initialized correctly
+    isDetail: false,
+    isCompanyDetail: false,
   }),
   actions: {
     setCompanies(data) {
@@ -19,6 +20,9 @@ export const useCompanyStore = defineStore("companyStore", {
     },
     toggleDetail() {
       this.isDetail = !this.isDetail;
+    },
+    toggleCompanyDetail() {
+      this.isCompanyDetail = !this.isCompanyDetail;
     },
   },
   persist: {

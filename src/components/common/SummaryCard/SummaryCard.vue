@@ -7,14 +7,26 @@
       {{ description }}
       <a
         v-if="readMoreLink"
-        :href="readMoreLink"
-        class="!text-vivid-purple font-semibold text-sm font-theme appearance-none !no-underline hover:underline"
+        @click="handleClick"
+        class="!text-vivid-purple font-semibold text-sm font-theme appearance-none !no-underline hover:underline cursor-pointer"
       >
         {{ readMoreText }}
       </a>
     </p>
   </div>
 </template>
+
+<script setup>
+import { storeToRefs } from "pinia";
+import { useCompanyStore } from "../../../store";
+
+const companyStore = useCompanyStore();
+const { isDetail } = storeToRefs(companyStore);
+
+const handleClick = () => {
+  companyStore.toggleDetail();
+};
+</script>
 
 <script>
 export default {
