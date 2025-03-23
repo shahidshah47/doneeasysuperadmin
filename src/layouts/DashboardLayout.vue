@@ -9,12 +9,14 @@ import SideBar from "../components/Sidebar.vue";
 import TopBar from "../components/TopBar.vue";
 import DetailsModel from "../components/common/DetailsModel/DetailsModel.vue";
 import CompanyModal from "../components/common/CompanyModal/CompanyModal.vue";
+import MaterialsModal from "../components/common/MaterialsModal/MaterialsModal.vue";
+import ServicesModal from "../components/common/ServicesModal/ServicesModal.vue";
 
 const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
-const { isDetail, isCompanyDetail } = storeToRefs(companyStore);
-console.log("🚀 ~ isCompanyDetail:", isCompanyDetail.value);
+const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails } =
+  storeToRefs(companyStore);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
 
@@ -56,6 +58,15 @@ if (!localStorage?.getItem("token")) {
 
   <!-- Company Details Modal -->
   <DetailsModel v-if="isDetail" @close="companyStore.isDetail = false" />
+  <MaterialsModal
+    v-if="isMaterialDetails"
+    @close="companyStore.isMaterialDetails = false"
+  />
+  <ServicesModal
+    v-if="isServiceDetails"
+    @close="companyStore.isServiceDetails = false"
+  />
+
   <CompanyModal
     v-if="isCompanyDetail"
     @close="companyStore.isCompanyDetail = false"

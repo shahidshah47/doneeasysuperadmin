@@ -7,6 +7,8 @@ export const useCompanyStore = defineStore("companyStore", {
     companyData: null,
     isDetail: false,
     isCompanyDetail: false,
+    isServiceDetails: false,
+    isMaterialDetails: false,
   }),
   actions: {
     setCompanies(data) {
@@ -23,6 +25,12 @@ export const useCompanyStore = defineStore("companyStore", {
     },
     toggleCompanyDetail() {
       this.isCompanyDetail = !this.isCompanyDetail;
+    },
+    toggleIsServiceDetails() {
+      this.isServiceDetails = !this.isServiceDetails;
+    },
+    toggleIsMaterialDetails() {
+      this.isMaterialDetails = !this.isMaterialDetails;
     },
   },
   persist: {
