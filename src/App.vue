@@ -5,7 +5,7 @@ import { Toast } from 'primevue';
 
 <template>
   <div class="min-h-screen">
-    <Toast position="bottom-right" />
+    <Toast position="top-right" />
     <router-view />
   </div>
 </template>

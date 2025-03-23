@@ -366,6 +366,7 @@ select {
 
 .custom-datatable .p-datatable-tbody > tr > td {
   border-width: 0;
+  max-width: 250px;
 }
 
 /* Pagination container */

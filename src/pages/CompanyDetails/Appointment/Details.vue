@@ -193,7 +193,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import BreakDown from "../../../components/common/BreakDown/BreakDown.vue";
 import DescriptionCard from "../../../components/common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../../../components/common/FileCard/FileCard.vue";
@@ -207,22 +207,22 @@ import StarRating from "../../../components/common/StarRating/StarRating.vue";
 import SummaryCard from "../../../components/common/SummaryCard/SummaryCard.vue";
 import UserProfileCard from "../../../components/common/UserProfileCard/UserProfileCard.vue";
 
-export default {
-  components: {
-    InfoDisplay,
-    ProfileCard,
-    SummaryCard,
-    SectionHeading,
-    UserProfileCard,
-    StarRating,
-    LocationCard,
-    FileCard,
-    DescriptionCard,
-    BreakDown,
-    PaymentCard,
-    ServiceCard,
-  },
-};
+// export default {
+//   components: {
+//     InfoDisplay,
+//     ProfileCard,
+//     SummaryCard,
+//     SectionHeading,
+//     UserProfileCard,
+//     StarRating,
+//     LocationCard,
+//     FileCard,
+//     DescriptionCard,
+//     BreakDown,
+//     PaymentCard,
+//     ServiceCard,
+//   },
+// };
 </script>
 
 <style scoped>
