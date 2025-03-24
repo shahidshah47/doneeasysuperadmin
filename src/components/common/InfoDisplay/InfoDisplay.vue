@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="className">
     <p class="text-vivid-purple text-sm leading-4 font-normal mb-0">
       {{ label }}
     </p>
@@ -19,6 +19,10 @@ export default {
     value: {
       type: String,
       required: true,
+    },
+    className: {
+      type: String,
+      default: "",
     },
   },
 };

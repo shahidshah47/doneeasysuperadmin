@@ -298,6 +298,7 @@ select {
   float: right;
   margin: 0;
 }
+
 .pagination {
   margin-bottom: 0;
   display: flex;
@@ -310,15 +311,175 @@ select {
   background: transparent !important;
   border: none !important;
 }
+
 #example_wrapper .pagination .dt-paging-button.page-item.active button {
   background: #5825eb !important;
   padding-left: 16px !important;
   padding-right: 16px !important;
   border-radius: 10px !important;
 }
-#example_wrapper .pagination .dt-paging-button.page-item.disabled button {
+
+.custom-datatable .p-datatable-table .p-datatable-thead tr {
+  background-color: var(--color-light-lilac) !important;
+}
+
+.custom-datatable
+  .p-datatable-table
+  .p-datatable-thead
+  .p-datatable-header-cell {
+  background-color: transparent;
+  color: #6e6e86;
+}
+
+.custom-datatable .p-datatable-table .p-select {
+  min-width: 140px;
+  max-width: 140px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: none;
+}
+.custom-datatable .p-datatable-table .p-select .p-select-label {
+  color: inherit;
+}
+
+.custom-datatable .p-datatable-paginator-bottom {
+  border: none;
+  border-width: 0 !important;
+  padding-top: 10px;
+}
+.custom-datatable .p-paginator-content {
+  width: 100%;
+}
+
+.custom-datatable .p-paginator-content .p-select {
+  margin-right: auto;
+  border-width: 0;
+  border: none;
+  box-shadow: none;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.custom-datatable .p-checkbox-checked .p-checkbox-box {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.custom-datatable
+  .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover)
+  .p-checkbox-box {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.custom-datatable .p-datatable-tbody > tr > td {
+  border-width: 0;
+  max-width: 250px;
+}
+
+/* Pagination container */
+.custom-datatable .p-paginator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 10px;
+}
+
+/* Page buttons */
+.custom-datatable .p-paginator .p-paginator-pages .p-paginator-page {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #6c757d;
+  background: transparent;
+  transition: all 0.3s;
+  border: none;
+}
+
+/* Active Page */
+.custom-datatable .p-paginator .p-paginator-pages .p-highlight {
+  background: #5a30f5 !important;
+  color: #fff !important;
+}
+
+/* Previous & Next Buttons */
+.custom-datatable .p-paginator .p-paginator-prev,
+.custom-datatable .p-paginator .p-paginator-next {
+  color: #6c757d;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+}
+
+/* Disabled Buttons */
+.custom-datatable .p-paginator .p-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Entries dropdown */
+.custom-datatable .p-dropdown {
+  border: none;
+  font-weight: bold;
+}
+
+.custom-datatable .p-paginator-page {
+  color: #868599 !important;
+  width: 45px;
+  height: 45px;
+}
+
+.custom-datatable .p-paginator-page.p-paginator-page-selected {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.p-select-list-container .p-select-option-selected {
+  background-color: #e7e7eb !important;
+  color: #5825eb !important;
+  font-weight: 700;
+}
+
+.p-select-list-container .p-select-list {
+  padding: 1rem;
+}
+.p-select-list-container {
+  border-radius: 1rem;
+  max-height: 100% !important;
+  min-width: 200px !important;
+}
+.p-select-overlay {
+  border-radius: 16px !important;
 }
 
 .bg-gradient-primary {
   background: linear-gradient(95.35deg, #396cf1 24.64%, #39c5f1 74.69%);
+}
+
+.vivid-gradient-scrollbar {
+  scroll-padding-left: 100px;
+}
+
+.vivid-gradient-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.vivid-gradient-scrollbar::-webkit-scrollbar-track {
+  background: var(--background);
+  border-radius: 10px;
+}
+
+.vivid-gradient-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    98.24deg,
+    #38e0b2 -18.55%,
+    #442ae8 28.45%,
+    #5925eb 64.63%,
+    #9e21ee 116.94%
+  );
+  border-radius: 10px;
 }

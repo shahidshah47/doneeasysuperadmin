@@ -42,21 +42,41 @@
               Laundry Services
             </h4>
 
-            <div class="row">
+            <div class="row g-2 mb-2">
               <div class="col-md-6">
-                <InfoDisplay label="Date" value="Sat, 19 Nov 2023" />
+                <InfoDisplay
+                  label="Date"
+                  value="Sat, 19 Nov 2023"
+                  className="flex flex-col gap-1"
+                />
               </div>
               <div class="col-md-6">
-                <InfoDisplay label="Time" value="10:30 AM" />
+                <InfoDisplay
+                  label="Time"
+                  value="10:30 AM"
+                  className="flex flex-col gap-1"
+                />
               </div>
               <div class="col-md-6">
-                <InfoDisplay label="Order Type" value="Online" />
+                <InfoDisplay
+                  label="Order Type"
+                  value="Online"
+                  className="flex flex-col gap-1"
+                />
               </div>
               <div class="col-md-6">
-                <InfoDisplay label="Payment Status" value="Paid" />
+                <InfoDisplay
+                  label="Payment Status"
+                  value="Paid"
+                  className="flex flex-col gap-1"
+                />
               </div>
               <div class="col-md-6">
-                <InfoDisplay label="Order Amount" value="$150.00" />
+                <InfoDisplay
+                  label="Order Amount"
+                  value="$150.00"
+                  className="flex flex-col gap-1"
+                />
               </div>
             </div>
 

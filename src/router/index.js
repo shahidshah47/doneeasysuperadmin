@@ -133,7 +133,7 @@ const routes = [
             { label: "Vendor", link: "/super-admin/vendor" },
             {
               label: "Site Survey",
-              link: "/super-admin/company-details/site-survey",
+              link: "/super-admin/company-details/:companyId/site-survey",
             },
           ],
         },
@@ -147,7 +147,27 @@ const routes = [
             { label: "Vendor", link: "/super-admin/vendor" },
             {
               label: "Site Survey",
-              link: "/super-admin/company-details/site-survey",
+              link: "/super-admin/company-details/:companyId/site-survey",
+            },
+            {
+              label: "Details",
+              link: "/super-admin/company-details/site-survey/details",
+            },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/company-details/site-survey/SurveyDetails/details",
+        component: () =>
+          import(
+            "../pages/CompanyDetails/SiteSurvey/SurveyDetails/Details.vue"
+          ),
+        meta: {
+          breadcrumb: [
+            { label: "Vendor", link: "/super-admin/vendor" },
+            {
+              label: "Site Survey",
+              link: "/super-admin/company-details/:companyId/site-survey",
             },
             {
               label: "Details",

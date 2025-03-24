@@ -131,102 +131,59 @@
       />
     </div>
   </div>
-
-  <h5 class="fw-semibold">Payment Terms</h5>
-  <div class="card border-0 rounded-3">
-    <div class="card-body">
-      <div class="row">
-        <PaymentCard
-          badgeText="1st payment"
-          paymentDescription="25% - After event reservation."
-          paymentDate="2020-05-17, 10:00 AM"
-          currency="AED"
-          amount="2300.00"
-          status="Paid"
-        />
+  <div class="row my-4 flex">
+    <div class="col-md-6 flex flex-col">
+      <SectionHeading
+        title="Schedule site survey "
+        customClass="!text-base !font-semibold text-dm-blue leading-5"
+      />
+      <div class="card border-0 rounded-3 flex-grow">
+        <div class="card-body position-relative">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <InfoDisplay
+                className="flex flex-col gap-1"
+                label="Survey No.1 Date"
+                value="Fri, 19 May 2023"
+              />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay
+                className="flex flex-col gap-1"
+                label="Survey No.1 Time"
+                value="1 PM - 2 PM"
+              />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay
+                className="flex flex-col gap-1"
+                label="Coordinator Name "
+                value="Eleanor Pena"
+              />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay
+                className="flex flex-col gap-1"
+                label="Coordinator Phone No."
+                value="+971 50 123 4567"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-
-  <BreakDown title="Offer Breakdown" @toggle="handleToggle" />
-
-  <div class="d-flex justify-content-between align-items-center">
-    <h5 class="fw-semibold !text-[20px] leading-5 text-dm-blue">
-      Quote for Services
-    </h5>
-    <button
-      @click="handleServices"
-      class="text-decoration-none text-primary !text-sm !font-semibold"
-    >
-      + Add Service
-    </button>
-  </div>
-
-  <div class="row row-gap-4 mb-5 mt-3">
-    <div class="col-md-4">
-      <ServiceCard
-        itemTitle="Item No 1"
-        sessionName="Session - Introduction"
-        serviceTitle="Service Description"
-        serviceDescription="Lorem ipsum dolor sit amet consectetur..."
-        editLink="/super-admin/company-details/info/authentication"
-        unitPriceLabel="Unit Price"
-        unitPrice="AED 12.00"
-        quantityLabel="Quantity"
-        quantity="24"
-        totalLabel="Total"
-        total="AED 288.00"
-        deliveryTimeLabel="Delivery Time"
-        deliveryTime="Not Specific"
-      />
-    </div>
-  </div>
-
-  <div class="d-flex justify-content-between align-items-center">
-    <h5 class="fw-semibold !text-[20px] leading-5 text-dm-blue">
-      Quote for Materials
-    </h5>
-    <button
-      @click="handleMaterials"
-      class="text-decoration-none text-primary !text-sm !font-semibold"
-    >
-      + Add Material
-    </button>
-  </div>
-
-  <div class="row row-gap-4 mb-5 mt-3">
-    <div class="col-md-4">
-      <ServiceCard
-        itemTitle="Item No 1"
-        sessionName="Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentu"
-        editLink="/super-admin/company-details/info/authentication"
-        unitPriceLabel="Unit Price"
-        unitPrice="AED 12.00"
-        quantityLabel="Quantity"
-        quantity="24"
-        totalLabel="Total"
-        total="AED 288.00"
-        deliveryTimeLabel="Procurement/lead time"
-        deliveryTime="12 Hours"
-      />
     </div>
   </div>
 </template>
 
 <script setup>
-import BreakDown from "../../../components/common/BreakDown/BreakDown.vue";
-import DescriptionCard from "../../../components/common/DescriptionCard/DescriptionCard.vue";
-import FileCard from "../../../components/common/FileCard/FileCard.vue";
-import InfoDisplay from "../../../components/common/InfoDisplay/InfoDisplay.vue";
-import LocationCard from "../../../components/common/LocationCard/LocationCard.vue";
-import PaymentCard from "../../../components/common/PaymentCard/PaymentCard.vue";
-import ProfileCard from "../../../components/common/ProfileCard/ProfileCard.vue";
-import SectionHeading from "../../../components/common/SectionHeading/SectionHeading.vue";
-import ServiceCard from "../../../components/common/ServiceCard/ServiceCard.vue";
-import StarRating from "../../../components/common/StarRating/StarRating.vue";
-import SummaryCard from "../../../components/common/SummaryCard/SummaryCard.vue";
-import UserProfileCard from "../../../components/common/UserProfileCard/UserProfileCard.vue";
-import { useCompanyStore } from "../../../store";
+import DescriptionCard from "../../../../components/common/DescriptionCard/DescriptionCard.vue";
+import FileCard from "../../../../components/common/FileCard/FileCard.vue";
+import InfoDisplay from "../../../../components/common/InfoDisplay/InfoDisplay.vue";
+import LocationCard from "../../../../components/common/LocationCard/LocationCard.vue";
+import ProfileCard from "../../../../components/common/ProfileCard/ProfileCard.vue";
+import SectionHeading from "../../../../components/common/SectionHeading/SectionHeading.vue";
+import SummaryCard from "../../../../components/common/SummaryCard/SummaryCard.vue";
+import UserProfileCard from "../../../../components/common/UserProfileCard/UserProfileCard.vue";
 </script>
 
 <style scoped>
