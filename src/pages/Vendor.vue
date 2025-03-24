@@ -41,6 +41,7 @@ const getImagePath = (imageName) => {
 
 const dashboardStats = ref([
     {
+        key: "total_vendors",
         title: "Total Vendor",
         number: "16,445",
         percentage: "20%",
@@ -49,11 +50,13 @@ const dashboardStats = ref([
         textColor: "#00995C"
     },
     {
+        key: "total_active_vendors",
         title: "Active Members",
         number: "15,045",
         timePeriod: "Current Month"
     },
     {
+        key: "total_new_vendors",
         title: "New Subscribe",
         number: "1,200",
         percentage: "20%",
@@ -62,6 +65,7 @@ const dashboardStats = ref([
         textColor: "#00995C"
     },
     {
+        key: "total_inactive_vendors",
         title: "Inactive",
         number: "200",
         percentage: "-12%",
@@ -71,10 +75,14 @@ const dashboardStats = ref([
     }
 ]);
 
-const fetchData = async (id, page) => {
+const fetchData = async (id, page, perPage = null) => {
     console.log(id, page, "id and page");
     try {
-        const response = await api.get(`/superadmin/dashboard?status=${id}&page=${page}`, { 
+        let url = `/superadmin/dashboard?status=${id}&page=${page}`;
+        if (perPage) {
+            url = `/superadmin/dashboard?status=${id}&page=${page}&per_page=${perPage}`;
+        };
+        const response = await api.get(url, { 
             headers: { 
                 Authorization: `Bearer ${localStorage?.getItem("token")}` 
             } 
@@ -83,7 +91,7 @@ const fetchData = async (id, page) => {
         if (response?.status === 200) {
             const { data } = response.data;
             vendorRes.value = data;
-            // console.log(data,"dasd");
+            dashboardStats.value = dashboardStats.value.map((item) => ({ ...item, number: data.stats[item.key] }));
             pagination.value = {
                 currentPage: data.current_page,
                 lastPage: data.last_page,
@@ -186,7 +194,7 @@ const updateStatus = async (data) => {
             status: getStatusId(data?.status)
         });
         if (response.status === 200) {
-            fetchData(statusBtn.value);
+            fetchData(statusBtn.value, 1);
         }
     } catch (err) {
         error.value = "Error fetching data";
@@ -194,15 +202,15 @@ const updateStatus = async (data) => {
     }
 };
 
+const handlePerPage = async (props) => {
+    fetchData(statusBtn.value, props[0], props[1]);
+};
+
 onMounted(() => { 
     nextTick(() => {
         fetchData(1, 1);
     })
 });
-
-const handleNextPage = (page) => {
-    console.log(page, "page");
-};
 </script>
 
 <template>
@@ -362,7 +370,7 @@ const handleNextPage = (page) => {
                         :pageCount="pageCount" :rows="rows"
                         :firstPageCallback="firstPageCallback"
                         :lastPageCallback="lastPageCallback"
-                        :rowChangeCallback="rowChangeCallback"
+                        :rowChangeCallback="rowChangeCallback" @perPageClick="(cPage, perPage) => handlePerPage(cPage, perPage)"
                         :prevPageCallback="prevPageCallback" @nextPageClick="(page) => fetchData(statusBtn, page)"
                         :nextPageCallback="nextPageCallback" :totalRecords="totalRecords"
                         :perPage="pagination.perPage" :totalEntries="pagination.total" />

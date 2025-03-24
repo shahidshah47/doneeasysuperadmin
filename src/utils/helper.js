@@ -201,7 +201,7 @@ export const convertAppointmentData = (appointment) => {
     let status;
     let statusColor;
     let textColor;
-    switch (appointment.status) {
+    switch (appointment.progress_status) {
         case 1:
             status = "Active";
             statusColor = "#D6FFEF";
@@ -250,6 +250,44 @@ export const convertAppointmentData = (appointment) => {
         },
         orderType: appointment.order.type === 1 ? "One-time" : "Reoccuring",
         expectedDateAndTime: appointment.delivery_date + " " + convertTimeTo12HourFormat(appointment.delivery_time),
-        orderAmount: appointment.order.total_budget
+        orderAmount: appointment.order.total_budget,
+        payment: getAppointPaymentStatus(appointment.paid_percentage),
+        progressState: getAppointProgressStatus(appointment.progress_status)
     };
 };
+
+export const getAppointPaymentStatus = (paidPercentage) => {
+    switch (paidPercentage) {
+        case "100":
+            return { name: "Released", bgColor: "#D6FFEF", color: "#00995C" };
+        case "50":
+            return { name: "Half Done", bgColor: "#D6FFEF", color: "#00995C" };
+        default:
+            return { name: "Pending", bgColor: "#FFE5E5", color: "#FF5555" }
+    }
+}
+
+export const getAppointProgressStatus = (status) => {
+    switch (status) {
+        case 1:
+            return { name: "Started", bgColor: "#D6FFEF", color: "#00995C" };
+        case 2:
+            return { name: "Reached", bgColor: "#D6FFEF", color: "#00995C" };
+        case 3:
+            return { name: "Working", bgColor: "#D6FFEF", color: "#00995C" };
+        case 4:
+            return { name: "Finished", bgColor: "#D6FFEF", color: "#00995C" };
+        case 5:
+            return { name: "Issue Reported", bgColor: "#FFE5E5", color: "#FF5555" };
+        case 6:
+            return { name: "Need More Time", bgColor: "#FFE5E5", color: "#FF5555" };
+        case 7:
+            return { name: "Nearly Finish", bgColor: "#D6FFEF", color: "#00995C" };
+        case 8:
+            return { name: "Need More Material", bgColor: "#FFE5E5", color: "#FF5555" };
+        case 9:
+            return { name: "Pending From Client", bgColor: "#FFE5E5", color: "#FF5555" };
+        default:
+            return { name: "Other", bgColor: "#E7E7EB", color: "#575672" };
+    }
+}

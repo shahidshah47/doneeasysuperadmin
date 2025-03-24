@@ -56,7 +56,7 @@ const handleSubmit = async (event) => {
         } else {
             error.value = null;
             const { data } = response.data;
-            localStorage?.setItem("user", data?.user);
+            localStorage?.setItem("user", JSON.stringify(data?.user));
             localStorage?.setItem("token", data?.token);
             router.push("/super-admin/vendor");
         }

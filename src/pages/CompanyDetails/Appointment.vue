@@ -7,29 +7,21 @@
       </keep-alive>
     </div>
     <div class="p-4 bg-white rounded-3 shadow relative">
-      <ThemeDatatable 
-        :value="appointmentsData" 
-        v-model:selection="selectedAppointment" 
-        v-model:filters="filters"
-        :filterFields="['id', 'organizationName.name', 'verticle.name', 'title.name', 'orderType', 'orderAmount']" 
-        :columns="columns" 
-        :paginator="true" 
-        :rows="20"
-        :rowsPerPageOptions="[5, 10, 20, 50]" 
-        :totalRecords="120" 
-        :totalPageCount="6"
-      >
+      <ThemeDatatable :value="appointmentsData" v-model:selection="selectedAppointment" v-model:filters="filters"
+        :filterFields="filterFields"
+        :columns="columns" :paginator="true" :rows="20" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="120"
+        :totalPageCount="6">
         <template #header>
           <div class="flex justify-between items-center mb-2">
             <div class="flex gap-3">
-              <button @click="handleFetchAppointment(1)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'}`">All</button>
-              <button @click="handleFetchAppointment(2)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'}`">Pending</button>
-              <button @click="handleFetchAppointment(3)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'}`">Schedule</button>
               <button @click="handleFetchAppointment(4)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 4 ? 'bg-primary text-white' : 'btn-light'}`">Completed</button>
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 4 ? 'bg-primary text-white' : 'btn-light'}`">All</button>
+              <button @click="handleFetchAppointment(1)"
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'}`">Pending</button>
+              <button @click="handleFetchAppointment(2)"
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'}`">Schedule</button>
+              <button @click="handleFetchAppointment(3)"
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'}`">Completed</button>
             </div>
             <div class="flex gap-3">
               <div class="flex justify-end">
@@ -64,7 +56,7 @@
         <template #title="{ data }">
           <div class="flex items-start gap-1 flex-col">
             <span class="">{{ data.title.name }}</span>
-            <span class="text-sm font-bold text-dm-blue">{{ data.title.description }}</span>
+            <span class="text-sm font-bold text-dm-blue line-clamp-1">{{ data.title.description }}</span>
           </div>
         </template>
         <template #verticle="{ data }">
@@ -75,13 +67,24 @@
           </div>
         </template>
         <template #orderType="{ data }">
-          <p class="text-md text-dm-blue font-bold">{{ data.orderType }}</p>
+          <div class="text-md text-dm-blue font-bold">{{ data.orderType }}</div>
         </template>
         <template #expectedDateAndTime="{ data }">
-          <p class="text-md text-dm-blue font-bold">{{ data.expectedDateAndTime }}</p>
+          <div class="text-md text-dm-blue font-bold">{{ data.expectedDateAndTime }}</div>
+        </template>
+        <template #payment="{ data }">
+          <div :class="`px-3 py-2 rounded-xl font-bold`" :style="{ 
+            backgroundColor: data.payment.bgColor, color: data.payment.color 
+          }">{{ data.payment.name }}</div>
         </template>
         <template #orderAmount="{ data }">
-          <p class="text-md text-dm-blue font-bold">{{ data.orderAmount }}</p>
+          <div class="flex gap-2 items-center">
+            <span class="text-primary font-semibold text-sm">AED</span>
+            <span class="text-2xl font-bold">{{ data.orderAmount ?? 0 }}</span>
+          </div>
+        </template>
+        <template #progressState="{ data }">
+          <div :class="`px-3 py-2 rounded-xl font-bold`" :style="{ backgroundColor: data.progressState.bgColor, color: data.progressState.color }">{{ data.progressState.name }}</div>
         </template>
         <template #actions="{ data }">
           <div class="flex gap-2">
@@ -106,7 +109,7 @@
           #container="{ first, last, page, pageCount, rows, firstPageCallback, lastPageCallback, rowChangeCallback, prevPageCallback, nextPageCallback, totalRecords }">
           <Pagination :first="first" :last="last" :page="page" :pageCount="pageCount" :rows="rows"
             :firstPageCallback="firstPageCallback" :lastPageCallback="lastPageCallback"
-            :rowChangeCallback="rowChangeCallback" :prevPageCallback="prevPageCallback"
+            :rowChangeCallback="rowChangeCallback" :prevPageCallback="prevPageCallback" @perPageClick="(cPage, perPage) => handlePerPage(cPage, perPage)"
             @nextPageClick="(page) => fetchData(statusBtn, page)" :nextPageCallback="nextPageCallback"
             :totalRecords="totalRecords" :perPage="pagination.perPage" :totalEntries="pagination.total" />
           <!-- <div class="flex gap-4 justify-between items-center w-full">
@@ -126,7 +129,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import api from "../../api";
 import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useRoute } from "vue-router";
@@ -141,7 +144,7 @@ const store = useCompanyStore();
 const appointmentsData = ref([]);
 const loading = ref(true);
 const error = ref(null);
-const statusBtn = ref(1);
+const statusBtn = ref(4);
 const route = useRoute();
 const toast = useToast();
 const pagination = ref({
@@ -155,14 +158,28 @@ const pagination = ref({
   prevPageUrl: null,
   links: []
 });
+const filterFields = ref([
+  'id', 
+  'organizationName.name', 
+  'verticle.name', 
+  'title.name', 
+  'orderType', 
+  'orderAmount',
+  'payment.name',
+  'progressState.name'
+]);
 
 // const getImagePath = (imageName) => {
 //   return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
 // };
 
-const fetchData = async (id, page = 1) => {
+const fetchData = async (id, page = 1, perPage = null) => {
   try {
-    const response = await api.get(`/superadmin/user/appointments?user_id=${route.params.companyId}&status=${id}&page=${page}`, {
+    let url = `/superadmin/user/appointments?user_id=${308}&status=${id}&page=${page}`
+    if (perPage) {
+      url = `/superadmin/user/appointments?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}`
+    }
+    const response = await api.get(url, {
       headers: {
         Authorization: `Bearer ${localStorage?.getItem("token")}`
       }
@@ -183,6 +200,7 @@ const fetchData = async (id, page = 1) => {
       };
       toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
       appointmentsData.value = data?.map(item => convertAppointmentData(item));
+      console.log(appointmentsData.value, "appointmentData value");
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -191,11 +209,17 @@ const fetchData = async (id, page = 1) => {
 };
 
 onMounted(() => {
-  fetchData(1);
+  nextTick(() => {
+    fetchData(statusBtn.value, 1);
+  })
 });
 
+const handlePerPage = async (props) => {
+  fetchData(statusBtn.value, props[0], props[1]);
+};
+
 const handleFetchAppointment = (id) => {
-  fetchData(id);
+  fetchData(id, 1);
   statusBtn.value = id;
 };
 
@@ -208,11 +232,11 @@ const copyUrl = (id) => {
 const statusOptions = ["In Progress", "On Location", "Waiting", "Cancelled"];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "organizationName", header: "Organization Name" },
-  { field: "title", header: "Title & Description" },
-  { field: "verticle", header: "Vertical" },
+  { field: "organizationName", header: "Organization Name", class: "w-48" },
+  { field: "title", header: "Title & Description", class: "w-48" },
+  { field: "verticle", header: "Vertical", class: "w-56" },
   { field: "orderType", header: "Order Type" },
-  { field: "expectedDateAndTime", header: "Expected Delivery Date & Time" },
+  { field: "expectedDateAndTime", header: "Expected Delivery Date & Time", class: "w-42" },
   { field: "payment", header: "Payment" },
   { field: "orderAmount", header: "Order Amount" },
   { field: "progressState", header: "Progress State" },
@@ -226,25 +250,10 @@ const filters = ref({
   "title.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
   "verticle.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
   orderType: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  payment: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  "payment.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
   orderAmount: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  progressState: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  "progressState.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-
-const getStatusClass = (status) => {
-  switch (status) {
-    case "In Progress":
-      return { backgroundColor: "#D6FFEF", color: "#00995C" }; // Green
-    case "On Location":
-      return { backgroundColor: "#D6FFEF", color: "#00995C" }; // Green
-    case "Waiting":
-      return { backgroundColor: "#FCEED9", color: "#DC8B13" }; // Yellow
-    case "Cancelled":
-      return { backgroundColor: "#FFE5E5", color: "#FF5555" }; // Red
-    default:
-      return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
-  }
-};
 
 const handleDelete = async (id) => {
   try {
