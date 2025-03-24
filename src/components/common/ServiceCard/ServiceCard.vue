@@ -15,7 +15,10 @@
           {{ serviceDescription }}
         </p>
       </div>
-      <div class="position-absolute end-0 me-2 mt-2 top-0">
+      <div
+        class="position-absolute end-0 me-2 mt-2 top-0"
+        @click="clickHandler"
+      >
         <a :href="editLink" class="text-reset">
           <i class="text-decoration-underline text-primary fa-pen fa-solid"></i>
         </a>
@@ -57,6 +60,7 @@ export default {
     total: String,
     deliveryTimeLabel: String,
     deliveryTime: String,
+    clickHandler: Function,
   },
 };
 </script>

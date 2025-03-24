@@ -134,12 +134,12 @@
     <h5 class="fw-semibold !text-[20px] leading-5 text-dm-blue">
       Quote for Services
     </h5>
-    <a
-      href="#"
+    <button
+      @click="handleServices"
       class="text-decoration-none text-primary !text-sm !font-semibold"
     >
       + Add Service
-    </a>
+    </button>
   </div>
 
   <div class="row row-gap-4 mb-5 mt-3">
@@ -166,12 +166,12 @@
     <h5 class="fw-semibold !text-[20px] leading-5 text-dm-blue">
       Quote for Materials
     </h5>
-    <a
-      href="#"
+    <button
+      @click="handleMaterials"
       class="text-decoration-none text-primary !text-sm !font-semibold"
     >
       + Add Material
-    </a>
+    </button>
   </div>
 
   <div class="row row-gap-4 mb-5 mt-3">
@@ -206,23 +206,21 @@ import ServiceCard from "../../../components/common/ServiceCard/ServiceCard.vue"
 import StarRating from "../../../components/common/StarRating/StarRating.vue";
 import SummaryCard from "../../../components/common/SummaryCard/SummaryCard.vue";
 import UserProfileCard from "../../../components/common/UserProfileCard/UserProfileCard.vue";
+import { useCompanyStore } from "../../../store";
 
-// export default {
-//   components: {
-//     InfoDisplay,
-//     ProfileCard,
-//     SummaryCard,
-//     SectionHeading,
-//     UserProfileCard,
-//     StarRating,
-//     LocationCard,
-//     FileCard,
-//     DescriptionCard,
-//     BreakDown,
-//     PaymentCard,
-//     ServiceCard,
-//   },
-// };
+const companyStore = useCompanyStore();
+
+const handleServices = () => {
+  companyStore.toggleIsServiceDetails();
+};
+
+const handleMaterials = () => {
+  companyStore.toggleIsMaterialDetails();
+};
+
+const handleToggle = () => {
+  console.log("BreakDown toggle clicked");
+};
 </script>
 
 <style scoped>

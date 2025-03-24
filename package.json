@@ -12,6 +12,7 @@
     "@headlessui/vue": "^1.7.22",
     "@primeuix/themes": "^1.0.0",
     "@tailwindcss/vite": "^4.0.9",
+    "@vuepic/vue-datepicker": "^11.0.2",
     "axios": "^1.8.1",
     "bootstrap": "^5.3.3",
     "datatables.net": "^2.2.2",
