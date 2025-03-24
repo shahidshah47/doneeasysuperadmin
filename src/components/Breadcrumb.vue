@@ -1,13 +1,16 @@
 <template>
-  <nav aria-label="breadcrumb">
+  <nav aria-label="breadcrumb" class="flex gap-4 items-center mb-4">
+    <router-link to="/" class="custom-text-dark">
+      <i class="fas fa-home"></i>
+    </router-link>
     <ol
-      class="custom-breadcrumb font-theme-bold flex items-center gap-4 !text-base"
+      class="custom-breadcrumb font-theme-bold flex m-0 items-center gap-4 !text-base"
     >
-      <li class="custom-breadcrumb-item">
+      <!-- <li class="custom-breadcrumb-item">
         <router-link to="/" class="custom-text-dark">
           <i class="fas fa-home"></i>
         </router-link>
-      </li>
+      </li> -->
       <li
         v-for="(crumb, index) in crumbs"
         :key="index"
@@ -24,11 +27,12 @@
         <router-link
           v-if="index !== crumbs.length - 1"
           :to="crumb.link"
+          :class="index !== 0 ? 'ml-4' : ''"
           class="custom-text-dark text-decoration-none font-theme-bold"
         >
           {{ crumb.label }}
         </router-link>
-        <span v-else class="font-theme-bold ml-4">{{ crumb.label }}</span>
+        <span v-else class="font-theme-bold" :class="index !== 0 ? 'ml-4' : ''">{{ crumb.label }}</span>
       </li>
     </ol>
   </nav>

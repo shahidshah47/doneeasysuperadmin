@@ -132,7 +132,7 @@
 import { ref, onMounted, nextTick } from "vue";
 import api from "../../api";
 import CompanyHeader from "../../components/CompanyHeader.vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore } from "../../store";
 import { IconField, InputIcon, InputText, Paginator, useToast } from "primevue";
 import { FilterMatchMode } from '@primevue/core/api';
@@ -146,6 +146,7 @@ const loading = ref(true);
 const error = ref(null);
 const statusBtn = ref(4);
 const route = useRoute();
+const router = useRouter();
 const toast = useToast();
 const pagination = ref({
   currentPage: 0,
@@ -173,11 +174,15 @@ const filterFields = ref([
 //   return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
 // };
 
+const handleClickToDetails = (id) => {
+  router.push("/super-admin/company-details/" + route.params.companyId + "/appointment/" + id + "/details");
+}
+
 const fetchData = async (id, page = 1, perPage = null) => {
   try {
-    let url = `/superadmin/user/appointments?user_id=${308}&status=${id}&page=${page}`
+    let url = `/superadmin/user/appointments?all=1&user_id=${308}&status=${id}&page=${page}`
     if (perPage) {
-      url = `/superadmin/user/appointments?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}`
+      url = `/superadmin/user/appointments?all=1&user_id=${308}&status=${id}&page=${page}&per_page=${perPage}`
     }
     const response = await api.get(url, {
       headers: {
@@ -200,7 +205,6 @@ const fetchData = async (id, page = 1, perPage = null) => {
       };
       toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
       appointmentsData.value = data?.map(item => convertAppointmentData(item));
-      console.log(appointmentsData.value, "appointmentData value");
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -224,9 +228,9 @@ const handleFetchAppointment = (id) => {
 };
 
 const selectedAppointment = ref();
-const copyUrl = (id) => {
+const copyUrl = () => {
   const location = window.location;
-  navigator.clipboard.writeText(location.origin + "/super-admin/company-details/" + id + "/info");
+  navigator.clipboard.writeText(location.origin + "/super-admin/company-details/appointment/details?companyId=" + route.params.companyId);
 };
 
 const statusOptions = ["In Progress", "On Location", "Waiting", "Cancelled"];

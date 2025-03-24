@@ -90,7 +90,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/appointment/details",
+        path: "/super-admin/company-details/:companyId/appointment/:appointmentId/details",
         component: () =>
           import("../pages/CompanyDetails/Appointment/Details.vue"),
         meta: {

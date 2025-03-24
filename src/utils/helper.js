@@ -172,7 +172,7 @@ export const getStatusId = (status) => {
         "Monitory": 4,
         "Banned": 5
     };
-    
+
     return statusMap[status] || null; // Return null if status is not found
 };
 
@@ -291,3 +291,45 @@ export const getAppointProgressStatus = (status) => {
             return { name: "Other", bgColor: "#E7E7EB", color: "#575672" };
     }
 }
+
+export const formatDateAndTime = (inputDate, inputTime = null) => {
+    // Part 1: Convert date to "Sat, 19 Nov 2023" format
+    const date = new Date(inputDate);
+    const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-US', options);
+
+    // Part 2: Convert time to "05:48 PM" format if provided
+    let formattedTime = '';
+    if (inputTime) {
+        const [hours, minutes, seconds] = inputTime.split(':');
+        const timeDate = new Date();
+        timeDate.setHours(hours, minutes, seconds || 0);
+
+        formattedTime = timeDate.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        }).toUpperCase();
+    }
+
+    return {
+        formattedDate,
+        formattedTime,
+        // Combined string if both date and time are provided
+        formattedDateTime: inputTime
+            ? `${formattedDate}, ${formattedTime}`
+            : formattedDate
+    };
+}
+
+export const getOrderType = (type) => {
+    switch (type) {
+        case 1:
+            return "One-time";
+        case 2:
+            return "Reoccurring";
+        default:
+            break;
+    }
+};
+

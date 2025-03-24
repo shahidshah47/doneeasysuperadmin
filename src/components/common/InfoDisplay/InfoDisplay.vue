@@ -1,25 +1,27 @@
 <template>
   <div>
-    <p class="text-vivid-purple text-sm leading-4 font-normal mb-0">
+    <p class="text-vivid-purple text-sm leading-4 font-normal mb-1" :class="props.labelClass">
       {{ label }}
     </p>
-    <p class="fw-semibold !text-base text-dm-blue font-theme mb-0">
+    <p :class="props.textClass" class="fw-bold text-base text-dm-blue font-theme mb-0">
       {{ value }}
     </p>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    label: {
-      type: String,
-      default: "Label",
-    },
-    value: {
-      type: String,
-      required: true,
-    },
+<script setup>
+import { defineProps } from 'vue';
+
+const props = defineProps({
+  label: {
+    type: String,
+    default: "Label"
   },
-};
+  value: {
+    type: String,
+    required: true
+  },
+  labelClass: String,
+  textClass: String,
+})
 </script>

@@ -1,9 +1,9 @@
 <template>
   <div class="col-md-6 d-flex align-items-center gap-2">
     <div
-      class="w-9 h-9 border-2 border-solid border-white-100 shadow-lavendar-card"
+      class="w-12 h-12 border-2 border-solid border-white-100 shadow-lavendar-card"
     >
-      <img :src="imageUrl" :alt="altText" width="32" class="rounded-lg" />
+      <img :src="imageUrl" :alt="altText" class="rounded-lg w-full h-full object-cover" />
     </div>
     <div>
       <p v-if="subText" class="text-secondary mb-0">{{ subText }}</p>
