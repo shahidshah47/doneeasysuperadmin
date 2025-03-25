@@ -190,7 +190,7 @@ export const convertTimeTo12HourFormat = (time24) => {
     hour = hour % 12 || 12;
 
     // Format the time as "hh:mm:ss AM/PM"
-    const time12 = `${hour.toString().padStart(2, '0')}:${minutes}:${seconds} ${period}`;
+    const time12 =  minutes && seconds && period ? `${hour.toString().padStart(2, '0')}:${minutes}:${seconds} ${period}` : '---';
 
     return time12;
 };
@@ -333,3 +333,13 @@ export const getOrderType = (type) => {
     }
 };
 
+export function getOrdinalNumber(index) {
+    const suffixes = ["th", "st", "nd", "rd"];
+    const mod10 = index % 10;
+    const mod100 = index % 100;
+
+    if (mod10 === 1 && mod100 !== 11) return `${index}st`;
+    if (mod10 === 2 && mod100 !== 12) return `${index}nd`;
+    if (mod10 === 3 && mod100 !== 13) return `${index}rd`;
+    return `${index}th`;
+}

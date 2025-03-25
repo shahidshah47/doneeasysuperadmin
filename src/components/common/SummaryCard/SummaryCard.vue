@@ -5,11 +5,8 @@
     </p>
     <p class="text-dm-blue font-sm leading-5 font-normal font-theme m-0">
       {{ description }}
-      <a
-        v-if="readMoreLink"
-        @click="handleClick"
-        class="!text-vivid-purple font-bold text-sm font-theme appearance-none !no-underline hover:underline cursor-pointer"
-      >
+      <a v-if="readMoreLink" @click="handleClick(description)"
+        class="!text-vivid-purple font-bold text-sm font-theme appearance-none !no-underline hover:underline cursor-pointer">
         {{ readMoreText }}
       </a>
     </p>
@@ -17,36 +14,33 @@
 </template>
 
 <script setup>
+import { defineProps } from "vue";
 import { storeToRefs } from "pinia";
 import { useCompanyStore } from "../../../store";
+
+const props = defineProps({
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  readMoreText: {
+    type: String,
+    default: "read more",
+  },
+  readMoreLink: {
+    type: String,
+    default: null,
+  },
+});
 
 const companyStore = useCompanyStore();
 const { isDetail } = storeToRefs(companyStore);
 
 const handleClick = () => {
-  companyStore.toggleDetail();
-};
-</script>
-
-<script>
-export default {
-  props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    readMoreText: {
-      type: String,
-      default: "read more",
-    },
-    readMoreLink: {
-      type: String,
-      default: null,
-    },
-  },
+  companyStore.toggleDetail(description);
 };
 </script>

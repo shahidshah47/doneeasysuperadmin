@@ -5,13 +5,10 @@ import api from "../api";
 import { convertUserData, getStatusId, transformData } from "../utils/helper";
 import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore } from "../store";
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
 import { Button, IconField, InputIcon, InputText, Paginator, useToast } from "primevue";
 import { FilterMatchMode } from '@primevue/core/api';
 import Dropdown from "primevue/dropdown";
 import ThemeDatatable from "../components/common/ThemeDatatable/ThemeDatatable.vue";
-import { vendorsConstant } from "../utils/constants";
 import Pagination from "../components/common/Pagination/Pagination.vue";
 
 const store = useCompanyStore();

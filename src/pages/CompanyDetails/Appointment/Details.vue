@@ -1,7 +1,7 @@
 <template>
   <div class="row my-4 flex" v-if="appointmentDetails">
     <div class="col-md-6 flex flex-col">
-      <SectionHeading title="Order Details" customClass="!text-base !font-semibold text-dm-blue leading-5" />
+      <SectionHeading title="Order Details" customClass="!text-base !font-bold text-dm-blue leading-5" />
 
       <div class="card border-0 rounded-3 flex-grow">
         <div class="card-body relative flex gap-2 flex-wrap flex-col">
@@ -38,79 +38,95 @@
       </div>
     </div>
 
-    <div class="col-md-3 flex flex-col">
-      <div class="d-flex">
-        <h5 class="fw-semibold !text-base !text-dm-blue">Assign to</h5>
-        <p class="!text-grayColor text-sm leading-5 !font-semibold mb-0 ms-auto font-theme">
-          View All
-        </p>
+    <div class="col-md-3 flex flex-col gap-2">
+      <div v-if="appointmentDetails.associate_user?.length > 0" class="h-full flex-1">
+        <div class="d-flex">
+          <h5 class="fw-bold !text-base !text-dm-blue">Assign to</h5>
+          <p class="!text-grayColor text-sm leading-5 !font-bold mb-0 ms-auto font-theme">
+            View All
+          </p>
+        </div>
+        <div v-for="(associate, index) in appointmentDetails.associate_user">
+          <UserProfileCard :key="index" :profileImage="associate.profile_picture.file_path" :name="associate.name"
+            :designation="associate.designation" :rating="4" />
+        </div>
       </div>
-      <UserProfileCard profileImage="../../../assets/images2/profile-1.png" name="Nancy Tolbert"
-        designation="Senior Manager" :rating="4" />
 
-      <h5 class="fw-semibold mt-3 !text-base !text-dm-blue">Order Location</h5>
-      <div class="flex-1 flex">
-        <LocationCard class="flex-grow h-full" address="123 Main St." imageSrc="../../../assets/images2/map-2.png"
-          buttonText="Open Map" />
+      <div v-if="appointmentDetails.offer.order.address" class="h-full flex-1">
+        <h5 class="fw-bold !text-base !text-dm-blue">Order Location</h5>
+        <LocationCard 
+          class="flex-grow h-full" 
+          :location="{ 
+            lat: Number(appointmentDetails?.offer?.order?.address?.lat), lng: Number(appointmentDetails?.offer?.order?.address?.lng) }"
+          :address="appointmentDetails.offer.order.address.address" buttonText="Open Map" />
       </div>
     </div>
 
     <div class="col-md-3 flex flex-col">
-      <h5 class="fw-semibold !text-base !text-dm-blue">Attachments</h5>
-      <FileCard fileIcon="../../../assets/images2/file-icon.png" fileName="Company Profile" fileSize="3.2mb" />
+      <h5 class="fw-bold !text-base !text-dm-blue">Attachments</h5>
+      <div v-for="(doc, index) in appointmentDetails.offer.order.documents">
+        <FileCard :key="index" fileIcon="../../../assets/images2/file-icon.png" :fileName="doc.file_name" :fileSize="doc.file_size" />
+      </div>
 
-      <DescriptionCard title="Additional terms" content="Custom content goes here..." linkText="read more"
+      <DescriptionCard title="Additional terms" :content="appointmentDetails.offer.additional_terms" linkText="read more"
         :lineClamp="3" />
     </div>
   </div>
 
-  <h5 class="fw-semibold">Payment Terms</h5>
-  <div class="card border-0 rounded-3">
-    <div class="card-body">
-      <div class="row">
-        <PaymentCard badgeText="1st payment" paymentDescription="25% - After event reservation."
-          paymentDate="2020-05-17, 10:00 AM" currency="AED" amount="2300.00" status="Paid" />
-      </div>
+  <div v-if="appointmentDetails?.offer.payment_terms.length > 0">
+    <h5 class="fw-bold !text-base !text-dm-blue">Payment Terms</h5>
+    <div class="bg-white rounded-xl p-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+      <PaymentCard :key="index" v-for="(paymentTerm, index) in appointmentDetails.offer.payment_terms" 
+        :badgeText="getOrdinalNumber(index + 1) + ' Payment'" 
+        :paymentDescription="paymentTerm.description"
+        :paymentDate="formatDateAndTime(paymentTerm.created_at)?.formattedDate" 
+        currency="AED" :amount="paymentTerm.amount" :statusClass="paymentTermsStatus(paymentTerm.status)?.gradient"
+        :status="paymentTermsStatus(paymentTerm.status)?.statusText" />
     </div>
   </div>
 
   <BreakDown title="Offer Breakdown" @toggle="handleToggle" />
 
-  <div class="d-flex justify-content-between align-items-center">
-    <h5 class="fw-semibold !text-[20px] leading-5 text-dm-blue">
-      Quote for Services
-    </h5>
-    <button @click="handleServices" class="text-decoration-none text-primary !text-sm !font-semibold">
-      + Add Service
-    </button>
-  </div>
-
-  <div class="row row-gap-4 mb-5 mt-3">
-    <div class="col-md-4">
-      <ServiceCard itemTitle="Item No 1" sessionName="Session - Introduction" serviceTitle="Service Description"
-        serviceDescription="Lorem ipsum dolor sit amet consectetur..."
-        editLink="/super-admin/company-details/info/authentication" unitPriceLabel="Unit Price" unitPrice="AED 12.00"
-        quantityLabel="Quantity" quantity="24" totalLabel="Total" total="AED 288.00" deliveryTimeLabel="Delivery Time"
-        deliveryTime="Not Specific" />
+  <div class="mb-4" v-if="appointmentDetails?.offer.services.length > 0">
+    <div class="flex justify-between items-center">
+      <h5 class="fw-bold !text-base leading-5 text-dm-blue">
+        Quote for Services
+      </h5>
+      <button @click="handleServices" class="text-decoration-none text-primary !text-sm !font-bold">
+        + Add Service
+      </button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <ServiceCard :key="index" v-for="(service, index) in appointmentDetails.offer.services"
+        :itemTitle="service.item_number" 
+        :sessionName="service.title" 
+        serviceTitle="Service Description"
+        :serviceDescription="service.description"
+        editLink="/super-admin/company-details/info/authentication" unitPriceLabel="Unit Price" :unitPrice="`AED ${service.unit_price}`"
+        quantityLabel="Quantity" :quantity="service.quantity" totalLabel="Total" :total="`AED ${service.total}`" deliveryTimeLabel="Delivery Time"
+        :deliveryTime="convertTimeTo12HourFormat(service.delivery_time.split(' ')[1])" />
     </div>
   </div>
 
-  <div class="d-flex justify-content-between align-items-center">
-    <h5 class="fw-semibold !text-[20px] leading-5 text-dm-blue">
-      Quote for Materials
-    </h5>
-    <button @click="handleMaterials" class="text-decoration-none text-primary !text-sm !font-semibold">
-      + Add Material
-    </button>
-  </div>
-
-  <div class="row row-gap-4 mb-5 mt-3">
-    <div class="col-md-4">
-      <ServiceCard itemTitle="Item No 1"
-        sessionName="Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentu"
-        editLink="/super-admin/company-details/info/authentication" unitPriceLabel="Unit Price" unitPrice="AED 12.00"
-        quantityLabel="Quantity" quantity="24" totalLabel="Total" total="AED 288.00"
-        deliveryTimeLabel="Procurement/lead time" deliveryTime="12 Hours" />
+  
+  <div class="" v-if="appointmentDetails?.offer.quotations.length > 0">
+    <div class="flex justify-between items-center">
+      <h5 class="fw-bold !text-base leading-5 text-dm-blue">
+        Quote for Materials
+      </h5>
+      <button @click="handleMaterials" class="text-decoration-none text-primary !text-sm !font-bold">
+        + Add Material
+      </button>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <ServiceCard :key="index" v-for="(quote, index) in appointmentDetails?.offer?.quotations"
+        :itemTitle="quote.item_title"
+        :sessionName="quote.description"
+        editLink="/super-admin/company-details/info/authentication" 
+        unitPriceLabel="Unit Price" :unitPrice="`AED ${quote.unit_price}`"
+        quantityLabel="Quantity" :quantity="quote.quantity" 
+        totalLabel="Total" :total="`AED ${quote.total}`"
+        deliveryTimeLabel="Procurement/lead time" :deliveryTime="convertTimeTo12HourFormat(quote.delivery_time.split(' ')[1])" />
     </div>
   </div>
 </template>
@@ -135,7 +151,8 @@ import api from '../../../api';
 import GoogleMapComponent from '../../../components/common/GoogleMapComponent.vue';
 import { GoogleMap, Marker } from 'vue3-google-map';
 import { useToast } from 'primevue';
-import { formatDateAndTime, getOrderType } from '../../../utils/helper';
+import { convertTimeTo12HourFormat, formatDateAndTime, getOrderType, getOrdinalNumber } from '../../../utils/helper';
+import { paymentTermsStatus } from '../../../utils/constants';
 
 const route = useRoute();
 const loading = ref(true);
@@ -161,8 +178,8 @@ const fetchAppointDetailsById = async (id) => {
   try {
     const response = await api.get("/superadmin/user/appointment/" + id);
     if (response.status === 200) {
-      console.log(response, "response fetch appoint details");
-      const { data, message } = response?.data?.data;
+      const { data, message } = response?.data;
+      console.log(data, "data");
       appointmentDetails.value = data;
       toast.add({ severity: 'success', summary: 'Success', detail: message, life: 3000 });
     }

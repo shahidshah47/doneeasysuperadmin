@@ -8,8 +8,8 @@
         {{ content }}
         <a
           role="button"
-          class="!text-vivid-purple font-semibold text-sm font-theme appearance-none !no-underline hover:underline cursor-pointer"
-          @click="handleClick"
+          class="!text-vivid-purple font-bold text-sm font-theme appearance-none !no-underline hover:underline cursor-pointer"
+          @click="handleClick(content)"
         >
           {{ linkText }}
         </a>
@@ -19,28 +19,23 @@
 </template>
 
 <script setup>
+import { defineProps } from "vue";
 import { storeToRefs } from "pinia";
 import { useCompanyStore } from "../../../store";
+
+const props = defineProps({
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  linkText: { type: String, required: true },
+  lineClamp: { type: Number, default: 2 },
+});
 
 const companyStore = useCompanyStore();
 const { isDetail } = storeToRefs(companyStore);
 
-const handleClick = () => {
-  companyStore.toggleDetail();
+const handleClick = (content) => {
+  companyStore.toggleDetail(content);
 };
-</script>
-
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  props: {
-    title: { type: String, required: true },
-    content: { type: String, required: true },
-    linkText: { type: String, required: true },
-    lineClamp: { type: Number, default: 2 },
-  },
-});
 </script>
 
 <style scoped>

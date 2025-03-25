@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex align-items-center justify-content-center my-4">
-    <span class="text-muted fw-bold mx-2">{{ title }}</span>
+    <span class="text-grayColor fw-regular mr-2 !text-base">{{ title }}</span>
     <div class="flex-grow-1 border-bottom"></div>
     <div
       class="d-flex align-items-center bg-white justify-content-center p-2 rounded-pill ms-3"

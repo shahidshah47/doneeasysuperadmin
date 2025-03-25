@@ -202,16 +202,15 @@ const handleClickToDetails = (id) => {
 
 const fetchData = async (id, page = 1, perPage = null) => {
   try {
-    let url = `/superadmin/user/appointments?all=1&user_id=${308}&status=${id}&page=${page}`
+    let url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}`
     if (perPage) {
-      url = `/superadmin/user/appointments?all=1&user_id=${308}&status=${id}&page=${page}&per_page=${perPage}`
+      url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}`
     }
     const response = await api.get(url, {
       headers: {
         Authorization: `Bearer ${localStorage?.getItem("token")}`
       }
     });
-    // console.log(response, "res from appointments");
     if (response?.status === 200) {
       const { data } = response.data;
       pagination.value = {
