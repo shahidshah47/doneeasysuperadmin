@@ -20,9 +20,9 @@ const surveyStore = useSurveyStore();
 const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails } =
   storeToRefs(companyStore);
 const { selectedNote } = storeToRefs(surveyStore);
-console.log("🚀 ~ selectedNote:", selectedNote.value);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
+const isOrderRoute = computed(() => route.path === "/super-admin/order");
 
 // Prevent scrolling when isDetail is true
 watchEffect(() => {
@@ -53,7 +53,8 @@ if (!localStorage?.getItem("token")) {
       <div class="p-4">
         <!-- TopBar -->
         <TopBar />
-        <Breadcrumb v-if="!isVendorRoute" class="pt-4" />
+        <Breadcrumb v-if="!isVendorRoute && !isOrderRoute" class="pt-4" />
+
         <!-- Main Content -->
         <router-view></router-view>
       </div>

@@ -16,11 +16,11 @@
         </p>
       </div>
       <div
-        class="position-absolute end-0 me-2 mt-2 top-0"
+        class="position-absolute end-0 me-2 mt-2 top-0 bg-light-lilac p-1 rounded"
         @click="clickHandler"
       >
         <a :href="editLink" class="text-reset">
-          <i class="text-decoration-underline text-primary fa-pen fa-solid"></i>
+          <img :src="imageUrl" alt="Edit Icon" class="icon-size" />
         </a>
       </div>
     </div>
@@ -61,6 +61,14 @@ export default {
     deliveryTimeLabel: String,
     deliveryTime: String,
     clickHandler: Function,
+  },
+  data() {
+    return {
+      imageUrl: new URL(
+        "../../../assets/image/icons/edit-2.svg",
+        import.meta.url
+      ).href,
+    };
   },
 };
 </script>

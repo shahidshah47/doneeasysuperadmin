@@ -51,6 +51,14 @@ const routes = [
           breadcrumb: [{ label: "Vendor", link: "/super-admin/vendor" }],
         },
       },
+
+      {
+        path: "/super-admin/order",
+        component: () => import("../pages/Order.vue"),
+        meta: {
+          breadcrumb: [{ label: "Vendor", link: "/super-admin/vendor" }],
+        },
+      },
       {
         path: "/super-admin/company-details/:companyId/info",
         component: () => import("../pages/CompanyDetails/Info.vue"),

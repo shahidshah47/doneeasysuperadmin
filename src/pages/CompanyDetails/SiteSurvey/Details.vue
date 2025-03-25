@@ -205,7 +205,6 @@ import { useSurveyStore } from "../../../store";
 const store = useSurveyStore();
 
 const handleNoteClick = (note) => {
-  console.log("🚀 ~ handleNoteClick ~ note:", note);
   store.setSelectedNote(note);
 };
 

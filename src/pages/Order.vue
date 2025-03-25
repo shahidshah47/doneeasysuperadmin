@@ -42,100 +42,20 @@ const pagination = ref({
   links: [],
 });
 
-const getImagePath = (imageName) => {
-  return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
-};
-
-const dashboardStats = ref([
-  {
-    title: "Total Vendor",
-    number: "16,445",
-    percentage: "20%",
-    timePeriod: "Lifetime",
-    percentageColor: "#D6FFEF",
-    textColor: "#00995C",
-  },
-  {
-    title: "Active Members",
-    number: "15,045",
-    timePeriod: "Current Month",
-  },
-  {
-    title: "New Subscribe",
-    number: "1,200",
-    percentage: "20%",
-    timePeriod: "Current Month",
-    percentageColor: "#D6FFEF",
-    textColor: "#00995C",
-  },
-  {
-    title: "Inactive",
-    number: "200",
-    percentage: "-12%",
-    timePeriod: "Current Month",
-    percentageColor: "#FFE5E5",
-    textColor: "#FF5555",
-  },
-]);
-
 const fetchData = async (id, page) => {
   console.log(id, page, "id and page");
-  try {
-    const response = await api.get(
-      `/superadmin/dashboard?status=${id}&page=${page}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage?.getItem("token")}`,
-        },
-      }
-    );
-
-    if (response?.status === 200) {
-      const { data } = response.data;
-      vendorRes.value = data;
-      // console.log(data,"dasd");
-      pagination.value = {
-        currentPage: data.current_page,
-        lastPage: data.last_page,
-        perPage: data.per_page,
-        total: data.total,
-        firstPageUrl: data.first_page_url,
-        lastPageUrl: data.last_page_url,
-        nextPageUrl: data.next_page_url,
-        prevPageUrl: data.prev_page_url,
-        links: data.links,
-      };
-      toast.add({
-        severity: "success",
-        summary: "Success",
-        detail: response?.data?.message,
-        life: 3000,
-      });
-      companiesData.value = data?.data?.map((item) => convertUserData(item));
-      store.setCompanies(transformData(data.data));
-    }
-  } catch (err) {
-    error.value = "Error fetching data";
-    console.error("Error in fetchData:", err);
-  }
 };
 
 const handleClickToDetails = (id) => {
   router.push("/super-admin/company-details/" + id + "/info");
 };
 
-const handleFetchVendor = (id, page) => {
+const handleFetchOrder = (id, page) => {
   fetchData(id, 1);
   statusBtn.value = id;
 };
 
 const selectedCompany = ref();
-const copyUrl = (id) => {
-  const location = window.location;
-  navigator.clipboard.writeText(
-    location.origin + "/super-admin/company-details/" + id + "/info"
-  );
-};
 
 const statusOptions = [
   "Active",
@@ -146,19 +66,16 @@ const statusOptions = [
 ];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "companyName", header: "Company Name" },
-  { field: "fullName", header: "Full Name" },
-  { field: "role", header: "Role" },
-  { field: "contact", header: "Contact / Email" },
-  { field: "totalRevenue", header: "Total Revenue Generated" },
-  { field: "totalSpending", header: "Total Spending" },
-  { field: "status", header: "Status" },
-  {
-    field: "verticalsSubscribed",
-    header: "List of Verticals Subscribed",
-    class: "w-40",
-  },
-  { field: "registeredOn", header: "Registered on DE Date", class: "w-32" },
+  { field: "name", header: "Organisation Name / ID" },
+  { field: "description", header: "Description" },
+  { field: "verticals", header: "Verticals" },
+  { field: "expectedStartDate", header: "Expected Start Date" },
+  { field: "expectedEndDate", header: "Expected End Date" },
+  { field: "noOfDays", header: "No. of Days" },
+  { field: "type", header: "Type" },
+  { field: "offers", header: "Offers" },
+  { field: "chats", header: "Chats" },
+  { field: "surveyRequest", header: "Survey Request" },
   { field: "actions", header: "Action" },
 ]);
 
@@ -166,8 +83,8 @@ const filters = ref({
   id: { value: null, matchMode: FilterMatchMode.EQUALS },
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "fullName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  role: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  //   "fullName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
+  //   role: { value: null, matchMode: FilterMatchMode.CONTAINS },
   contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
   totalRevenue: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
   totalSpending: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
@@ -190,24 +107,6 @@ const getStatusClass = (status) => {
       return { backgroundColor: "#FFE5E5", color: "#FF5555" }; // Red
     default:
       return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
-  }
-};
-
-const handleDelete = async (id) => {
-  try {
-    const response = await api.post(`/superadmin/del-user`, { user_id: id });
-    if (response.status === 200) {
-      toast.add({
-        severity: "success",
-        summary: "Success",
-        detail: response?.data?.message,
-        life: 3000,
-      });
-      fetchData(statusBtn.value);
-    }
-  } catch (err) {
-    error.value = "Error fetching data";
-    console.error("Error in fetchData:", err);
   }
 };
 
@@ -240,43 +139,7 @@ const handleNextPage = (page) => {
 <template>
   <div>
     <div class="flex justify-between items-center mb-4">
-      <div class="fs-4 fw-bold">Vendor</div>
-      <div class="fs-4">
-        <button class="btn btn-primary py-2 px-4">Add Vendor</button>
-      </div>
-    </div>
-
-    <div class="row mb-4" id="dashboard-stats">
-      <div
-        v-for="(stat, index) in dashboardStats"
-        :key="index"
-        class="col-md-3"
-      >
-        <div class="card border-0 shadow p-2">
-          <div class="card-header bg-white fw-bold border-bottom-0 mt-1">
-            {{ stat.title }}
-            <img class="float-end" :src="getImagePath('Frame 48096300.png')" />
-          </div>
-          <div class="card-body flex justify-between">
-            <div>
-              <p class="fs-3 fw-bold mb-0 !text-[3.5rem] leading-24">
-                {{ stat.number }}
-              </p>
-              <p class="fs-6 text-muted">{{ stat.timePeriod }}</p>
-            </div>
-            <div
-              v-if="stat.percentage"
-              class="self-center fs-6 p-2 rounded-2 fw-bold text-center ms-2"
-              :style="{
-                backgroundColor: stat.percentageColor || '#fff',
-                color: stat.textColor,
-              }"
-            >
-              {{ stat.percentage }}
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="fs-4 fw-bold">Order</div>
     </div>
 
     <div class="p-4 bg-white rounded-3 shadow relative">
@@ -297,7 +160,7 @@ const handleNextPage = (page) => {
           <div class="flex justify-between items-center mb-2">
             <div class="flex gap-3">
               <button
-                @click="handleFetchVendor(1)"
+                @click="handleFetchOrder(1)"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
                   statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'
                 }`"
@@ -305,20 +168,28 @@ const handleNextPage = (page) => {
                 All
               </button>
               <button
-                @click="handleFetchVendor(2)"
+                @click="handleFetchOrder(2)"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
                   statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
-                Approved
+                Active
               </button>
               <button
-                @click="handleFetchVendor(3)"
+                @click="handleFetchOrder(2)"
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                  statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
+                }`"
+              >
+                Pending
+              </button>
+              <button
+                @click="handleFetchOrder(3)"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
                   statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
-                Pending
+                Cancelled
               </button>
             </div>
             <div class="flex gap-3">
@@ -436,18 +307,6 @@ const handleNextPage = (page) => {
               @click="handleClickToDetails(data?.id)"
             >
               <i class="fa-regular fa-eye text-primary"></i>
-            </button>
-            <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="handleDelete(data?.id)"
-            >
-              <i class="fa-regular fa-trash-can text-primary"></i>
-            </button>
-            <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="copyUrl(data?.id)"
-            >
-              <i class="fa-regular fa-share-from-square text-primary"></i>
             </button>
           </div>
         </template>
