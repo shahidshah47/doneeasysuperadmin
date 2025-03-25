@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="className">
     <p class="text-vivid-purple text-sm leading-4 font-normal mb-1" :class="props.labelClass">
       {{ label }}
     </p>
@@ -21,6 +21,7 @@ const props = defineProps({
     type: String,
     required: true
   },
+  className: String,
   labelClass: String,
   textClass: String,
 })

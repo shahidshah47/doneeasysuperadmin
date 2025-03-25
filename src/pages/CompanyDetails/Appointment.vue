@@ -9,8 +9,8 @@
     <div class="p-4 bg-white rounded-3 shadow relative">
       <ThemeDatatable :value="appointmentsData" v-model:selection="selectedAppointment" v-model:filters="filters"
         :filterFields="filterFields"
-        :columns="columns" :paginator="true" :rows="20" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="120"
-        :totalPageCount="6">
+        :columns="columns" :paginator="true" :rows="20" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="pagination.total"
+        :totalPageCount="pagination.lastPage">
         <template #header>
           <div class="flex justify-between items-center mb-2">
             <div class="flex gap-3">
@@ -26,8 +26,11 @@
             <div class="flex gap-3">
               <div class="flex justify-end">
                 <IconField>
-                  <InputText v-model="filters['global'].value" placeholder="Search"
-                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5" />
+                  <InputText
+                    v-model="filters['global'].value"
+                    placeholder="Search"
+                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
+                  />
                   <InputIcon>
                     <i class="fas fa-search"></i>
                   </InputIcon>
@@ -37,7 +40,7 @@
                 <button class="btn btn-light bg-white border-0">
                   Filters by <i class="fas fa-filter"></i>
                 </button>
-                <span class="border-start mx-2" style="height: 24px;"></span>
+                <span class="border-start mx-2" style="height: 24px"></span>
                 <button class="btn btn-light bg-white border-0">
                   Columns <i class="fas fa-columns"></i>
                 </button>
@@ -45,12 +48,19 @@
             </div>
           </div>
         </template>
-        <template #id="{ data }"><span>{{ data.id }}</span></template>
+        <template #id="{ data }"
+          ><span>{{ data.id }}</span></template
+        >
         <template #organizationName="{ data }">
           <div class="flex items-center gap-2">
-            <img :src="data.organizationName.logo" alt="Company Logo"
-              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover" />
-            <span class="font-semibold text-dm-blue">{{ data.organizationName.name }}</span>
+            <img
+              :src="data.organizationName.logo"
+              alt="Company Logo"
+              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+            />
+            <span class="font-semibold text-dm-blue">{{
+              data.organizationName.name
+            }}</span>
           </div>
         </template>
         <template #title="{ data }">
@@ -61,9 +71,14 @@
         </template>
         <template #verticle="{ data }">
           <div class="flex items-center gap-2">
-            <img :src="data.verticle.image" alt="Company Logo"
-              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover" />
-            <span class="font-semibold text-dm-blue">{{ data.verticle.name }}</span>
+            <img
+              :src="data.verticle.image"
+              alt="Company Logo"
+              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+            />
+            <span class="font-semibold text-dm-blue">{{
+              data.verticle.name
+            }}</span>
           </div>
         </template>
         <template #orderType="{ data }">
@@ -90,16 +105,22 @@
           <div class="flex gap-2">
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="handleClickToDetails(data?.id)">
-              <i class="fa-regular fa-eye text-primary"></i></button>
+              @click="handleClickToDetails(data?.id)"
+            >
+              <i class="fa-regular fa-eye text-primary"></i>
+            </button>
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="handleDelete(data?.id)">
-              <i class="fa-regular fa-trash-can text-primary"></i></button>
+              @click="handleDelete(data?.id)"
+            >
+              <i class="fa-regular fa-trash-can text-primary"></i>
+            </button>
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="copyUrl(data?.id)">
-              <i class="fa-regular fa-share-from-square text-primary"></i></button>
+              @click="copyUrl(data?.id)"
+            >
+              <i class="fa-regular fa-share-from-square text-primary"></i>
+            </button>
           </div>
         </template>
       </ThemeDatatable>
@@ -135,7 +156,7 @@ import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore } from "../../store";
 import { IconField, InputIcon, InputText, Paginator, useToast } from "primevue";
-import { FilterMatchMode } from '@primevue/core/api';
+import { FilterMatchMode } from "@primevue/core/api";
 import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
 import { convertAppointmentData } from "../../utils/helper";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
@@ -157,8 +178,9 @@ const pagination = ref({
   lastPageUrl: null,
   nextPageUrl: null,
   prevPageUrl: null,
-  links: []
+  links: [],
 });
+
 const filterFields = ref([
   'id', 
   'organizationName.name', 
@@ -201,10 +223,17 @@ const fetchData = async (id, page = 1, perPage = null) => {
         lastPageUrl: response.data.last_page_url,
         nextPageUrl: response.data.next_page_url,
         prevPageUrl: response.data.prev_page_url,
-        links: response.data.links
+        links: response.data.links,
       };
-      toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
-      appointmentsData.value = data?.map(item => convertAppointmentData(item));
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message,
+        life: 3000,
+      });
+      appointmentsData.value = data?.map((item) =>
+        convertAppointmentData(item)
+      );
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -261,10 +290,17 @@ const filters = ref({
 
 const handleDelete = async (id) => {
   try {
-    const response = await api.post(`/superadmin/user/appointment/${id}/delete`);
+    const response = await api.post(
+      `/superadmin/user/appointment/${id}/delete`
+    );
     console.log(response, "resp from delete");
     if (response.status === 200) {
-      toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message,
+        life: 3000,
+      });
       fetchData(statusBtn.value);
     }
   } catch (err) {
@@ -272,5 +308,4 @@ const handleDelete = async (id) => {
     console.error("Error in fetchData:", err);
   }
 };
-
 </script>

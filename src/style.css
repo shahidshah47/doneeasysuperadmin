@@ -323,9 +323,12 @@ select {
   background-color: var(--color-light-lilac) !important;
 }
 
-.custom-datatable .p-datatable-table .p-datatable-thead .p-datatable-header-cell {
+.custom-datatable
+  .p-datatable-table
+  .p-datatable-thead
+  .p-datatable-header-cell {
   background-color: transparent;
-  color: #6E6E86;
+  color: #6e6e86;
 }
 
 .custom-datatable .p-datatable-table .p-select {
@@ -361,7 +364,9 @@ select {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
 }
-.custom-datatable .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover) .p-checkbox-box {
+.custom-datatable
+  .p-checkbox-checked:not(.p-disabled):has(.p-checkbox-input:hover)
+  .p-checkbox-box {
   background-color: var(--color-primary);
   border-color: var(--color-primary);
 }
@@ -434,8 +439,8 @@ select {
 }
 
 .p-select-list-container .p-select-option-selected {
-  background-color: #E7E7EB !important;
-  color: #5825EB !important;
+  background-color: #e7e7eb !important;
+  color: #5825eb !important;
   font-weight: 700;
 }
 
@@ -453,4 +458,28 @@ select {
 
 .bg-gradient-primary {
   background: linear-gradient(95.35deg, #396cf1 24.64%, #39c5f1 74.69%);
+}
+
+.vivid-gradient-scrollbar {
+  scroll-padding-left: 100px;
+}
+
+.vivid-gradient-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.vivid-gradient-scrollbar::-webkit-scrollbar-track {
+  background: var(--background);
+  border-radius: 10px;
+}
+
+.vivid-gradient-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    98.24deg,
+    #38e0b2 -18.55%,
+    #442ae8 28.45%,
+    #5925eb 64.63%,
+    #9e21ee 116.94%
+  );
+  border-radius: 10px;
 }
