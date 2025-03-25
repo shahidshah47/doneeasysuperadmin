@@ -48,3 +48,14 @@ export const useUserStore = defineStore("userStore", {
     },
   },
 });
+
+export const useSurveyStore = defineStore("surveyStore", {
+  state: () => ({
+    selectedNote: null,
+  }),
+  actions: {
+    setSelectedNote(data) {
+      this.selectedNote = data;
+    },
+  },
+});

@@ -1,7 +1,7 @@
 <script setup>
 import { computed, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useCompanyStore } from "../store";
+import { useCompanyStore, useSurveyStore } from "../store";
 import { storeToRefs } from "pinia";
 
 import Breadcrumb from "../components/Breadcrumb.vue";
@@ -11,12 +11,16 @@ import DetailsModel from "../components/common/DetailsModel/DetailsModel.vue";
 import CompanyModal from "../components/common/CompanyModal/CompanyModal.vue";
 import MaterialsModal from "../components/common/MaterialsModal/MaterialsModal.vue";
 import ServicesModal from "../components/common/ServicesModal/ServicesModal.vue";
+import NoteModal from "../components/common/NoteModal/NoteModal.vue";
 
 const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
+const surveyStore = useSurveyStore();
 const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails } =
   storeToRefs(companyStore);
+const { selectedNote } = storeToRefs(surveyStore);
+console.log("🚀 ~ selectedNote:", selectedNote.value);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
 
@@ -70,5 +74,10 @@ if (!localStorage?.getItem("token")) {
   <CompanyModal
     v-if="isCompanyDetail"
     @close="companyStore.isCompanyDetail = false"
+  />
+  <NoteModal
+    v-if="selectedNote"
+    :note="selectedNote"
+    @close="surveyStore.selectedNote = null"
   />
 </template>

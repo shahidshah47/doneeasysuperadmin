@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-2">
+  <div class="space-y-2 cursor-pointer" @click="handleClick">
     <h2 class="!text-base !text-vivid-purple fw-normal m-0">
       {{ title }}
     </h2>
@@ -41,6 +41,15 @@ export default {
     getSurveyImage(imageName) {
       return new URL(`../../../assets/image/${imageName}`, import.meta.url)
         .href;
+    },
+    handleClick() {
+      this.$emit("note-clicked", {
+        title: this.title,
+        content: this.content,
+        author: this.author,
+        timestamp: this.timestamp,
+        images: this.images,
+      });
     },
   },
 };
