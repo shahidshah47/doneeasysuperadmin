@@ -17,7 +17,7 @@ const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
 const surveyStore = useSurveyStore();
-const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails, modalDesc } =
+const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails, modalDesc, companyDetails } =
   storeToRefs(companyStore);
 const { selectedNote } = storeToRefs(surveyStore);
 
@@ -54,10 +54,10 @@ const closeAllModals = () => {
   // Ensure `overflow-hidden` is removed after state updates
   setTimeout(() => {
     if (
-      !isDetail.value &&
-      !isCompanyDetail.value &&
-      !isMaterialDetails.value &&
-      !isServiceDetails.value &&
+      !isDetail.value ||
+      !isCompanyDetail.value ||
+      !isMaterialDetails.value ||
+      !isServiceDetails.value ||
       !selectedNote.value
     ) {
       document.body.classList.remove("overflow-hidden");
@@ -91,6 +91,6 @@ const closeAllModals = () => {
   <DetailsModel v-if="isDetail" @close="closeAllModals" :description="modalDesc" />
   <MaterialsModal v-if="isMaterialDetails" @close="closeAllModals" />
   <ServicesModal v-if="isServiceDetails" @close="closeAllModals" />
-  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
+  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" :details="companyDetails" />
   <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
 </template>

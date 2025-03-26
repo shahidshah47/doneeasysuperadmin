@@ -116,7 +116,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/appointment/reoccurring/details",
+        path: "/super-admin/company-details/:companyId/appointment/:appointmentId/reoccurring/details",
         component: () =>
           import("../pages/CompanyDetails/Appointment/Reoccurring/Details.vue"),
         meta: {

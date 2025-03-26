@@ -20,43 +20,42 @@
         </button>
       </div>
       <div
-        class="flex flex-col !bg-white-100 rounded-bl-2xl rounded-br-2xl px-6 py-3 shadow-soft-blue"
+        v-if="details"
+        class="flex flex-col gap-4 !bg-white-100 rounded-bl-2xl rounded-br-2xl px-6 py-3 shadow-soft-blue"
       >
         <div class="flex items-center justify-between">
           <div class="flex flex-row items-center gap-6">
             <div class="h-28 w-28 rounded-lg flex items-center justify-center">
               <img
-                :src="profileImageUrl"
+                :src="details.company_logo.file_path"
                 alt="Company Logo"
                 class="w-full h-full rounded-md"
               />
             </div>
             <div>
-              <h1 className="!text-[22px] !font-semibold !text-dm-blue m-0">
-                XYZ Bito Group Pvt Ltd
+              <h1 class="!text-[22px] !font-semibold !text-dm-blue m-0">
+                {{ details.company_name }}
               </h1>
-              <p className="text-sm !text-vivid-purple m-0">
-                Joined DE January 2022
+              <p class="text-sm !text-vivid-purple m-0">
+                Joined {{ formatDateAndTime(details.created_at)?.formattedDate }}
               </p>
-              <div className="flex items-center mt-1">
+              <div class="flex items-center mt-1">
                 <StarRating :rating="4" :width="16" :height="16" />
                 <span class="ml-1 py-[2px] px-3 bg-light-lilac rounded-2xl">
-                  <span className=" text-sm !font-semibold !text-dm-blue"
-                    >4.5</span
-                  ></span
-                >
+                  <span class=" text-sm !font-semibold !text-dm-blue">4.5</span>
+                </span>
               </div>
             </div>
           </div>
           <button
-            className=" sm:mt-0 px-3 py-2 bg-primary text-white-100 text-sm !font-semibold !rounded-lg hover:bg-indigo-700 transition-colors uppercase"
+            class=" sm:mt-0 px-3 py-2 bg-primary text-white-100 text-sm !font-semibold !rounded-lg hover:bg-indigo-700 transition-colors uppercase"
           >
             View Details
           </button>
         </div>
         <div>
-          <h2 className="!text-[20px] !font-semibold">Summary</h2>
-          <div className="flex flex-row gap-10">
+          <h2 class="!text-[20px] !font-semibold">Summary</h2>
+          <div class="flex flex-row gap-10">
             <OrderStat
               v-for="(stat, index) in stats"
               :key="index"
@@ -71,56 +70,57 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount, defineProps, defineEmits } from 'vue';
 import OrderStat from "../OrderStat/OrderStat.vue";
 import StarRating from "../StarRating/StarRating.vue";
+import { formatDateAndTime } from '../../../utils/helper';
 
-export default {
-  components: {
-    StarRating,
-    OrderStat,
-  },
-  data() {
-    return {
-      isVisible: true,
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
-      profileImageSrc: "../../../assets/image/company-profile.png",
-      stats: [
-        { label: "No. of completed orders", value: 2304, breakPoint: "of" },
-        { label: "No. of cancelled orders", value: 0, breakPoint: "of" },
-        { label: "No. of work in progress", value: 12, breakPoint: "work" },
-        { label: "Submitted orders on DocEasy", value: 312, breakPoint: "on" },
-      ],
-    };
-  },
-  computed: {
-    modalStyles() {
-      return {
-        width: this.screenWidth < 768 ? "30vw" : "50vw",
-        height: this.screenHeight < 600 ? "80vh" : "auto",
-        maxHeight: "90vh",
-      };
-    },
-    profileImageUrl() {
-      return new URL(this.profileImageSrc, import.meta.url).href;
-    },
-  },
-  methods: {
-    closeModal() {
-      this.isVisible = false;
-      this.$emit("close");
-    },
-    updateScreenSize() {
-      this.screenWidth = window.innerWidth;
-      this.screenHeight = window.innerHeight;
-    },
-  },
-  mounted() {
-    window.addEventListener("resize", this.updateScreenSize);
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.updateScreenSize);
-  },
+const props = defineProps({
+  details: Object,
+});
+
+const emit = defineEmits(['close']);
+
+console.log(props.details, "company Details");
+
+const isVisible = ref(true);
+const screenWidth = ref(window.innerWidth);
+const screenHeight = ref(window.innerHeight);
+const profileImageSrc = ref("../../../assets/image/company-profile.png");
+
+const stats = ref([
+  { label: "No. of completed orders", value: 2304, breakPoint: "of" },
+  { label: "No. of cancelled orders", value: 0, breakPoint: "of" },
+  { label: "No. of work in progress", value: 12, breakPoint: "work" },
+  { label: "Submitted orders on DocEasy", value: 312, breakPoint: "on" },
+]);
+
+const modalStyles = computed(() => ({
+  width: screenWidth.value < 768 ? "30vw" : "50vw",
+  height: screenHeight.value < 600 ? "80vh" : "auto",
+  maxHeight: "90vh",
+}));
+
+const profileImageUrl = computed(() => {
+  return new URL(profileImageSrc.value, import.meta.url).href;
+});
+
+const closeModal = () => {
+  isVisible.value = false;
+  emit('close');
 };
+
+const updateScreenSize = () => {
+  screenWidth.value = window.innerWidth;
+  screenHeight.value = window.innerHeight;
+};
+
+onMounted(() => {
+  window.addEventListener("resize", updateScreenSize);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateScreenSize);
+});
 </script>

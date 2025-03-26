@@ -105,7 +105,7 @@
           <div class="flex gap-2">
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="handleClickToDetails(data?.id)"
+              @click="handleClickToDetails(data)"
             >
               <i class="fa-regular fa-eye text-primary"></i>
             </button>
@@ -125,7 +125,7 @@
         </template>
       </ThemeDatatable>
 
-      <Paginator :rows="pagination.perPage" :totalRecords="pagination.total">
+      <Paginator :rows="pagination.perPage" :totalRecords="pagination.total" v-if="pagination.total > 0">
         <template
           #container="{ first, last, page, pageCount, rows, firstPageCallback, lastPageCallback, rowChangeCallback, prevPageCallback, nextPageCallback, totalRecords }">
           <Pagination :first="first" :last="last" :page="page" :pageCount="pageCount" :rows="rows"
@@ -196,9 +196,13 @@ const filterFields = ref([
 //   return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
 // };
 
-const handleClickToDetails = (id) => {
-  router.push("/super-admin/company-details/" + route.params.companyId + "/appointment/" + id + "/details");
-}
+const handleClickToDetails = (data) => {
+  let url = "/super-admin/company-details/" + route.params.companyId + "/appointment/" + data.id + "/details"
+  if (data.orderTypeId === 2) {
+    url = "/super-admin/company-details/" + route.params.companyId + "/appointment/" + data.id + "/reoccurring/details"
+  };
+  router.push(url);
+};
 
 const fetchData = async (id, page = 1, perPage = null) => {
   try {
@@ -256,9 +260,11 @@ const handleFetchAppointment = (id) => {
 };
 
 const selectedAppointment = ref();
-const copyUrl = () => {
+const copyUrl = (id) => {
   const location = window.location;
-  navigator.clipboard.writeText(location.origin + "/super-admin/company-details/appointment/details?companyId=" + route.params.companyId);
+  navigator.clipboard.writeText(location.origin + "/super-admin/company-details/" + route.params.companyId + "/appointment/" + id + "/details");
+  toast.add({ severity: "success", summary: "Success",
+    detail: "Copied to clipboard!", life: 3000 });
 };
 
 const statusOptions = ["In Progress", "On Location", "Waiting", "Cancelled"];

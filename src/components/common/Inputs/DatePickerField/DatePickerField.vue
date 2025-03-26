@@ -8,7 +8,7 @@
         v-model="inputValue"
         :placeholder="placeholder"
         :class="[
-          'w-full p-2 border rounded-md',
+          'w-full !text-base !rounded-lg !text-dm-blue !resize-none focus:ring-0 !bg-light-lilac outline-none !py-2.5',
           errorMessage ? 'border-red-500' : 'border-gray-300',
         ]"
         @update:model-value="updateValue"
@@ -44,3 +44,11 @@ const updateValue = (value) => {
   emit("update:modelValue", value);
 };
 </script>
+<style>
+
+.dp__input {
+  background-color: transparent;
+  color: var(--color-dm-blue);
+  border: none;
+}
+</style>
