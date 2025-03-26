@@ -5,7 +5,7 @@
       class="d-flex bg-success-subtle justify-content-center p-3 rounded-start-4"
     >
       <img
-        :src="fileIconUrl"
+        :src="getImageUrl(fileIcon)"
         alt="File Icon"
         class="img-fluid"
         style="width: 30px"
@@ -13,13 +13,29 @@
     </div>
     <div>
       <p class="fs-6 mb-0 ms-3">{{ fileName }}</p>
-      <p class="text-secondary -font mb-0 ms-3">{{ fileSize }}</p>
+      <p class="text-secondary mb-0 ms-3">{{ fileSize }}</p>
     </div>
 
     <!-- Icons Section -->
     <div class="d-flex align-items-center cursor-pointer gap-3 me-3 ms-auto">
-      <i class="fa fa-eye" @click="viewFile"></i>
-      <i class="fa fa-file" @click="downloadFile"></i>
+      <div class="bg-light-lilac p-1 rounded">
+        <img
+          :src="getImageUrl('../../../assets/image/icons/eye.svg')"
+          alt="View File"
+          class="icon-size"
+          @click="viewFile"
+        />
+      </div>
+      <div class="bg-light-lilac p-1 rounded">
+        <img
+          :src="
+            getImageUrl('../../../assets/image/icons/document-download.svg')
+          "
+          alt="Download File"
+          class="icon-size"
+          @click="downloadFile"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -40,12 +56,10 @@ export default {
       default: "3.2mb",
     },
   },
-  computed: {
-    fileIconUrl() {
-      return new URL(this.fileIcon, import.meta.url).href;
-    },
-  },
   methods: {
+    getImageUrl(imagePath) {
+      return new URL(imagePath, import.meta.url).href;
+    },
     viewFile() {
       console.log("Viewing file:", this.fileName);
     },
@@ -59,5 +73,9 @@ export default {
 <style scoped>
 .cursor-pointer {
   cursor: pointer;
+}
+.icon-size {
+  width: 20px;
+  height: 20px;
 }
 </style>

@@ -1,0 +1,361 @@
+<script setup>
+import { ref, onMounted, nextTick, onUnmounted, computed } from "vue";
+import api from "../api";
+// import DataTable from "datatables.net-bs5";
+import { convertUserData, getStatusId, transformData } from "../utils/helper";
+import { useRoute, useRouter } from "vue-router";
+import { useCompanyStore } from "../store";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
+import {
+  Button,
+  IconField,
+  InputIcon,
+  InputText,
+  Paginator,
+  useToast,
+} from "primevue";
+import { FilterMatchMode } from "@primevue/core/api";
+import Dropdown from "primevue/dropdown";
+import ThemeDatatable from "../components/common/ThemeDatatable/ThemeDatatable.vue";
+import { vendorsConstant } from "../utils/constants";
+import Pagination from "../components/common/Pagination/Pagination.vue";
+
+const store = useCompanyStore();
+const companiesData = ref([]);
+const loading = ref(true);
+const error = ref(null);
+const statusBtn = ref(1);
+const router = useRouter();
+const toast = useToast();
+const vendorRes = ref(null);
+const rowsPerPageDropdown = ref([]);
+const pagination = ref({
+  currentPage: 0,
+  lastPage: 0,
+  perPage: 0,
+  total: 0,
+  firstPageUrl: null,
+  lastPageUrl: null,
+  nextPageUrl: null,
+  prevPageUrl: null,
+  links: [],
+});
+
+const fetchData = async (id, page) => {
+  console.log(id, page, "id and page");
+};
+
+const handleClickToDetails = (id) => {
+  router.push("/super-admin/company-details/" + id + "/info");
+};
+
+const handleFetchOrder = (id, page) => {
+  fetchData(id, 1);
+  statusBtn.value = id;
+};
+
+const selectedCompany = ref();
+
+const statusOptions = [
+  "Active",
+  "Deactivated",
+  "Inactive",
+  "Monitory",
+  "Banned",
+];
+const columns = ref([
+  { field: "id", header: "ID" },
+  { field: "name", header: "Organisation Name / ID" },
+  { field: "description", header: "Description" },
+  { field: "verticals", header: "Verticals" },
+  { field: "expectedStartDate", header: "Expected Start Date" },
+  { field: "expectedEndDate", header: "Expected End Date" },
+  { field: "noOfDays", header: "No. of Days" },
+  { field: "type", header: "Type" },
+  { field: "offers", header: "Offers" },
+  { field: "chats", header: "Chats" },
+  { field: "surveyRequest", header: "Survey Request" },
+  { field: "actions", header: "Action" },
+]);
+
+const filters = ref({
+  id: { value: null, matchMode: FilterMatchMode.EQUALS },
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
+  //   "fullName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
+  //   role: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  totalRevenue: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
+  totalSpending: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
+  status: { value: null, matchMode: FilterMatchMode.EQUALS },
+  verticlesSubscribed: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
+  registeredOn: { value: null, matchMode: FilterMatchMode.DATE_IS },
+});
+
+const getStatusClass = (status) => {
+  switch (status) {
+    case "Active":
+      return { backgroundColor: "#D6FFEF", color: "#00995C" }; // Green
+    case "Deactivated":
+      return { backgroundColor: "#E7E7EB", color: "#0E0D35" }; // Yellow
+    case "Inactive":
+      return { backgroundColor: "#E7E7EB", color: "#575672" }; // Red
+    case "Monitory":
+      return { backgroundColor: "#FCEED9", color: "#DC8B13" }; // Red
+    case "Banned":
+      return { backgroundColor: "#FFE5E5", color: "#FF5555" }; // Red
+    default:
+      return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
+  }
+};
+
+const updateStatus = async (data) => {
+  try {
+    const response = await api.post("/superadmin/update-status", {
+      user_id: data?.id,
+      status: getStatusId(data?.status),
+    });
+    if (response.status === 200) {
+      fetchData(statusBtn.value);
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error(err);
+  }
+};
+
+onMounted(() => {
+  nextTick(() => {
+    fetchData(1, 1);
+  });
+});
+
+const handleNextPage = (page) => {
+  console.log(page, "page");
+};
+</script>
+
+<template>
+  <div>
+    <div class="flex justify-between items-center mb-4">
+      <div class="fs-4 fw-bold">Order</div>
+    </div>
+
+    <div class="p-4 bg-white rounded-3 shadow relative">
+      <ThemeDatatable
+        :value="companiesData"
+        v-model:selection="selectedCompany"
+        v-model:filters="filters"
+        :filterFields="['id', 'companyName.name', 'fullName.name', 'role']"
+        :columns="columns"
+        :paginator="true"
+        :rows="pagination.perPage"
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        :totalRecords="pagination.total"
+        :totalPageCount="pagination.lastPage"
+        :currentPage="pagination.currentPage"
+      >
+        <template #header>
+          <div class="flex justify-between items-center mb-2">
+            <div class="flex gap-3">
+              <button
+                @click="handleFetchOrder(1)"
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                  statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'
+                }`"
+              >
+                All
+              </button>
+              <button
+                @click="handleFetchOrder(2)"
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                  statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
+                }`"
+              >
+                Active
+              </button>
+              <button
+                @click="handleFetchOrder(2)"
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                  statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
+                }`"
+              >
+                Pending
+              </button>
+              <button
+                @click="handleFetchOrder(3)"
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                  statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'
+                }`"
+              >
+                Cancelled
+              </button>
+            </div>
+            <div class="flex gap-3">
+              <div class="flex justify-end">
+                <IconField>
+                  <InputText
+                    v-model="filters['global'].value"
+                    placeholder="Search"
+                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
+                  />
+                  <InputIcon>
+                    <i class="fas fa-search"></i>
+                  </InputIcon>
+                </IconField>
+              </div>
+              <div class="flex items-center">
+                <button class="btn btn-light bg-white border-0">
+                  Filters by <i class="fas fa-filter"></i>
+                </button>
+                <span class="border-start mx-2" style="height: 24px"></span>
+                <button class="btn btn-light bg-white border-0">
+                  Columns <i class="fas fa-columns"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template #id="{ data }"
+          ><span>{{ data.id }}</span></template
+        >
+
+        <template #companyName="{ data }">
+          <div class="flex items-center gap-2">
+            <img
+              :src="data.companyName.logo"
+              alt="Company Logo"
+              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+            />
+            <span class="font-semibold text-dm-blue">{{
+              data.companyName.name
+            }}</span>
+          </div>
+        </template>
+
+        <template #fullName="{ data }">
+          <div class="flex items-center gap-2">
+            <img
+              :src="data.fullName.profilePicture"
+              alt="Company Logo"
+              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+            />
+            <span class="font-semibold text-dm-blue">{{
+              data.fullName.name
+            }}</span>
+          </div>
+        </template>
+
+        <template #role="{ data }">
+          <span class="font-semibold">{{ data.role }}</span>
+        </template>
+
+        <template #contact="{ data }">
+          <div class="w-max flex flex-col flex-wrap gap-0">
+            <span class="font-semibold text-dm-blue">{{
+              data.contact.mobile
+            }}</span>
+            <span class="text-primary font-semibold">{{
+              data.contact.email
+            }}</span>
+          </div>
+        </template>
+
+        <template #totalRevenue="{ data }">
+          <div class="flex gap-2 items-center">
+            <span class="text-primary font-semibold text-sm">AED</span>
+            <span class="text-2xl font-bold">{{ data.totalRevenue ?? 0 }}</span>
+          </div>
+        </template>
+
+        <template #totalSpending="{ data }">
+          <div class="flex gap-2 items-center">
+            <span class="text-primary font-semibold text-sm">AED</span>
+            <span class="text-2xl font-bold">{{
+              data.totalSpending ?? 0
+            }}</span>
+          </div>
+        </template>
+
+        <template #status="{ data }">
+          <Dropdown
+            v-model="data.status"
+            :options="statusOptions"
+            @change="updateStatus(data)"
+            :style="getStatusClass(data.status)"
+            class="p-dropdown-sm font-bold"
+          ></Dropdown>
+        </template>
+
+        <template #verticalsSubscribed="{ data }">
+          <span
+            class="px-3 py-2 rounded-xl font-semibold text-[#0E0D35] bg-light-lilac"
+            >{{ data.verticalsSubscribed }}</span
+          >
+        </template>
+
+        <template #registeredOn="{ data }">
+          <span>{{ new Date(data.registeredOn).toLocaleDateString() }}</span>
+        </template>
+
+        <template #actions="{ data }">
+          <div class="flex gap-2">
+            <button
+              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              @click="handleClickToDetails(data?.id)"
+            >
+              <i class="fa-regular fa-eye text-primary"></i>
+            </button>
+          </div>
+        </template>
+      </ThemeDatatable>
+
+      <Paginator :rows="pagination.perPage" :totalRecords="pagination.total">
+        <template
+          #container="{
+            first,
+            last,
+            page,
+            pageCount,
+            rows,
+            firstPageCallback,
+            lastPageCallback,
+            rowChangeCallback,
+            prevPageCallback,
+            nextPageCallback,
+            totalRecords,
+          }"
+        >
+          <Pagination
+            :first="first"
+            :last="last"
+            :page="page"
+            :pageCount="pageCount"
+            :rows="rows"
+            :firstPageCallback="firstPageCallback"
+            :lastPageCallback="lastPageCallback"
+            :rowChangeCallback="rowChangeCallback"
+            :prevPageCallback="prevPageCallback"
+            @nextPageClick="(page) => fetchData(statusBtn, page)"
+            :nextPageCallback="nextPageCallback"
+            :totalRecords="totalRecords"
+            :perPage="pagination.perPage"
+            :totalEntries="pagination.total"
+          />
+          <!-- <div class="flex gap-4 justify-between items-center w-full">
+                        <Button icon="pi pi-chevron-left" rounded text @click="prevPageCallback" :disabled="page === 0" />
+                        <div class="text-color font-medium">
+                            <span class="hidden sm:block">Showing {{ first }} to {{ last }} of {{ totalRecords }} Entries</span>
+                        </div>
+                        <div class="">
+                            <button type="button"><i class="fa fa-chevron-right"></i>left</button>
+                        </div>
+                        <Button icon="pi pi-chevron-right" rounded text @click="nextPageCallback" :disabled="page === pageCount - 1" />
+                    </div> -->
+        </template>
+      </Paginator>
+    </div>
+  </div>
+</template>

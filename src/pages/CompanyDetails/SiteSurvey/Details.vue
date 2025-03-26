@@ -163,6 +163,7 @@
             :images="note.images"
             :author="note.author"
             :timestamp="note.timestamp"
+            @note-clicked="handleNoteClick"
           />
         </div>
       </div>
@@ -199,6 +200,13 @@ import InfoItem from "../../../components/common/InfoItem/InfoItem.vue";
 import CountdownTimer from "../../../components/common/CountdownTimer/CountdownTimer.vue";
 import NoteCard from "../../../components/common/NoteCard/NoteCard.vue";
 import ExecutionLog from "../../../components/common/ExecutionLog/ExecutionLog.vue";
+import { useSurveyStore } from "../../../store";
+
+const store = useSurveyStore();
+
+const handleNoteClick = (note) => {
+  store.setSelectedNote(note);
+};
 
 const notifications = ref([
   {

@@ -7,7 +7,8 @@
         @click="clickHandler"
       >
         <a :href="editLink" class="text-reset">
-          <i class="text-decoration-underline text-primary text-xs fa-pen fa-solid"></i>
+          <!-- <i class="text-decoration-underline text-primary text-xs fa-pen fa-solid"></i> -->
+          <img :src="imageUrl" alt="Edit Icon" class="icon-size" />
         </a>
       </div>
       <InfoDisplay v-if="serviceDescription" :label="serviceTitle" :value="serviceDescription" textClass="!font-normal" />
@@ -25,6 +26,7 @@
 </template>
 
 <script setup>
+import { defineProps } from "vue";
 import InfoDisplay from "../InfoDisplay/InfoDisplay.vue";
 
 const props = defineProps({
@@ -44,4 +46,5 @@ const props = defineProps({
   clickHandler: Function,
 });
 
+const imageUrl = new URL("../../../assets/image/icons/edit-2.svg", import.meta.url ).href
 </script>
