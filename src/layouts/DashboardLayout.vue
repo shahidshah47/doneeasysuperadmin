@@ -20,38 +20,50 @@ const surveyStore = useSurveyStore();
 const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails, modalDesc } =
   storeToRefs(companyStore);
 const { selectedNote } = storeToRefs(surveyStore);
-const isDetailOpen = reactive(isDetail.value);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
 const isOrderRoute = computed(() => route.path === "/super-admin/order");
 
 // Prevent scrolling when isDetail is true
-// watchEffect(() => {
-//   console.log(isDetail, isDetailOpen, "isDetail === >><< ---");
-//   if (isDetail.value || isCompanyDetail.value) {
-//     isDetailOpen.value = isDetail.value;
-//     document.body.classList.add("overflow-hidden");
-//   } else {
-//     document.body.classList.remove("overflow-hidden");
-//   }
-// });
-
-watch(
-  () => isDetailOpen || isDetail.value,
-  (count, prevCount) => {
-    console.log(count, prevCount, "count & prevCount");
+watchEffect(() => {
+  if (
+    isDetail.value ||
+    isCompanyDetail.value ||
+    isMaterialDetails.value ||
+    isServiceDetails.value ||
+    selectedNote.value
+  ) {
+    document.body.classList.add("overflow-hidden");
+  } else {
+    document.body.classList.remove("overflow-hidden");
   }
-)
+});
 
 // Redirect if no token
 if (!localStorage?.getItem("token")) {
   router.push("/super-admin/login");
 }
 
-const handleCloseModel = () => {
+const closeAllModals = () => {
   companyStore.isDetail = false;
-  isDetailOpen.value = false;
-}
+  companyStore.isCompanyDetail = false;
+  companyStore.isMaterialDetails = false;
+  companyStore.isServiceDetails = false;
+  surveyStore.selectedNote = null;
+
+  // Ensure `overflow-hidden` is removed after state updates
+  setTimeout(() => {
+    if (
+      !isDetail.value &&
+      !isCompanyDetail.value &&
+      !isMaterialDetails.value &&
+      !isServiceDetails.value &&
+      !selectedNote.value
+    ) {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, 0);
+};
 </script>
 
 <template>
@@ -76,24 +88,9 @@ const handleCloseModel = () => {
     </div>
   </div>
 
-  <!-- Company Details Modal -->
-  <DetailsModel v-if="isDetailOpen" @close="handleCloseModel" :description="modalDesc" />
-  <MaterialsModal
-    v-if="isMaterialDetails"
-    @close="companyStore.isMaterialDetails = false"
-  />
-  <ServicesModal
-    v-if="isServiceDetails"
-    @close="companyStore.isServiceDetails = false"
-  />
-
-  <CompanyModal
-    v-if="isCompanyDetail"
-    @close="companyStore.isCompanyDetail = false"
-  />
-  <NoteModal
-    v-if="selectedNote"
-    :note="selectedNote"
-    @close="surveyStore.selectedNote = null"
-  />
+  <DetailsModel v-if="isDetail" @close="closeAllModals" :description="modalDesc" />
+  <MaterialsModal v-if="isMaterialDetails" @close="closeAllModals" />
+  <ServicesModal v-if="isServiceDetails" @close="closeAllModals" />
+  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
+  <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
 </template>

@@ -3,12 +3,12 @@
     <div class="card-body">
       <div class="flex items-center gap-4">
         <div
-          class="w-15 h-15 shadow-lavendar-card border-2 border-solid border-white-100"
+          class="w-15 h-15 shadow-lavendar-card !border-2 border-solid !border-white-100"
         >
           <img
             :src="imageUrl"
             alt="profile"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover rounded-2xl"
           />
         </div>
         <div class="">

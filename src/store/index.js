@@ -34,6 +34,12 @@ export const useCompanyStore = defineStore("companyStore", {
     toggleIsMaterialDetails() {
       this.isMaterialDetails = !this.isMaterialDetails;
     },
+    resetDetails() {
+      this.isDetail = false;
+      this.isCompanyDetail = false;
+      this.isServiceDetails = false;
+      this.isMaterialDetails = false;
+    },
   },
   persist: {
     paths: ["companies", "companyId", "companyData"],

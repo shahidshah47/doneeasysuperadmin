@@ -22,7 +22,7 @@ import { vendorsConstant } from "../utils/constants";
 import Pagination from "../components/common/Pagination/Pagination.vue";
 
 const store = useCompanyStore();
-const companiesData = ref([]);
+// const companiesData = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const statusBtn = ref(1);
@@ -66,7 +66,7 @@ const statusOptions = [
 ];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "name", header: "Organisation Name / ID" },
+  { field: "companyName", header: "Organisation Name / ID" },
   { field: "description", header: "Description" },
   { field: "verticals", header: "Verticals" },
   { field: "expectedStartDate", header: "Expected Start Date" },
@@ -110,26 +110,68 @@ const getStatusClass = (status) => {
   }
 };
 
-const updateStatus = async (data) => {
-  try {
-    const response = await api.post("/superadmin/update-status", {
-      user_id: data?.id,
-      status: getStatusId(data?.status),
-    });
-    if (response.status === 200) {
-      fetchData(statusBtn.value);
-    }
-  } catch (err) {
-    error.value = "Error fetching data";
-    console.error(err);
-  }
-};
+const updateStatus = async (data) => {};
+
+const companiesData = ref([
+  {
+    id: 1,
+    companyName: { name: "TechCorp", logo: "Avatar.png" },
+    description: "A leading tech company",
+    verticals: "Software, AI",
+    expectedStartDate: "2024-07-10",
+    expectedEndDate: "2025-07-10",
+    noOfDays: 365,
+    type: "Enterprise",
+    offers: "20% off",
+    chats: 15,
+    surveyRequest: 3,
+    status: "Active",
+  },
+  {
+    id: 2,
+    companyName: { name: "HealthPlus", logo: "Avatar.png" },
+    description: "Healthcare solutions provider",
+    verticals: "Medical, Pharma",
+    expectedStartDate: "2024-08-01",
+    expectedEndDate: "2025-08-01",
+    noOfDays: 365,
+    type: "Startup",
+    offers: "Free consultation",
+    chats: 8,
+    surveyRequest: 2,
+    status: "Inactive",
+  },
+  {
+    id: 3,
+    companyName: { name: "EduSmart", logo: "Avatar.png" },
+    description: "E-learning platform",
+    verticals: "Education, Tech",
+    expectedStartDate: "2024-09-15",
+    expectedEndDate: "2025-09-15",
+    noOfDays: 365,
+    type: "SME",
+    offers: "1-month free trial",
+    chats: 20,
+    surveyRequest: 5,
+    status: "Monitory",
+  },
+]);
+
+onMounted(() => {
+  nextTick(() => {
+    console.log("Hardcoded data loaded:", companiesData.value);
+  });
+});
 
 onMounted(() => {
   nextTick(() => {
     fetchData(1, 1);
   });
 });
+
+const getImageUrl = (imagePath) => {
+  return new URL(`../assets/images2/${imagePath}`, import.meta.url).href;
+};
 
 const handleNextPage = (page) => {
   console.log(page, "page");
@@ -147,7 +189,20 @@ const handleNextPage = (page) => {
         :value="companiesData"
         v-model:selection="selectedCompany"
         v-model:filters="filters"
-        :filterFields="['id', 'companyName.name', 'fullName.name', 'role']"
+        :filterFields="[
+          'id',
+          'companyName.name',
+          'description',
+          'verticals',
+          'expectedStartDate',
+          'expectedEndDate',
+          'noOfDays',
+          'type',
+          'offers',
+          'chats',
+          'surveyRequest',
+          'status',
+        ]"
         :columns="columns"
         :paginator="true"
         :rows="pagination.perPage"
@@ -160,36 +215,40 @@ const handleNextPage = (page) => {
           <div class="flex justify-between items-center mb-2">
             <div class="flex gap-3">
               <button
-                @click="handleFetchOrder(1)"
+                @click="handleFetchOrder('All')"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
-                  statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'
+                  statusBtn === 'All' ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
                 All
               </button>
               <button
-                @click="handleFetchOrder(2)"
+                @click="handleFetchOrder('Active')"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
-                  statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
+                  statusBtn === 'Active' ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
                 Active
               </button>
               <button
-                @click="handleFetchOrder(2)"
+                @click="handleFetchOrder('Inactive')"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
-                  statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
+                  statusBtn === 'Inactive'
+                    ? 'bg-primary text-white'
+                    : 'btn-light'
                 }`"
               >
-                Pending
+                Inactive
               </button>
               <button
-                @click="handleFetchOrder(3)"
+                @click="handleFetchOrder('Monitory')"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
-                  statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'
+                  statusBtn === 'Monitory'
+                    ? 'bg-primary text-white'
+                    : 'btn-light'
                 }`"
               >
-                Cancelled
+                Monitory
               </button>
             </div>
             <div class="flex gap-3">
@@ -205,15 +264,6 @@ const handleNextPage = (page) => {
                   </InputIcon>
                 </IconField>
               </div>
-              <div class="flex items-center">
-                <button class="btn btn-light bg-white border-0">
-                  Filters by <i class="fas fa-filter"></i>
-                </button>
-                <span class="border-start mx-2" style="height: 24px"></span>
-                <button class="btn btn-light bg-white border-0">
-                  Columns <i class="fas fa-columns"></i>
-                </button>
-              </div>
             </div>
           </div>
         </template>
@@ -222,10 +272,10 @@ const handleNextPage = (page) => {
           ><span>{{ data.id }}</span></template
         >
 
-        <template #companyName="{ data }">
+        <template v-slot:companyName="{ data }">
           <div class="flex items-center gap-2">
             <img
-              :src="data.companyName.logo"
+              :src="getImageUrl(data.companyName.logo)"
               alt="Company Logo"
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
@@ -235,48 +285,44 @@ const handleNextPage = (page) => {
           </div>
         </template>
 
-        <template #fullName="{ data }">
-          <div class="flex items-center gap-2">
-            <img
-              :src="data.fullName.profilePicture"
-              alt="Company Logo"
-              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
-            />
-            <span class="font-semibold text-dm-blue">{{
-              data.fullName.name
-            }}</span>
-          </div>
+        <template #description="{ data }">
+          <span class="font-semibold">{{ data.description }}</span>
         </template>
 
-        <template #role="{ data }">
-          <span class="font-semibold">{{ data.role }}</span>
+        <template #verticals="{ data }">
+          <span class="font-semibold">{{ data.verticals }}</span>
         </template>
 
-        <template #contact="{ data }">
-          <div class="w-max flex flex-col flex-wrap gap-0">
-            <span class="font-semibold text-dm-blue">{{
-              data.contact.mobile
-            }}</span>
-            <span class="text-primary font-semibold">{{
-              data.contact.email
-            }}</span>
-          </div>
+        <template #expectedStartDate="{ data }">
+          <span>{{
+            new Date(data.expectedStartDate).toLocaleDateString()
+          }}</span>
         </template>
 
-        <template #totalRevenue="{ data }">
-          <div class="flex gap-2 items-center">
-            <span class="text-primary font-semibold text-sm">AED</span>
-            <span class="text-2xl font-bold">{{ data.totalRevenue ?? 0 }}</span>
-          </div>
+        <template #expectedEndDate="{ data }">
+          <span>{{ new Date(data.expectedEndDate).toLocaleDateString() }}</span>
         </template>
 
-        <template #totalSpending="{ data }">
-          <div class="flex gap-2 items-center">
-            <span class="text-primary font-semibold text-sm">AED</span>
-            <span class="text-2xl font-bold">{{
-              data.totalSpending ?? 0
-            }}</span>
-          </div>
+        <template #noOfDays="{ data }">
+          <span class="font-semibold">{{ data.noOfDays }}</span>
+        </template>
+
+        <template #type="{ data }">
+          <span class="font-semibold">{{ data.type }}</span>
+        </template>
+
+        <template #offers="{ data }">
+          <span class="font-semibold text-primary">{{ data.offers }}</span>
+        </template>
+
+        <template #chats="{ data }">
+          <span class="font-semibold text-success">{{ data.chats }}</span>
+        </template>
+
+        <template #surveyRequest="{ data }">
+          <span class="font-semibold text-warning">{{
+            data.surveyRequest
+          }}</span>
         </template>
 
         <template #status="{ data }">
@@ -287,17 +333,6 @@ const handleNextPage = (page) => {
             :style="getStatusClass(data.status)"
             class="p-dropdown-sm font-bold"
           ></Dropdown>
-        </template>
-
-        <template #verticalsSubscribed="{ data }">
-          <span
-            class="px-3 py-2 rounded-xl font-semibold text-[#0E0D35] bg-light-lilac"
-            >{{ data.verticalsSubscribed }}</span
-          >
-        </template>
-
-        <template #registeredOn="{ data }">
-          <span>{{ new Date(data.registeredOn).toLocaleDateString() }}</span>
         </template>
 
         <template #actions="{ data }">
@@ -344,16 +379,6 @@ const handleNextPage = (page) => {
             :perPage="pagination.perPage"
             :totalEntries="pagination.total"
           />
-          <!-- <div class="flex gap-4 justify-between items-center w-full">
-                        <Button icon="pi pi-chevron-left" rounded text @click="prevPageCallback" :disabled="page === 0" />
-                        <div class="text-color font-medium">
-                            <span class="hidden sm:block">Showing {{ first }} to {{ last }} of {{ totalRecords }} Entries</span>
-                        </div>
-                        <div class="">
-                            <button type="button"><i class="fa fa-chevron-right"></i>left</button>
-                        </div>
-                        <Button icon="pi pi-chevron-right" rounded text @click="nextPageCallback" :disabled="page === pageCount - 1" />
-                    </div> -->
         </template>
       </Paginator>
     </div>
