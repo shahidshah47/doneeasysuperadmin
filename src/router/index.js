@@ -59,6 +59,27 @@ const routes = [
           breadcrumb: [{ label: "Vendor", link: "/super-admin/vendor" }],
         },
       },
+
+      {
+        path: "/super-admin/order/:id/details",
+        component: () => import("../pages/OrderDetails/Details/Details.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Orders", link: "/super-admin/order" },
+            { label: "Details", link: "/super-admin/order/:id/details" },
+          ],
+        },
+      },
+      {
+        path: "/super-admin/order/:id/details/hot-orders",
+        component: () => import("../pages/OrderDetails/HotOrder/Details.vue"),
+        meta: {
+          breadcrumb: [
+            { label: "Orders", link: "/super-admin/order" },
+            { label: "Details", link: "/super-admin/order/:id/details" },
+          ],
+        },
+      },
       {
         path: "/super-admin/company-details/:companyId/info",
         component: () => import("../pages/CompanyDetails/Info.vue"),

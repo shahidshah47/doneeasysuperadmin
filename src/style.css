@@ -459,6 +459,9 @@ select {
 .bg-gradient-primary {
   background: linear-gradient(95.35deg, #396cf1 24.64%, #39c5f1 74.69%);
 }
+.bg-gradient-orange {
+  background: linear-gradient(97.53deg, #ff0b00 2.03%, #f69235 100%);
+}
 
 .vivid-gradient-scrollbar {
   scroll-padding-left: 100px;

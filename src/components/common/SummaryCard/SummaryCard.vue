@@ -41,7 +41,6 @@ const props = defineProps({
 });
 
 const companyStore = useCompanyStore();
-const { isDetail } = storeToRefs(companyStore);
 
 onMounted(() => {
   companyStore.resetDetails();

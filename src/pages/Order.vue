@@ -18,7 +18,6 @@ import {
 import { FilterMatchMode } from "@primevue/core/api";
 import Dropdown from "primevue/dropdown";
 import ThemeDatatable from "../components/common/ThemeDatatable/ThemeDatatable.vue";
-import { vendorsConstant } from "../utils/constants";
 import Pagination from "../components/common/Pagination/Pagination.vue";
 
 const store = useCompanyStore();
@@ -46,8 +45,12 @@ const fetchData = async (id, page) => {
   console.log(id, page, "id and page");
 };
 
-const handleClickToDetails = (id) => {
-  router.push("/super-admin/company-details/" + id + "/info");
+const handleClickToDetails = (id, type) => {
+  if (type === "Hot Orders") {
+    router.push("/super-admin/order/" + id + "/details/hot-orders");
+  } else {
+    router.push("/super-admin/order/" + id + "/details");
+  }
 };
 
 const handleFetchOrder = (id, page) => {
@@ -66,16 +69,28 @@ const statusOptions = [
 ];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "companyName", header: "Organisation Name / ID" },
+  { field: "companyName", header: ["Organisation ", "Name ID"] },
   { field: "description", header: "Description" },
-  { field: "verticals", header: "Verticals" },
-  { field: "expectedStartDate", header: "Expected Start Date" },
-  { field: "expectedEndDate", header: "Expected End Date" },
-  { field: "noOfDays", header: "No. of Days" },
+  {
+    field: "vertical",
+    header: "Verticals",
+    icon: "chevron-down.svg",
+    iconWidth: 14,
+    iconHeight: 14,
+  },
+  { field: "expectedStartDate", header: ["Expected ", " Start Date"] },
+  { field: "expectedEndDate", header: ["Expected ", " End Date"] },
+  { field: "noOfDays", header: ["Expected ", "Days"] },
   { field: "type", header: "Type" },
   { field: "offers", header: "Offers" },
-  { field: "chats", header: "Chats" },
-  { field: "surveyRequest", header: "Survey Request" },
+  {
+    field: "chats",
+    header: "Chats",
+    icon: "info-circle.svg",
+    iconWidth: 20,
+    iconHeight: 20,
+  },
+  { field: "surveyRequest", header: ["Survey ", "Request"] },
   { field: "actions", header: "Action" },
 ]);
 
@@ -83,14 +98,6 @@ const filters = ref({
   id: { value: null, matchMode: FilterMatchMode.EQUALS },
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  //   "fullName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  //   role: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  totalRevenue: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
-  totalSpending: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
-  status: { value: null, matchMode: FilterMatchMode.EQUALS },
-  verticlesSubscribed: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
-  registeredOn: { value: null, matchMode: FilterMatchMode.DATE_IS },
 });
 
 const getStatusClass = (status) => {
@@ -116,13 +123,14 @@ const companiesData = ref([
   {
     id: 1,
     companyName: { name: "TechCorp", logo: "Avatar.png" },
-    description: "A leading tech company",
-    verticals: "Software, AI",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's ",
+    vertical: { name: "Software", image: "Avatar.png" },
     expectedStartDate: "2024-07-10",
     expectedEndDate: "2025-07-10",
     noOfDays: 365,
-    type: "Enterprise",
-    offers: "20% off",
+    type: "One-time",
+    offers: "20",
     chats: 15,
     surveyRequest: 3,
     status: "Active",
@@ -131,12 +139,12 @@ const companiesData = ref([
     id: 2,
     companyName: { name: "HealthPlus", logo: "Avatar.png" },
     description: "Healthcare solutions provider",
-    verticals: "Medical, Pharma",
+    vertical: { name: "Software", image: "Avatar.png" },
     expectedStartDate: "2024-08-01",
     expectedEndDate: "2025-08-01",
     noOfDays: 365,
-    type: "Startup",
-    offers: "Free consultation",
+    type: "Reoccurring",
+    offers: "250",
     chats: 8,
     surveyRequest: 2,
     status: "Inactive",
@@ -145,12 +153,12 @@ const companiesData = ref([
     id: 3,
     companyName: { name: "EduSmart", logo: "Avatar.png" },
     description: "E-learning platform",
-    verticals: "Education, Tech",
+    vertical: { name: "Software", image: "Avatar.png" },
     expectedStartDate: "2024-09-15",
     expectedEndDate: "2025-09-15",
     noOfDays: 365,
-    type: "SME",
-    offers: "1-month free trial",
+    type: "Hot Orders",
+    offers: "300",
     chats: 20,
     surveyRequest: 5,
     status: "Monitory",
@@ -175,6 +183,12 @@ const getImageUrl = (imagePath) => {
 
 const handleNextPage = (page) => {
   console.log(page, "page");
+};
+
+const typeClasses = {
+  "One-time": "!text-accent-green !bg-green-200",
+  Reoccurring: "!text-accent-green bg-green-200",
+  "Hot Orders": "!text-light-orange bg-blush-100",
 };
 </script>
 
@@ -286,11 +300,36 @@ const handleNextPage = (page) => {
         </template>
 
         <template #description="{ data }">
-          <span class="font-semibold">{{ data.description }}</span>
+          <div class="bg-white font-semibold !text-rich-navy relative group">
+            <span
+              class="whitespace-nowrap overflow-hidden text-ellipsis block w-40"
+            >
+              {{
+                data.description.length > 30
+                  ? data.description.slice(0, 30) + "..."
+                  : data.description
+              }}
+            </span>
+            <div
+              class="absolute left-1/2 -top-20 transform -translate-x-1/2 w-max max-w-sm p-3 bg-white-100 !text-rich-navy border shadow-lavendar-card rounded hidden group-hover:block z-50"
+              style="white-space: normal; overflow: visible"
+            >
+              {{ data.description }}
+            </div>
+          </div>
         </template>
 
-        <template #verticals="{ data }">
-          <span class="font-semibold">{{ data.verticals }}</span>
+        <template v-slot:vertical="{ data }">
+          <div class="flex items-center gap-2">
+            <img
+              :src="getImageUrl(data.vertical.image)"
+              alt="Vertical Image"
+              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+            />
+            <span class="font-semibold text-dm-blue">
+              {{ data.vertical.name }}
+            </span>
+          </div>
         </template>
 
         <template #expectedStartDate="{ data }">
@@ -308,19 +347,23 @@ const handleNextPage = (page) => {
         </template>
 
         <template #type="{ data }">
-          <span class="font-semibold">{{ data.type }}</span>
+          <span
+            class="font-semibold px-2 py-1 rounded"
+            :class="typeClasses[data.type] || 'text-gray-600 bg-gray-200'"
+          >
+            {{ data.type }}
+          </span>
         </template>
-
         <template #offers="{ data }">
-          <span class="font-semibold text-primary">{{ data.offers }}</span>
+          <span class="!font-semibold !text-rich-navy">{{ data.offers }}</span>
         </template>
 
         <template #chats="{ data }">
-          <span class="font-semibold text-success">{{ data.chats }}</span>
+          <span class="!font-semibold !text-rich-navy">{{ data.chats }}</span>
         </template>
 
         <template #surveyRequest="{ data }">
-          <span class="font-semibold text-warning">{{
+          <span class="!font-semibold !text-rich-navy">{{
             data.surveyRequest
           }}</span>
         </template>
@@ -339,7 +382,7 @@ const handleNextPage = (page) => {
           <div class="flex gap-2">
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="handleClickToDetails(data?.id)"
+              @click="handleClickToDetails(data?.id, data?.type)"
             >
               <i class="fa-regular fa-eye text-primary"></i>
             </button>
