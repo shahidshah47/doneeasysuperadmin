@@ -3,7 +3,11 @@
     <div
       class="w-12 h-12 border-2 border-solid border-white-100 shadow-lavendar-card"
     >
-      <img :src="imageUrl" :alt="altText" class="rounded-lg w-full h-full object-cover" />
+      <img
+        :src="imageUrl"
+        :alt="altText"
+        class="rounded-2xl w-full h-full object-cover"
+      />
     </div>
     <div>
       <p v-if="subText" class="text-secondary mb-0">{{ subText }}</p>
@@ -22,6 +26,7 @@
 <script setup>
 import { storeToRefs } from "pinia";
 import { useCompanyStore } from "../../../store";
+import { onMounted } from "vue";
 
 const companyStore = useCompanyStore();
 const { isDetail } = storeToRefs(companyStore);
@@ -29,6 +34,9 @@ const { isDetail } = storeToRefs(companyStore);
 const handleClick = () => {
   companyStore.toggleCompanyDetail();
 };
+onMounted(() => {
+  companyStore.resetDetails();
+});
 </script>
 
 <script>

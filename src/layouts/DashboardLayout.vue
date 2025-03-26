@@ -26,7 +26,13 @@ const isOrderRoute = computed(() => route.path === "/super-admin/order");
 
 // Prevent scrolling when isDetail is true
 watchEffect(() => {
-  if (isDetail.value || isCompanyDetail.value) {
+  if (
+    isDetail.value ||
+    isCompanyDetail.value ||
+    isMaterialDetails.value ||
+    isServiceDetails.value ||
+    selectedNote.value
+  ) {
     document.body.classList.add("overflow-hidden");
   } else {
     document.body.classList.remove("overflow-hidden");
@@ -37,6 +43,27 @@ watchEffect(() => {
 if (!localStorage?.getItem("token")) {
   router.push("/super-admin/login");
 }
+
+const closeAllModals = () => {
+  companyStore.isDetail = false;
+  companyStore.isCompanyDetail = false;
+  companyStore.isMaterialDetails = false;
+  companyStore.isServiceDetails = false;
+  surveyStore.selectedNote = null;
+
+  // Ensure `overflow-hidden` is removed after state updates
+  setTimeout(() => {
+    if (
+      !isDetail.value &&
+      !isCompanyDetail.value &&
+      !isMaterialDetails.value &&
+      !isServiceDetails.value &&
+      !selectedNote.value
+    ) {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, 0);
+};
 </script>
 
 <template>
@@ -62,23 +89,9 @@ if (!localStorage?.getItem("token")) {
   </div>
 
   <!-- Company Details Modal -->
-  <DetailsModel v-if="isDetail" @close="companyStore.isDetail = false" />
-  <MaterialsModal
-    v-if="isMaterialDetails"
-    @close="companyStore.isMaterialDetails = false"
-  />
-  <ServicesModal
-    v-if="isServiceDetails"
-    @close="companyStore.isServiceDetails = false"
-  />
-
-  <CompanyModal
-    v-if="isCompanyDetail"
-    @close="companyStore.isCompanyDetail = false"
-  />
-  <NoteModal
-    v-if="selectedNote"
-    :note="selectedNote"
-    @close="surveyStore.selectedNote = null"
-  />
+  <DetailsModel v-if="isDetail" @close="closeAllModals" />
+  <MaterialsModal v-if="isMaterialDetails" @close="closeAllModals" />
+  <ServicesModal v-if="isServiceDetails" @close="closeAllModals" />
+  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
+  <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
 </template>

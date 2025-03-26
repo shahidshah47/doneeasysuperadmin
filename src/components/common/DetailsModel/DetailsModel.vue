@@ -29,7 +29,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, defineProps } from "vue";
+import {
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  defineProps,
+  nextTick,
+} from "vue";
 
 const isVisible = ref(true);
 const screenWidth = ref(window.innerWidth);
@@ -37,7 +44,7 @@ const screenHeight = ref(window.innerHeight);
 
 const props = defineProps({
   title: String,
-  description: String
+  description: String,
 });
 
 const modalStyles = computed(() => ({
@@ -46,8 +53,12 @@ const modalStyles = computed(() => ({
   maxHeight: "90vh",
 }));
 
-const closeModal = () => {
+const closeModal = async () => {
   isVisible.value = false;
+
+  // Wait for Vue to update DOM, then remove overflow-hidden
+  await nextTick();
+  document.body.classList.remove("overflow-hidden");
 };
 
 const updateScreenSize = () => {
@@ -57,9 +68,15 @@ const updateScreenSize = () => {
 
 onMounted(() => {
   window.addEventListener("resize", updateScreenSize);
+
+  // Add `overflow-hidden` when modal appears
+  document.body.classList.add("overflow-hidden");
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", updateScreenSize);
+
+  // Remove `overflow-hidden` to ensure it's not left behind
+  document.body.classList.remove("overflow-hidden");
 });
 </script>

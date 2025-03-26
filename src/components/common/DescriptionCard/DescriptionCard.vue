@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useCompanyStore } from "../../../store";
 
@@ -33,8 +33,12 @@ const props = defineProps({
 const companyStore = useCompanyStore();
 const { isDetail } = storeToRefs(companyStore);
 
-const handleClick = (content) => {
-  companyStore.toggleDetail(content);
+onMounted(() => {
+  companyStore.resetDetails();
+});
+
+const handleClick = () => {
+  companyStore.toggleDetail();
 };
 </script>
 
