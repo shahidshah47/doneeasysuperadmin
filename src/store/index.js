@@ -9,6 +9,7 @@ export const useCompanyStore = defineStore("companyStore", {
     isCompanyDetail: false,
     isServiceDetails: false,
     isMaterialDetails: false,
+    modalDesc: ""
   }),
   actions: {
     setCompanies(data) {
@@ -20,8 +21,9 @@ export const useCompanyStore = defineStore("companyStore", {
     setCompanyId(id) {
       this.companyId = id;
     },
-    toggleDetail() {
+    toggleDetail(detail) {
       this.isDetail = !this.isDetail;
+      this.modalDesc = detail;
     },
     toggleCompanyDetail() {
       this.isCompanyDetail = !this.isCompanyDetail;

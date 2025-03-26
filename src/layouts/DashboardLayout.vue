@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watchEffect } from "vue";
+import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore, useSurveyStore } from "../store";
 import { storeToRefs } from "pinia";
@@ -17,25 +17,40 @@ const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
 const surveyStore = useSurveyStore();
-const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails } =
+const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails, modalDesc } =
   storeToRefs(companyStore);
 const { selectedNote } = storeToRefs(surveyStore);
+const isDetailOpen = reactive(isDetail.value);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
 const isOrderRoute = computed(() => route.path === "/super-admin/order");
 
 // Prevent scrolling when isDetail is true
-watchEffect(() => {
-  if (isDetail.value || isCompanyDetail.value) {
-    document.body.classList.add("overflow-hidden");
-  } else {
-    document.body.classList.remove("overflow-hidden");
+// watchEffect(() => {
+//   console.log(isDetail, isDetailOpen, "isDetail === >><< ---");
+//   if (isDetail.value || isCompanyDetail.value) {
+//     isDetailOpen.value = isDetail.value;
+//     document.body.classList.add("overflow-hidden");
+//   } else {
+//     document.body.classList.remove("overflow-hidden");
+//   }
+// });
+
+watch(
+  () => isDetailOpen || isDetail.value,
+  (count, prevCount) => {
+    console.log(count, prevCount, "count & prevCount");
   }
-});
+)
 
 // Redirect if no token
 if (!localStorage?.getItem("token")) {
   router.push("/super-admin/login");
+}
+
+const handleCloseModel = () => {
+  companyStore.isDetail = false;
+  isDetailOpen.value = false;
 }
 </script>
 
@@ -62,7 +77,7 @@ if (!localStorage?.getItem("token")) {
   </div>
 
   <!-- Company Details Modal -->
-  <DetailsModel v-if="isDetail" @close="companyStore.isDetail = false" />
+  <DetailsModel v-if="isDetailOpen" @close="handleCloseModel" :description="modalDesc" />
   <MaterialsModal
     v-if="isMaterialDetails"
     @close="companyStore.isMaterialDetails = false"
