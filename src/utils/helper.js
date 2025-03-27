@@ -177,6 +177,7 @@ export const getStatusId = (status) => {
 };
 
 export const convertTimeTo12HourFormat = (time24) => {
+    if (time24.search("hour") > -1) return time24;
     // Split the time string into hours, minutes, and seconds
     const [hours, minutes, seconds] = time24.split(':');
 
@@ -248,6 +249,7 @@ export const convertAppointmentData = (appointment) => {
             image: appointment.order.verticle.image_path,
             name: appointment.order.verticle.name
         },
+        orderTypeId: appointment.order.type,
         orderType: appointment.order.type === 1 ? "One-time" : "Reoccuring",
         expectedDateAndTime: appointment.delivery_date + " " + convertTimeTo12HourFormat(appointment.delivery_time),
         orderAmount: appointment.order.total_budget,

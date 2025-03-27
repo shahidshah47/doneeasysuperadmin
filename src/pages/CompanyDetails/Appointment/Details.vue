@@ -1,142 +1,5 @@
 <template>
-  <div class="row my-4 flex" v-if="appointmentDetails">
-    <div class="col-md-6 flex flex-col">
-      <SectionHeading
-        title="Order Details"
-        customClass="!text-base !font-bold text-dm-blue leading-5"
-      />
-
-      <div class="card border-0 rounded-3 flex-grow">
-        <div class="card-body relative flex gap-2 flex-wrap flex-col">
-          <div class="inline-flex justify-between items-start">
-            <div>
-              <p
-                class="text-base !text-grayish-purple font-normal leading-5 mb-1"
-              >
-                ID: {{ appointmentDetails.order_id }}
-              </p>
-              <h4
-                class="text-dm-blue !font-bold leading-4 !text-[20px] font-theme"
-              >
-                {{ appointmentDetails.offer.order.title }}
-              </h4>
-            </div>
-            <span
-              class="bg-gradient-primary rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1"
-            >
-              In Progress</span
-            >
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <InfoDisplay
-              label="Date"
-              :value="
-                formatDateAndTime(appointmentDetails.delivery_date)
-                  ?.formattedDate
-              "
-            />
-            <InfoDisplay
-              label="Time"
-              :value="
-                formatDateAndTime(null, appointmentDetails.delivery_time)
-                  ?.formattedTime
-              "
-            />
-            <InfoDisplay
-              label="Order Type"
-              :value="getOrderType(appointmentDetails.offer.order.type)"
-            />
-            <InfoDisplay label="Payment Status" value="Paid" />
-            <InfoDisplay
-              label="Order Amount"
-              :value="appointmentDetails.offer.order.total_budget"
-            />
-          </div>
-
-          <div class="flex justify-between">
-            <ProfileCard
-              imageSrc="../../../assets/images2/manager.png"
-              altText="manager img"
-              subText="Manager"
-              mainText="John Doe"
-            />
-            <ProfileCard
-              imageSrc="../../../assets/images2/ltd.png"
-              altText="ltd"
-              mainText="XYZ Bito Group Pvt Ltd"
-              linkText="View Details"
-            />
-          </div>
-
-          <div>
-            <SummaryCard
-              title="Customer Summary"
-              :description="appointmentDetails.offer.order.description"
-              readMoreLink="#"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-3 flex flex-col gap-2">
-      <div
-        v-if="appointmentDetails.associate_user?.length > 0"
-        class="h-full flex-1"
-      >
-        <div class="d-flex">
-          <h5 class="fw-bold !text-base !text-dm-blue">Assign to</h5>
-          <p
-            class="!text-grayColor text-sm leading-5 !font-bold mb-0 ms-auto font-theme"
-          >
-            View All
-          </p>
-        </div>
-        <div v-for="(associate, index) in appointmentDetails.associate_user">
-          <UserProfileCard
-            :key="index"
-            :profileImage="associate.profile_picture.file_path"
-            :name="associate.name"
-            :designation="associate.designation"
-            :rating="4"
-          />
-        </div>
-      </div>
-
-      <div v-if="appointmentDetails.offer.order.address" class="h-full flex-1">
-        <h5 class="fw-bold !text-base !text-dm-blue">Order Location</h5>
-        <LocationCard
-          class="flex-grow h-full"
-          :location="{
-            lat: Number(appointmentDetails?.offer?.order?.address?.lat),
-            lng: Number(appointmentDetails?.offer?.order?.address?.lng),
-          }"
-          :address="appointmentDetails.offer.order.address.address"
-          buttonText="Open Map"
-        />
-      </div>
-    </div>
-
-    <div class="col-md-3 flex flex-col">
-      <h5 class="fw-bold !text-base !text-dm-blue">Attachments</h5>
-      <div v-for="(doc, index) in appointmentDetails.offer.order.documents">
-        <FileCard
-          :key="index"
-          fileIcon="../../../assets/images2/file-icon.png"
-          :fileName="doc.file_name"
-          :fileSize="doc.file_size"
-        />
-      </div>
-
-      <DescriptionCard
-        title="Additional terms"
-        :content="appointmentDetails.offer.additional_terms"
-        linkText="read more"
-        :lineClamp="3"
-      />
-    </div>
-  </div>
+  <AppointmentDetailCards :appointmentDetails="appointmentDetails" :user="user" :company="company" />
 
   <div v-if="appointmentDetails?.offer.payment_terms.length > 0">
     <h5 class="fw-bold !text-base !text-dm-blue">Payment Terms</h5>
@@ -175,7 +38,7 @@
       <ServiceCard
         :key="index"
         v-for="(service, index) in appointmentDetails.offer.services"
-        :itemTitle="service.item_number"
+        :itemTitle="`Item No ${index + 1}`"
         :sessionName="service.title"
         serviceTitle="Service Description"
         :serviceDescription="service.description"
@@ -210,8 +73,10 @@
       <ServiceCard
         :key="index"
         v-for="(quote, index) in appointmentDetails?.offer?.quotations"
-        :itemTitle="quote.item_title"
-        :sessionName="quote.description"
+        :itemTitle="`Item No ${index + 1}`"
+        :sessionName="quote.item_title"
+        serviceTitle="Description"
+        :serviceDescription="quote.description"
         editLink="/super-admin/company-details/info/authentication"
         unitPriceLabel="Unit Price"
         :unitPrice="`AED ${quote.unit_price}`"
@@ -221,7 +86,7 @@
         :total="`AED ${quote.total}`"
         deliveryTimeLabel="Procurement/lead time"
         :deliveryTime="
-          convertTimeTo12HourFormat(quote.delivery_time.split(' ')[1])
+          convertTimeTo12HourFormat(quote.delivery_time.search('hour') > -1 ? quote.delivery_time : quote.delivery_time.split(' ')[1])
         "
       />
     </div>
@@ -229,40 +94,46 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import BreakDown from "../../../components/common/BreakDown/BreakDown.vue";
-import DescriptionCard from "../../../components/common/DescriptionCard/DescriptionCard.vue";
-import FileCard from "../../../components/common/FileCard/FileCard.vue";
-import InfoDisplay from "../../../components/common/InfoDisplay/InfoDisplay.vue";
-import LocationCard from "../../../components/common/LocationCard/LocationCard.vue";
 import PaymentCard from "../../../components/common/PaymentCard/PaymentCard.vue";
-import ProfileCard from "../../../components/common/ProfileCard/ProfileCard.vue";
-import SectionHeading from "../../../components/common/SectionHeading/SectionHeading.vue";
 import ServiceCard from "../../../components/common/ServiceCard/ServiceCard.vue";
-import StarRating from "../../../components/common/StarRating/StarRating.vue";
-import SummaryCard from "../../../components/common/SummaryCard/SummaryCard.vue";
-import UserProfileCard from "../../../components/common/UserProfileCard/UserProfileCard.vue";
 import { useCompanyStore } from "../../../store";
 import { useRoute } from "vue-router";
 import api from "../../../api";
-import GoogleMapComponent from "../../../components/common/GoogleMapComponent.vue";
-import { GoogleMap, Marker } from "vue3-google-map";
 import { useToast } from "primevue";
 import {
   convertTimeTo12HourFormat,
   formatDateAndTime,
-  getOrderType,
   getOrdinalNumber,
 } from "../../../utils/helper";
 import { paymentTermsStatus } from "../../../utils/constants";
+import AppointmentDetailCards from "../../../components/Appointment/AppointmentDetailCards.vue";
 
 const route = useRoute();
 const loading = ref(true);
 const error = ref(null);
 const companyStore = useCompanyStore();
 const appointmentDetails = ref(null);
-const locationData = ref(null);
 const toast = useToast();
+const user = ref(null);
+const company = ref(null);
+const isUserAvailable = ref(JSON.parse(localStorage.getItem("user")));
+
+const isVendorOrAdmin = computed(() => {
+  const { current_user_type, user_type, role_type } = isUserAvailable.value;
+
+  return (
+    current_user_type === 3 ||
+    (current_user_type === null &&
+      user_type === 3 &&
+      role_type === "sales_manager") ||
+    current_user_type === 6 ||
+    (current_user_type === null &&
+      user_type === 3 &&
+      role_type === "company_owner")
+  );
+});
 
 const handleServices = () => {
   companyStore.toggleIsServiceDetails();
@@ -279,13 +150,21 @@ const handleToggle = () => {
   console.log("BreakDown toggle clicked");
 };
 
+
 const fetchAppointDetailsById = async (id) => {
   try {
     const response = await api.get("/superadmin/user/appointment/" + id);
     if (response.status === 200) {
       const { data, message } = response?.data;
-      console.log(data, "data");
       appointmentDetails.value = data;
+      
+      const {
+        offer,
+        user: appointmentUser,
+      } = appointmentDetails?.value;
+      const { user: offerUser, payment_terms } = offer || {};
+      user.value = isVendorOrAdmin.value ? appointmentDetails?.value?.user : offerUser || appointmentUser;
+      company.value = user?.value?.company || appointmentUser?.company || "";
       toast.add({
         severity: "success",
         summary: "Success",

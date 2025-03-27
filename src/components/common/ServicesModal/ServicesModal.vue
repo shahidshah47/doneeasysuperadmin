@@ -7,7 +7,7 @@
       <div
         class="flex flex-row items-center justify-between !bg-light-lilac rounded-tl-2xl rounded-tr-2xl px-6 py-2"
       >
-        <h2 class="!text-[20px] !font-semibold text-dm-blue m-0">
+        <h2 class="!text-base !font-semibold text-dm-blue m-0">
           Edit/Add Service
         </h2>
         <button
@@ -57,7 +57,6 @@
             <DatePickerField
               name="selectedDate"
               label="Select a Date"
-              icon="/calendar-icon.svg"
               placeholder="Pick a date"
               v-model="selectedDate"
             />
@@ -65,7 +64,7 @@
           <div
             class="flex justify-end gap-3 border-t-[1.5px] py-6 border-solid border-soft-pastel-blue px-6"
           >
-            <ThemeButton label="Cancel" @click="handleCancel" />
+            <ThemeButton label="Cancel" @click="closeModal" />
             <ThemeButton
               label="Save"
               variant="primary"

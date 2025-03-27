@@ -1,5 +1,5 @@
 <script setup>
-import { computed, watchEffect } from "vue";
+import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore, useSurveyStore } from "../store";
 import { storeToRefs } from "pinia";
@@ -17,7 +17,7 @@ const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
 const surveyStore = useSurveyStore();
-const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails } =
+const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails, modalDesc, companyDetails } =
   storeToRefs(companyStore);
 const { selectedNote } = storeToRefs(surveyStore);
 
@@ -54,10 +54,10 @@ const closeAllModals = () => {
   // Ensure `overflow-hidden` is removed after state updates
   setTimeout(() => {
     if (
-      !isDetail.value &&
-      !isCompanyDetail.value &&
-      !isMaterialDetails.value &&
-      !isServiceDetails.value &&
+      !isDetail.value ||
+      !isCompanyDetail.value ||
+      !isMaterialDetails.value ||
+      !isServiceDetails.value ||
       !selectedNote.value
     ) {
       document.body.classList.remove("overflow-hidden");
@@ -88,10 +88,9 @@ const closeAllModals = () => {
     </div>
   </div>
 
-  <!-- Company Details Modal -->
-  <DetailsModel v-if="isDetail" @close="closeAllModals" />
+  <DetailsModel v-if="isDetail" @close="closeAllModals" :description="modalDesc" />
   <MaterialsModal v-if="isMaterialDetails" @close="closeAllModals" />
   <ServicesModal v-if="isServiceDetails" @close="closeAllModals" />
-  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
+  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" :details="companyDetails" />
   <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
 </template>

@@ -59,7 +59,7 @@
           <div
             class="flex justify-end gap-3 border-t-[1.5px] py-6 border-solid border-soft-pastel-blue px-6"
           >
-            <ThemeButton label="Cancel" @click="handleCancel" />
+            <ThemeButton label="Cancel" @click="closeModal" />
             <ThemeButton
               label="Save"
               variant="primary"

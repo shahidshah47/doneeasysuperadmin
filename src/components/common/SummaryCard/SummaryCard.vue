@@ -46,7 +46,7 @@ onMounted(() => {
   companyStore.resetDetails();
 });
 
-const handleClick = () => {
-  companyStore.toggleDetail();
+const handleClick = (desc) => {
+  companyStore.toggleDetail(desc);
 };
 </script>
