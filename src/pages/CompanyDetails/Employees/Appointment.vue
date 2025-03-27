@@ -110,7 +110,7 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const companyId = computed(() => route.query.companyId);
 
-import { ref } from "vue";
+import { computed, ref } from "vue";
 const getImagePath = (imageName) => {
   return new URL(`../../../assets/images2/${imageName}`, import.meta.url).href;
 };

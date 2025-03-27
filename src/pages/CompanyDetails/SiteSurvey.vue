@@ -115,9 +115,10 @@
         </template>
 
         <template #expectedDateAndTime="{ data }">
-          <p class="text-md text-dm-blue font-bold">
-            {{ data.registeredDate }}
-          </p>
+          <p
+            class="text-md text-dm-blue font-bold"
+            v-html="formatDate(data.registeredDate)"
+          ></p>
         </template>
 
         <template #orderAmount="{ data }">
@@ -203,16 +204,18 @@ import { useRoute, useRouter } from "vue-router";
 const selectedSurvey = ref();
 const router = useRouter();
 const route = useRoute();
-
+const formatDate = (date) => {
+  return date.replace(/\n/g, "<br>"); // Convert newlines to <br>
+};
 const handleClickToDetails = () => {
   const companyId = route.params.companyId;
   if (companyId) {
     router.push({
-      path: "/super-admin/company-details/site-survey/details",
-      query: { companyId },
+      path: `/super-admin/company-details/${companyId}/site-survey/details`,
     });
   }
 };
+
 const statusBtn = ref(1);
 
 const pagination = ref({
@@ -291,7 +294,10 @@ const columns = ref([
   { field: "title", header: "Title & Description" },
   { field: "verticle", header: "Vertical" },
   { field: "orderType", header: "Order Type" },
-  { field: "expectedDateAndTime", header: "Expected Delivery Date & Time" },
+  {
+    field: "expectedDateAndTime",
+    header: ["Expected Delivery", "Date & Time"],
+  },
   { field: "payment", header: "Payment" },
   { field: "orderAmount", header: "Order Amount" },
   { field: "progressState", header: "Progress State" },

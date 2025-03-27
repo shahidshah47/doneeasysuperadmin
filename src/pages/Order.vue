@@ -60,13 +60,7 @@ const handleFetchOrder = (id, page) => {
 
 const selectedCompany = ref();
 
-const statusOptions = [
-  "Active",
-  "Deactivated",
-  "Inactive",
-  "Monitory",
-  "Banned",
-];
+const statusOptions = ["All", "Active", "Pending", "Cancelled"];
 const columns = ref([
   { field: "id", header: "ID" },
   { field: "companyName", header: ["Organisation ", "Name ID"] },
@@ -230,7 +224,7 @@ const typeClasses = {
             <div class="flex gap-3">
               <button
                 @click="handleFetchOrder('All')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
                   statusBtn === 'All' ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
@@ -238,7 +232,7 @@ const typeClasses = {
               </button>
               <button
                 @click="handleFetchOrder('Active')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
                   statusBtn === 'Active' ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
@@ -246,23 +240,23 @@ const typeClasses = {
               </button>
               <button
                 @click="handleFetchOrder('Inactive')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
                   statusBtn === 'Inactive'
                     ? 'bg-primary text-white'
                     : 'btn-light'
                 }`"
               >
-                Inactive
+                Pending
               </button>
               <button
                 @click="handleFetchOrder('Monitory')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
+                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
                   statusBtn === 'Monitory'
                     ? 'bg-primary text-white'
                     : 'btn-light'
                 }`"
               >
-                Monitory
+                Cancelled
               </button>
             </div>
             <div class="flex gap-3">
@@ -374,7 +368,7 @@ const typeClasses = {
             :options="statusOptions"
             @change="updateStatus(data)"
             :style="getStatusClass(data.status)"
-            class="p-dropdown-sm font-bold"
+            class="p-dropdown-sm !font-semibold"
           ></Dropdown>
         </template>
 
