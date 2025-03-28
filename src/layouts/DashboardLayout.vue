@@ -17,8 +17,14 @@ const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
 const surveyStore = useSurveyStore();
-const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails, modalDesc, companyDetails } =
-  storeToRefs(companyStore);
+const {
+  isDetail,
+  isCompanyDetail,
+  isMaterialDetails,
+  isServiceDetails,
+  modalDesc,
+  companyDetails,
+} = storeToRefs(companyStore);
 const { selectedNote } = storeToRefs(surveyStore);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
@@ -70,7 +76,7 @@ const closeAllModals = () => {
   <div class="flex min-h-screen">
     <!-- Sidebar -->
     <div
-      class="bg-white shadow fixed left-0 top-0 bottom-0 w-[95px] overflow-y-auto"
+      class="bg-white shadow fixed left-0 top-0 bottom-0 w-[95px] overflow-y-auto z-[9999]"
     >
       <SideBar />
     </div>
@@ -88,9 +94,17 @@ const closeAllModals = () => {
     </div>
   </div>
 
-  <DetailsModel v-if="isDetail" @close="closeAllModals" :description="modalDesc" />
+  <DetailsModel
+    v-if="isDetail"
+    @close="closeAllModals"
+    :description="modalDesc"
+  />
   <MaterialsModal v-if="isMaterialDetails" @close="closeAllModals" />
   <ServicesModal v-if="isServiceDetails" @close="closeAllModals" />
-  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" :details="companyDetails" />
+  <CompanyModal
+    v-if="isCompanyDetail"
+    @close="closeAllModals"
+    :details="companyDetails"
+  />
   <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
 </template>
