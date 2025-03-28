@@ -4,9 +4,9 @@
       <div class="fs-4 fw-bold">Hey, Jane Cooper</div>
     </div>
     <div class="d-flex gap-3">
-      <button class="btn btn-primary btn-sm py-0 px-3 rounded-3 align-items-center">
-        <span class="fs-5 me-2 leading-0">+</span>
-        Vendor
+      <button class="btn btn-primary btn-sm align-items-center rounded-3 px-3 py-0">
+        <span class="fs-5 leading-0 me-2">+</span>
+        Add
       </button>
       <button class="btn btn-light">
         <img :src="getImagePath('Messages.png')">

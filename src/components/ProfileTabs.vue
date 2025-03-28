@@ -1,31 +1,33 @@
 <template>
-  <div class="tabs-section mt-5">
-      <ul class="nav nav-tabs d-flex justify-content-around border-0">
-          <li class="nav-item">
-              <router-link to="/super-admin/company-details/employees/details" class="nav-link" active-class="active-tab"
-                  exact>Info</router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/super-admin/company-details/employees/appointment" class="nav-link"
-                  active-class="active-tab">Appointments</router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/super-admin/company-details/employees/site-survey" class="nav-link"
-                  active-class="active-tab">Site Survey</router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/super-admin/company-details/employees/chat-history" class="nav-link"
-                  active-class="active-tab">Chats History</router-link>
-          </li>
-          <li class="nav-item">
-              <router-link to="/super-admin/company-details/employees/rating-reviews" class="nav-link"
-                  active-class="active-tab">Rating & Reviews</router-link>
-          </li>
-      </ul>
+  <div class="tabs-section mt-3">
+    <ul class="nav nav-tabs d-flex justify-content-around border-0">
+      <li v-for="tab in tabs" :key="tab.path" class="nav-item">
+        <router-link
+          :to="`/super-admin/company-details/${companyId}/employees/${tab.path}`"
+          class="nav-link"
+          active-class="active-tab"
+        >
+          {{ tab.label }}
+        </router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script setup>
+import { defineProps } from "vue";
+
+defineProps({
+  companyId: String,
+});
+
+const tabs = [
+  { label: "Info", path: "details" },
+  { label: "Appointments", path: "appointment" },
+  { label: "Site Survey", path: "site-survey" },
+  { label: "Chat History", path: "chat-history" },
+  { label: "Rating & Reviews", path: "rating-reviews" },
+];
 </script>
 
 <style scoped>
@@ -43,14 +45,16 @@
   right: 0;
   bottom: 0;
   height: 4px;
-  background-color: #5825EB;
+  background-color: #5825eb;
   width: 100%;
   margin: 0 auto;
 }
 
 .nav-link {
-  color: #6c757d;
+  color: #868599;
   border: none !important;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .nav-link:hover {

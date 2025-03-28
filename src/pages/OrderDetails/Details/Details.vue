@@ -1,0 +1,140 @@
+<template>
+  <div class="flex gap-2">
+    <button
+      v-for="tab in tabs"
+      :key="tab.name"
+      @click="activeTab = tab.name"
+      :class="[
+        'px-4 py-3 font-semibold !rounded-lg flex items-center space-x-2',
+        activeTab === tab.name
+          ? '!bg-vivid-purple text-white'
+          : '!bg-white-100 !text-dm-blue',
+      ]"
+    >
+      <span>{{ tab.name }}</span>
+      <span
+        v-if="tab.count !== null"
+        class="!bg-vivid-purple p-[2px] text-xs !font-semibold !rounded-[2px] !text-white-100"
+        >{{ formatCount(tab.count) }}</span
+      >
+    </button>
+  </div>
+  <OrderSummary
+    v-if="orderData && activeTab === 'Summary'"
+    :orderData="orderData"
+  />
+  <OfferDetail v-if="orderData && activeTab === 'Offers'" />
+</template>
+
+<script setup>
+import { useToast } from "primevue/usetoast";
+import { ref, onMounted, watch, toRaw } from "vue";
+import { useRoute } from "vue-router";
+import api from "../../../api";
+import OrderSummary from "../../../components/Order/OrderSummary.vue";
+import OfferDetail from "../../../components/Order/OfferDetail.vue";
+
+const route = useRoute();
+const orderId = ref(null);
+const orderData = ref(null);
+const toast = useToast();
+const activeTab = ref("Summary");
+
+const tabs = ref([
+  { name: "Summary", count: null },
+  { name: "Offers", count: 0 },
+  { name: "Site Survey", count: 0 },
+  { name: "Chats", count: 0 },
+]);
+
+onMounted(() => {
+  orderId.value = route.params.id || route.path.split("/").pop();
+});
+const fetchOrderData = async () => {
+  if (!orderId.value) return;
+
+  let endpoint = "";
+  if (activeTab.value === "Summary") {
+    endpoint = `/superadmin/order/${orderId.value}`;
+  } else if (activeTab.value === "Offers") {
+    endpoint = `/superadmin/order/offers/list?order_id=${orderId.value}`;
+  } else if (activeTab.value === "Site Survey") {
+    endpoint = `/superadmin/order/site-surveys/list?order_id=${orderId.value}`;
+  } else {
+    orderData.value = null;
+    return;
+  }
+
+  try {
+    const response = await api.get(endpoint, {
+      headers: {
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
+    });
+
+    if (response?.status === 200 && response.data) {
+      orderData.value = response.data.data;
+
+      // Update count dynamically based on fetched data length
+      const dataLength = Array.isArray(orderData.value)
+        ? orderData.value.length
+        : null;
+      const tab = tabs.value.find((t) => t.name === activeTab.value);
+      if (tab) tab.count = dataLength;
+
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response.data.message || "Data retrieved successfully",
+        life: 3000,
+      });
+    }
+  } catch (error) {
+    orderData.value = null;
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: error.response?.data?.message || "Failed to retrieve data",
+      life: 3000,
+    });
+  }
+};
+
+onMounted(() => {
+  orderId.value = route.params.id || route.path.split("/").pop();
+  if (orderId.value) {
+    fetchOrderData();
+  }
+});
+
+watch(activeTab, () => {
+  fetchOrderData();
+});
+
+const formatCount = (count) => {
+  if (count !== null && count < 10) {
+    return `0${count}`;
+  }
+  return count;
+};
+
+watch(activeTab, (newTab) => {
+  if (newTab === "Summary") {
+    if (orderId.value) {
+      fetchOrder(orderId.value);
+    }
+  } else {
+    orderData.value = null;
+  }
+});
+
+watch(orderData, (newData) => {
+  console.log("orderData updated:", toRaw(newData));
+});
+</script>
+
+<style scoped>
+button {
+  transition: background-color 0.3s, color 0.3s;
+}
+</style>

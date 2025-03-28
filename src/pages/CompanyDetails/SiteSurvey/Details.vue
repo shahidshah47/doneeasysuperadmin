@@ -1,123 +1,307 @@
 <template>
-    <div class="d-flex my-4">
-        <button class="btn btn-primary me-2" style="text-transform: none !important;">Site Survey Activity</button>
-        <button class="btn btn-light">Order Summary</button>
+  <div class="d-flex my-4">
+    <button
+      class="btn me-2"
+      :class="
+        activeButton === 'survey'
+          ? '!bg-vivid-purple !text-white-100'
+          : 'btn-light'
+      "
+      @click="setActiveButton('survey')"
+      style="text-transform: none !important"
+    >
+      Site Survey Activity
+    </button>
+    <button
+      class="btn"
+      :class="
+        activeButton === 'order'
+          ? '!bg-vivid-purple !text-white-100'
+          : 'btn-light'
+      "
+      @click="setActiveButton('order')"
+    >
+      Order Summary
+    </button>
+  </div>
+
+  <SectionHeading
+    title="Site Survey Progress"
+    customClass="!text-base !font-semibold text-dm-blue leading-5"
+  />
+  <div class="card border-0 rounded-3 p-3 mb-4">
+    <div class="row items-center">
+      <div class="col-md-3">
+        <ProgressStep
+          icon="flag.svg"
+          text="Start Trip"
+          :date="'December 20, 2025 • 10:30 AM'"
+          :isActive="true"
+        />
+      </div>
+      <div class="col-md-3">
+        <ProgressStep icon="clock.svg" text="Reach to Site" />
+      </div>
+      <div class="col-md-3">
+        <ProgressStep icon="note.svg" text="Surveying" />
+      </div>
+      <div class="col-md-3">
+        <ProgressStep icon="emoji-happy.svg" text="Completed" />
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-5">
+    <div class="col-md-3">
+      <SectionHeading
+        title="Details"
+        customClass="!text-base !font-semibold text-dm-blue leading-5"
+      />
+
+      <div class="card border-0 rounded-3 p-3 mb-4">
+        <InfoItem
+          label="Start Trip"
+          value="2118 Thornridge Cir."
+          valueClass="!text-base fw-semibold"
+        />
+        <InfoItem
+          label="End Trip"
+          value="775 Rolling Green Rd."
+          valueClass="!text-base fw-semibold"
+        />
+        <InfoItem
+          label="Travel Distance"
+          :value="50"
+          unit="km"
+          valueClass="!text-2xl fw-bold"
+        />
+        <InfoItem
+          label="Travel Time"
+          value="15 min"
+          valueClass="!text-base fw-semibold"
+        />
+        <InfoItem
+          label="Client Name"
+          value="Shane Idrees"
+          valueClass="!text-base fw-semibold"
+        />
+        <InfoItem
+          label="Contact No."
+          value="+97 75955165"
+          valueClass="!text-base fw-semibold"
+        />
+        <InfoItem
+          label="Survey Conducted by"
+          value="Dianne Russell"
+          valueClass="!text-base fw-semibold"
+        />
+        <InfoItem
+          label="Survey Conducted by"
+          value="Leslie Alexander"
+          valueClass="!text-base fw-semibold"
+        />
+      </div>
+
+      <SectionHeading
+        title="Total Time"
+        customClass="!text-base !font-semibold text-dm-blue leading-5"
+      />
+      <div class="card border-0 rounded-3 p-3 text-center">
+        <div class="d-flex gap-3 justify-content-center">
+          <CountdownTimer :hours="0" :minutes="15" :seconds="0" />
+        </div>
+      </div>
+    </div>
+    <!-- This is the code that I commented on. You can use it -->
+    <!-- <div class="col-md-7">
+      <SectionHeading
+        title="Map"
+        customClass="!text-base !font-semibold text-dm-blue leading-5"
+      />
+      <div>
+        <img
+          src="../../../assets/images2/big-map.png"
+          alt="Map"
+          class="!rounded-lg"
+        />
+      </div>
+      <div
+        class="card border-0 rounded-3 p-3 !h-full flex flex-col items-center justify-center gap-8"
+      >
+        <img
+          :src="getImagePath('location.svg')"
+          :alt="text"
+          class="w-32 h-28"
+        />
+        <div class="max-w-xl mx-auto text-center !px-10">
+          <h1 class="!text-[20px] fw-semibold !text-dm-blue">
+            Associate reacher to destination
+          </h1>
+          <p class="!text-sm !text-dm-blue font-normal">
+            Optimize your travel with real-time navigation updates and seamless
+            integration, ensuring you reach your destination efficiently and
+            safely.
+          </p>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="col-md-4">
+      <SectionHeading
+        title="Add note (s) or Attach picture"
+        customClass="!text-base !font-semibold text-dm-blue leading-4"
+      />
+      <div class="card border-0 rounded-3 p-3 mb-4 !h-full">
+        <div
+          class="flex flex-col gap-4 max-h-full overflow-y-auto vivid-gradient-scrollbar"
+        >
+          <NoteCard
+            v-for="(note, index) in notes"
+            :key="index"
+            :title="note.title"
+            :content="note.content"
+            :images="note.images"
+            :author="note.author"
+            :timestamp="note.timestamp"
+            @note-clicked="handleNoteClick"
+          />
+        </div>
+      </div>
     </div>
 
-    <h5 class="fw-semibold">Site Survey Progress</h5>
-    <div class="card border-0 rounded-3 p-3 mb-4">
-        <div class="d-flex align-items-center">
-            <div class="progress-step">
-                <i class="bi bi-check-circle-fill text-primary"></i>
-                <span class="ms-2">Start Trip</span>
-            </div>
-            <div class="progress-bar bg-light mx-2 flex-grow-1"></div>
-            <div class="progress-step">
-                <span>Reach to Site</span>
-            </div>
-            <div class="progress-bar bg-light mx-2 flex-grow-1"></div>
-            <div class="progress-step">
-                <span>Surveying</span>
-            </div>
-            <div class="progress-bar bg-light mx-2 flex-grow-1"></div>
-            <div class="progress-step">
-                <span>Completed</span>
-            </div>
+    <div class="col-md-5">
+      <SectionHeading
+        title="Execution summary"
+        customClass="!text-base !font-semibold text-dm-blue leading-4"
+      />
+      <div class="card border-0 rounded-3 p-3 mb-4 !h-full">
+        <div
+          class="flex flex-col gap-4 max-h-full overflow-y-auto vivid-gradient-scrollbar"
+        >
+          <ExecutionLog
+            v-for="(notification, index) in notifications"
+            :key="index"
+            :image="notification.image"
+            :message="notification.message"
+            :date="notification.date"
+            :time="notification.time"
+          />
         </div>
+      </div>
     </div>
-
-    <div class="row mb-5">
-        <div class="col-md-3">
-            <h5 class="fw-semibold">Details</h5>
-            <div class="card border-0 rounded-3 p-3 mb-4">
-                <p class="mb-0 text-primary small-font">Start Trip</p>
-                <p class="fw-semibold">2118 Thornridge Cir.</p>
-                <p class="mb-0 text-primary small-font">End Trip</p>
-                <p class="fw-semibold">775 Rolling Green Rd.</p>
-                <p class="mb-0 text-primary small-font">Distance</p>
-                <p class="fw-semibold"><span class="fs-5">35</span> km</p>
-                <p class="mb-0 text-primary small-font">Travel Time</p>
-                <p class="fw-semibold">15 min</p>
-                <p class="mb-0 text-primary small-font">Client Name</p>
-                <p class="fw-semibold">Shane Idrees</p>
-                <p class="mb-0 text-primary small-font">Contact No.</p>
-                <p class="fw-semibold">+97 75955165</p>
-                <p class="mb-0 text-primary small-font">Survey Conducted by</p>
-                <p class="fw-semibold">Dianne Russell</p>
-                <p class="mb-0 text-primary small-font">Survey Conducted by</p>
-                <p class="fw-semibold">Leslie Alexander</p>
-            </div>
-
-            <h5 class="fw-semibold">Total Time</h5>
-            <div class="card border-0 rounded-3 p-3 text-center">
-                <div class="d-flex gap-3 justify-content-center">
-                    <div>
-                        <h4 class="fw-bold mb-1">00</h4>
-                        <small class="text-muted">Hrs</small>
-                    </div>
-                    <p class="fs-3 fw-bold">:</p>
-                    <div>
-                        <h4 class="fw-bold mb-1">15</h4>
-                        <small class="text-muted">Min</small>
-                    </div>
-                    <p class="fs-3 fw-bold">:</p>
-                    <div>
-                        <h4 class="fw-bold mb-1">00</h4>
-                        <small class="text-muted">Sec</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <h5 class="fw-semibold">Map</h5>
-            <div class="card border-0 rounded-3 p-3">
-                <div>
-                    <img src="../../../assets/images2/big-map.png" alt="Map">
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
 </template>
+
+<script setup>
+import { ref } from "vue";
+import SectionHeading from "../../../components/common/SectionHeading/SectionHeading.vue";
+import ProgressStep from "../../../components/common/ProgressStep/ProgressStep.vue";
+import InfoItem from "../../../components/common/InfoItem/InfoItem.vue";
+import CountdownTimer from "../../../components/common/CountdownTimer/CountdownTimer.vue";
+import NoteCard from "../../../components/common/NoteCard/NoteCard.vue";
+import ExecutionLog from "../../../components/common/ExecutionLog/ExecutionLog.vue";
+import { useSurveyStore } from "../../../store";
+
+const store = useSurveyStore();
+
+const handleNoteClick = (note) => {
+  store.setSelectedNote(note);
+};
+
+const notifications = ref([
+  {
+    image: "exe-image.svg",
+    message: "John Doe reached the destination location.",
+    date: "Nov 12",
+    time: "07:00PM",
+  },
+  {
+    image: "exe-image.svg",
+    message: "Alice completed the survey task.",
+    date: "Nov 13",
+    time: "10:15AM",
+  },
+  {
+    image: "exe-image.svg",
+    message: "Bob started a new project phase.",
+    date: "Nov 14",
+    time: "03:30PM",
+  },
+]);
+
+const images = [
+  { src: "site-survey.jpg", alt: "Profile 1" },
+  { src: "site-survey.jpg", alt: "Profile 2" },
+  { src: "site-survey.jpg", alt: "Profile 3" },
+];
+
+const notes = ref([
+  {
+    title: "1. Note Title",
+    content: "Lorem ipsum dolor sit amet",
+    images: images,
+    author: "Dianne Russell",
+    timestamp: "Nov 12, 2023 at 07:00 PM",
+  },
+  {
+    title: "1. Note Title",
+    content: "Lorem ipsum dolor sit amet",
+    images: images,
+    author: "Dianne Russell",
+    timestamp: "Nov 12, 2023 at 07:00 PM",
+  },
+]);
+
+const getImagePath = (imageName) => {
+  return new URL(`../../../assets/image/icons/${imageName}`, import.meta.url)
+    .href;
+};
+
+const activeButton = ref("survey");
+
+const setActiveButton = (button) => {
+  activeButton.value = button;
+};
+</script>
 
 <style scoped>
 .sidebar {
-    background-color: #F2F4FB;
+  background-color: #f2f4fb;
 }
 
 .breadcrumb {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .progress-step {
-    display: flex;
-    align-items: center;
-    position: relative;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .progress-step i {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .progress-bar {
-    height: 2px;
+  height: 2px;
 }
 
 img {
-    border-radius: 10px;
+  border-radius: 10px;
 }
 
 .nav-link {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #6c757d;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #6c757d;
 }
 
 .nav-link:hover {
-    color: #007bff;
+  color: #007bff;
 }
 
 .nav-link i {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 </style>

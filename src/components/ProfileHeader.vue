@@ -20,41 +20,36 @@
             alt=""
           />
         </div>
-        <button class="btn btn-sm btn-primary rounded-3 px-3 py-1" style="text-transform: none !important;">Admin</button>
+        <button
+          class="btn btn-primary rounded-3 !px-2 !py-[1px] !text-sm"
+          style="text-transform: none !important"
+        >
+          Admin
+        </button>
       </div>
       <div class="user-details">
-        <h1 class="user-name">Esther Howard</h1>
+        <h1 class="user-name m-0">Esther Howard</h1>
         <p class="user-id">ID OFC 903823</p>
       </div>
     </div>
     <div class="user-stats">
-      <div class="stat-item">
-        <h2 class="stat-title">Revenue Contribution</h2>
-        <p class="stat-value"><span class="currency">AED</span> 332,100</p>
-      </div>
-      <div class="stat-item">
-        <h2 class="stat-title">No. of Order Completed</h2>
-        <p class="stat-value">2190</p>
-      </div>
-      <div class="stat-item">
-        <h2 class="stat-title">Assign. of Verticals</h2>
-        <p class="stat-value">01</p>
-      </div>
+      <StatItem title="Revenue Contribution" value="332,100" currency="AED" />
+      <StatItem title="No. of Order Completed" value="2190" />
+      <StatItem title="Assign. of Verticals" value="01" />
       <div class="stat-item">
         <h2 class="stat-title">Rating</h2>
         <div class="rating-wrapper">
-          <img
-            loading="lazy"
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/262be8540299558ad8b1be7b8117d57c868178db888c604fb9daa00c0e04d96e?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-            class="rating-stars"
-            alt="Rating stars"
-          />
-          <span class="rating-value">4.5</span>
+          <StarRating :rating="3" :width="20" :height="20" />
+          <span class="rating-value !font-semibold">4.5</span>
         </div>
       </div>
     </div>
   </header>
 </template>
+<script setup>
+import StarRating from "./common/StarRating/StarRating.vue";
+import StatItem from "./common/StatItem/StatItem.vue";
+</script>
 
 <script>
 export default {
@@ -63,6 +58,11 @@ export default {
 </script>
 
 <style scoped>
+.stat-title {
+  color: #5825eb;
+  font-size: 12px;
+  font-weight: 600;
+}
 .profile-header {
   display: flex;
   flex-wrap: wrap;
@@ -89,7 +89,7 @@ export default {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  gap: 16px;
+  gap: 8px;
   justify-content: start;
   margin-left: 20px;
 }
@@ -112,13 +112,13 @@ export default {
   gap: 4px;
   justify-content: start;
   min-height: 24px;
-  padding: 0 8px;
+  padding: 5px 8px;
 }
 
 .status-text {
   align-self: stretch;
   margin: auto 0;
-  width: 52px;
+  font-weight: 600;
 }
 
 .status-icon {
@@ -158,7 +158,7 @@ export default {
 
 .user-id {
   color: #6e6e86;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   line-height: 1.4;
 }
@@ -169,30 +169,6 @@ export default {
   gap: 40px;
   line-height: 1.2;
   margin: auto 0;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-title {
-  color: #5825eb;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.stat-value {
-  color: #0e0d35;
-  font-size: 24px;
-  font-weight: 700;
-  margin-top: 6px;
-}
-
-.currency {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 14px;
 }
 
 .rating-wrapper {
@@ -220,6 +196,7 @@ export default {
 .percentage-badge {
   position: absolute;
   bottom: -6%;
+  background: #a321ee !important;
 }
 
 @media (max-width: 991px) {

@@ -341,6 +341,7 @@ import CompanyForm from '../../components/CompanyForm/CompanyForm.vue';
 import LegalDocDetailsForm from '../../components/LegalDocDetailsForm/LegalDocDetailsForm.vue';
 import GoogleMapComponent from '../../components/common/GoogleMapComponent.vue';
 import { GoogleMap, Marker } from 'vue3-google-map';
+import { useToast } from 'primevue';
 
 const route = useRoute();
 const loading = ref(true);
@@ -353,6 +354,7 @@ const editingCompany = ref(null);
 const locationData = ref(null);
 const showCompanyModal = ref(false);
 const showLegDocModal = ref(false);
+const toast = useToast();
 
 const openCreateModal = () => {
     editingCompany.value = { ...companyStore?.companyData?.company };
@@ -376,6 +378,7 @@ const handleFetchLegDocDetails = async () => {
         const response = await api.get("/superadmin/user/docs/" + route.params.companyId);
         if (response.status === 200) {
             userStore.setLegDocDetails(response?.data?.data);
+            toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
             showLegDocModal.value = true;
         }
     } catch (err) {
@@ -396,6 +399,7 @@ const handleCompanySubmit = async (company) => {
         });
         if (response.status === 200) {
             companyDetails.value = getCompanyDetails(response?.data?.data);
+            toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
             showCompanyModal.value = false;
             editingCompany.value = null;
         }
@@ -462,8 +466,7 @@ const fetchCompanyDetailsById = async (id) => {
             const user = response?.data?.data?.user;
             companyDetails.value = getCompanyDetails(response?.data?.data?.company);
             locationData.value = { lat: Number(response?.data?.data?.company?.latitude), lng: Number(response?.data?.data?.company?.longitude) }
-            console.log(locationData, "locationData");
-            
+            toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
             legalDocsDetails.value = getLegalDocsDetails(user);
         }
     } catch (err) {

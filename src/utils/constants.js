@@ -354,3 +354,24 @@ export const productsContants = [
         rating: 4
     },
 ];
+
+export const paymentTermsStatus = (status) => {
+    switch (status) {
+        case 1: 
+            return { gradient: "text-red-500", statusText: "Un-Paid" }
+        case 2: 
+            return { gradient: "text-blue-500", statusText: "Active" }
+        case 3: 
+            return { gradient: "text-yellow-500", statusText: "Disputed" }
+        case 4: 
+            return { gradient: "text-gray-500", statusText: "Refunded" }
+        case 5: 
+            return { gradient: "text-green-500", statusText: "Paid" }
+        case 6: 
+            return { gradient: "text-red-500", statusText: "Canceled" }
+        case 7: 
+            return { gradient: "text-purple-500", statusText: "Requested" }
+        default:
+            return { gradient: "text-gray-500", statusText: "Unknown" }
+    }
+};

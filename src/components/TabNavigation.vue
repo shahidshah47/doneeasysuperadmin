@@ -1,8 +1,8 @@
 <template>
   <div class="tabs-section mt-5">
-    <ul class="nav nav-tabs d-flex justify-content-around border-0">
+    <ul class="nav nav-tabs flex justify-around border-0">
       <li
-        class="nav-item"
+        class="nav-item font-bold"
         :class="{
           'active-tab':
             $route.path.includes('/super-admin/company-details/') &&
@@ -11,7 +11,7 @@
       >
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}/info`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-sm !font-bold"
         >
           Info
         </router-link>
@@ -19,7 +19,7 @@
       <li class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}/appointment`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-sm !font-bold"
           active-class="active-tab"
         >
           Appointments
@@ -28,7 +28,7 @@
       <li class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}/site-survey`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-sm !font-bold"
           active-class="active-tab"
         >
           Site Survey
@@ -37,7 +37,7 @@
       <li class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}/offers`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-sm !font-bold"
           active-class="active-tab"
         >
           Offers
@@ -46,7 +46,7 @@
       <li class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}/employees`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-sm !font-bold"
           active-class="active-tab"
         >
           Employees
@@ -55,7 +55,7 @@
       <li class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}/verticals`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-sm !font-bold"
           active-class="active-tab"
         >
           Verticals
@@ -64,7 +64,7 @@
       <li class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}/chat-history`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-sm !font-bold"
           active-class="active-tab"
         >
           Chats History
@@ -73,7 +73,7 @@
       <li class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}/finance`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-sm !font-bold"
           active-class="active-tab"
         >
           Finance
