@@ -36,9 +36,12 @@ import OfferDetail from "../../../components/Order/OfferDetail.vue";
 
 const route = useRoute();
 const orderId = ref(null);
-const orderData = ref(null);
 const toast = useToast();
 const activeTab = ref("Summary");
+
+const orderData = ref(null);
+
+const siteSurveyData = ref(null);
 
 const tabs = ref([
   { name: "Summary", count: null },
@@ -49,19 +52,26 @@ const tabs = ref([
 
 onMounted(() => {
   orderId.value = route.params.id || route.path.split("/").pop();
+  if (orderId.value) {
+    fetchOrderData();
+  }
 });
+
 const fetchOrderData = async () => {
   if (!orderId.value) return;
 
   let endpoint = "";
+  let stateVar = null;
+  let useNestedData = false;
+
   if (activeTab.value === "Summary") {
     endpoint = `/superadmin/order/${orderId.value}`;
-  } else if (activeTab.value === "Offers") {
-    endpoint = `/superadmin/order/offers/list?order_id=${orderId.value}`;
+    stateVar = orderData;
+    useNestedData = true;
   } else if (activeTab.value === "Site Survey") {
     endpoint = `/superadmin/order/site-surveys/list?order_id=${orderId.value}`;
+    stateVar = siteSurveyData;
   } else {
-    orderData.value = null;
     return;
   }
 
@@ -72,12 +82,11 @@ const fetchOrderData = async () => {
       },
     });
 
-    if (response?.status === 200 && response.data) {
-      orderData.value = response.data.data;
+    if (response?.status === 200) {
+      stateVar.value = useNestedData ? response.data.data : response.data;
 
-      // Update count dynamically based on fetched data length
-      const dataLength = Array.isArray(orderData.value)
-        ? orderData.value.length
+      const dataLength = Array.isArray(stateVar.value)
+        ? stateVar.value.length
         : null;
       const tab = tabs.value.find((t) => t.name === activeTab.value);
       if (tab) tab.count = dataLength;
@@ -90,7 +99,7 @@ const fetchOrderData = async () => {
       });
     }
   } catch (error) {
-    orderData.value = null;
+    stateVar.value = null;
     toast.add({
       severity: "error",
       summary: "Error",
@@ -100,37 +109,13 @@ const fetchOrderData = async () => {
   }
 };
 
-onMounted(() => {
-  orderId.value = route.params.id || route.path.split("/").pop();
-  if (orderId.value) {
-    fetchOrderData();
-  }
-});
-
 watch(activeTab, () => {
   fetchOrderData();
 });
 
 const formatCount = (count) => {
-  if (count !== null && count < 10) {
-    return `0${count}`;
-  }
-  return count;
+  return count !== null && count < 10 ? `0${count}` : count;
 };
-
-watch(activeTab, (newTab) => {
-  if (newTab === "Summary") {
-    if (orderId.value) {
-      fetchOrder(orderId.value);
-    }
-  } else {
-    orderData.value = null;
-  }
-});
-
-watch(orderData, (newData) => {
-  console.log("orderData updated:", toRaw(newData));
-});
 </script>
 
 <style scoped>

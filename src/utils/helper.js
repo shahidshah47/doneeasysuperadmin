@@ -388,3 +388,13 @@ export const formatDate = (inputDate) => {
     })
     .replace(",", ""); // Removes the comma after the day
 };
+
+export const formatTime = (timeString) => {
+  if (!timeString) return "";
+
+  const [hours, minutes] = timeString.split(":").map(Number);
+  let period = hours >= 12 ? "PM" : "AM";
+  let formattedHours = hours % 12 || 12; // Convert 0 to 12 for AM
+
+  return `${formattedHours}:${String(minutes).padStart(2, "0")} ${period} `;
+};
