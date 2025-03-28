@@ -38,8 +38,11 @@
       <ServiceCard
         :key="index"
         v-for="(service, index) in appointmentDetails.offer.services"
+        :data="service"
         :itemTitle="`Item No ${index + 1}`"
-        :sessionName="service.title"
+        @edit="(data) => handleClickEdit(data)"
+      />
+      <!-- :sessionName="service.title"
         serviceTitle="Service Description"
         :serviceDescription="service.description"
         editLink="/super-admin/company-details/info/authentication"
@@ -52,8 +55,7 @@
         deliveryTimeLabel="Delivery Time"
         :deliveryTime="
           convertTimeTo12HourFormat(service.delivery_time.split(' ')[1])
-        "
-      />
+        " -->
     </div>
   </div>
 
@@ -70,24 +72,12 @@
       </button>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-      <ServiceCard
+      <MaterialCard
         :key="index"
         v-for="(quote, index) in appointmentDetails?.offer?.quotations"
         :itemTitle="`Item No ${index + 1}`"
-        :sessionName="quote.item_title"
-        serviceTitle="Description"
-        :serviceDescription="quote.description"
-        editLink="/super-admin/company-details/info/authentication"
-        unitPriceLabel="Unit Price"
-        :unitPrice="`AED ${quote.unit_price}`"
-        quantityLabel="Quantity"
-        :quantity="quote.quantity"
-        totalLabel="Total"
-        :total="`AED ${quote.total}`"
-        deliveryTimeLabel="Procurement/lead time"
-        :deliveryTime="
-          convertTimeTo12HourFormat(quote.delivery_time.search('hour') > -1 ? quote.delivery_time : quote.delivery_time.split(' ')[1])
-        "
+        :data="quote"
+        @edit="(data) => handleClickEdit(data)"
       />
     </div>
   </div>
@@ -98,7 +88,7 @@ import { computed, onMounted, ref } from "vue";
 import BreakDown from "../../../components/common/BreakDown/BreakDown.vue";
 import PaymentCard from "../../../components/common/PaymentCard/PaymentCard.vue";
 import ServiceCard from "../../../components/common/ServiceCard/ServiceCard.vue";
-import { useCompanyStore } from "../../../store";
+import { useAppointmentStore, useCompanyStore } from "../../../store";
 import { useRoute } from "vue-router";
 import api from "../../../api";
 import { useToast } from "primevue";
@@ -109,11 +99,13 @@ import {
 } from "../../../utils/helper";
 import { paymentTermsStatus } from "../../../utils/constants";
 import AppointmentDetailCards from "../../../components/Appointment/AppointmentDetailCards.vue";
+import MaterialCard from "../../../components/common/MaterialCard/MaterialCard.vue";
 
 const route = useRoute();
 const loading = ref(true);
 const error = ref(null);
 const companyStore = useCompanyStore();
+const appointStore = useAppointmentStore();
 const appointmentDetails = ref(null);
 const toast = useToast();
 const user = ref(null);
@@ -136,20 +128,27 @@ const isVendorOrAdmin = computed(() => {
 });
 
 const handleServices = () => {
-  companyStore.toggleIsServiceDetails();
+  appointStore.toggleIsServiceDetails();
 };
 onMounted(() => {
   companyStore.resetDetails();
 });
 
 const handleMaterials = () => {
-  companyStore.toggleIsMaterialDetails();
+  appointStore.toggleIsMaterialDetails();
 };
 
 const handleToggle = () => {
   console.log("BreakDown toggle clicked");
 };
 
+const handleClickEdit = (data) => {
+  if (data.item_title) {
+    appointStore.toggleIsMaterialDetails(data);
+  } else {
+    appointStore.toggleIsServiceDetails(data);
+  }
+}
 
 const fetchAppointDetailsById = async (id) => {
   try {
@@ -162,7 +161,8 @@ const fetchAppointDetailsById = async (id) => {
         offer,
         user: appointmentUser,
       } = appointmentDetails?.value;
-      const { user: offerUser, payment_terms } = offer || {};
+      const { user: offerUser, payment_terms, services, quotations } = offer || {};
+      
       user.value = isVendorOrAdmin.value ? appointmentDetails?.value?.user : offerUser || appointmentUser;
       company.value = user?.value?.company || appointmentUser?.company || "";
       toast.add({

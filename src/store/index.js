@@ -7,8 +7,6 @@ export const useCompanyStore = defineStore("companyStore", {
     companyData: null,
     isDetail: false,
     isCompanyDetail: false,
-    isServiceDetails: false,
-    isMaterialDetails: false,
     modalDesc: "",
     companyDetails: null
   }),
@@ -26,26 +24,51 @@ export const useCompanyStore = defineStore("companyStore", {
       this.isDetail = !this.isDetail;
       this.modalDesc = detail;
     },
-    toggleCompanyDetail(data) {
+    toggleCompanyDetail() {
       this.isCompanyDetail = !this.isCompanyDetail;
+    },
+    setCompanyDetails(data) {
       this.companyDetails = data;
-    },
-    toggleIsServiceDetails() {
-      this.isServiceDetails = !this.isServiceDetails;
-    },
-    toggleIsMaterialDetails() {
-      this.isMaterialDetails = !this.isMaterialDetails;
     },
     resetDetails() {
       this.isDetail = false;
       this.isCompanyDetail = false;
-      this.isServiceDetails = false;
-      this.isMaterialDetails = false;
     },
   },
   persist: {
     paths: ["companies", "companyId", "companyData"],
   },
+});
+
+export const useAppointmentStore = defineStore("appointmentStore", {
+  state: () => ({
+    isServiceDetails: false,
+    isMaterialDetails: false,
+    serviceDetails: null,
+    materialDetails: null,
+  }),
+  actions: {
+    toggleIsServiceDetails(data) {
+      this.isServiceDetails = !this.isServiceDetails;
+      if (data) {
+        this.serviceDetails = data;
+      } else {
+        this.serviceDetails = null;
+      }
+    },
+    toggleIsMaterialDetails(data) {
+      this.isMaterialDetails = !this.isMaterialDetails;
+      if (data) {
+        this.materialDetails = data;
+      } else {
+        this.materialDetails = null;
+      }
+    },
+    resetDetails() {
+      this.isServiceDetails = false;
+      this.isMaterialDetails = false;
+    },
+  }
 });
 
 export const useUserStore = defineStore("userStore", {

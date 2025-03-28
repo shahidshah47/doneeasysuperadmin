@@ -13,7 +13,7 @@
       :rows="rows"
       :disabled="disabled"
       v-bind="$attrs"
-      class="w-full p-2 !text-base !rounded-lg !text-dm-blue !resize-none focus:ring-0 disabled:bg-gray-100 disabled:cursor-not-allowed !bg-light-lilac outline-none"
+      class="w-full pl-4 py-2 pr-4 !text-base !rounded-lg !text-dm-blue !resize-none focus:ring-0 disabled:bg-gray-100 disabled:cursor-not-allowed !bg-light-lilac outline-none"
       :class="{ 'border-red-500 focus:ring-red-500': errorMessage }"
     ></textarea>
     <p v-if="errorMessage" class="text-sm text-red-500">{{ errorMessage }}</p>

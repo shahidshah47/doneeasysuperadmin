@@ -47,11 +47,11 @@
               </div>
             </div>
           </div>
-          <button
+          <!-- <button
             class=" sm:mt-0 px-3 py-2 bg-primary text-white-100 text-sm !font-semibold !rounded-lg hover:bg-indigo-700 transition-colors uppercase"
           >
             View Details
-          </button>
+          </button> -->
         </div>
         <div>
           <h2 class="!text-[20px] !font-semibold">Summary</h2>
@@ -75,14 +75,16 @@ import { ref, computed, onMounted, onBeforeUnmount, defineProps, defineEmits } f
 import OrderStat from "../OrderStat/OrderStat.vue";
 import StarRating from "../StarRating/StarRating.vue";
 import { formatDateAndTime } from '../../../utils/helper';
+import { useToast } from 'primevue';
+import { useRoute } from 'vue-router';
+import api from '../../../api';
 
-const props = defineProps({
-  details: Object,
-});
-
+const details = ref(null);
+const error = ref(null);
+const loading = ref(true);
 const emit = defineEmits(['close']);
-
-console.log(props.details, "company Details");
+const toast = useToast();
+const route = useRoute();
 
 const isVisible = ref(true);
 const screenWidth = ref(window.innerWidth);
@@ -116,8 +118,32 @@ const updateScreenSize = () => {
   screenHeight.value = window.innerHeight;
 };
 
+const fetchCompanyDetails = async () => {
+  try {
+    const response = await api.get("/superadmin/user/appointment/company/" + route.params.appointmentId);
+    if (response.status === 200) {
+      const { data } = response.data;
+      details.value = data;
+      stats.value = [
+        { label: "No. of completed orders", value: data.completed_orders, breakPoint: "of" },
+        { label: "No. of cancelled orders", value: data.canceled_orders, breakPoint: "of" },
+        { label: "No. of work in progress", value: data.in_Progress_orders, breakPoint: "work" },
+        { label: "Submitted orders on DocEasy", value: data.total_orders, breakPoint: "on" },
+      ];
+      toast.add({ severity: 'success', summary: 'Success', detail: response?.data?.message, life: 3000 });
+    }
+  } catch (err) {
+    console.error(err);
+    error.value = "Error fetching data";
+  } finally {
+    loading.value = false;
+  }
+}
+
+
 onMounted(() => {
   window.addEventListener("resize", updateScreenSize);
+  fetchCompanyDetails();
 });
 
 onBeforeUnmount(() => {

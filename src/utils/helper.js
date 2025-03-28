@@ -374,6 +374,31 @@ export function getOrdinalNumber(index) {
   return `${index}th`;
 }
 
+export function formatDateAtMidnight(isoString, adjustments = {}) {
+  const date = new Date(isoString);
+
+  if (adjustments.years || adjustments.months || adjustments.days) {
+    const result = new Date(date);
+
+    if (adjustments.years)
+      result.setFullYear(result.getFullYear() + adjustments.years);
+    if (adjustments.months)
+      result.setMonth(result.getMonth() + adjustments.months);
+    if (adjustments.days) result.setDate(result.getDate() + adjustments.days);
+
+    return formatDateOnly(result) + " 00:00:00";
+  }
+
+  return formatDateOnly(date) + " 00:00:00";
+}
+
+export function formatDateOnly(date) {
+  const pad = (num) => num.toString().padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )}`;
+}
+
 export const formatDate = (inputDate) => {
   if (!inputDate) return "";
 

@@ -150,16 +150,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick, watch, watchPostEffect } from "vue";
 import api from "../../api";
 import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useRoute, useRouter } from "vue-router";
-import { useCompanyStore } from "../../store";
+import { useAppointmentStore, useCompanyStore } from "../../store";
 import { IconField, InputIcon, InputText, Paginator, useToast } from "primevue";
 import { FilterMatchMode } from "@primevue/core/api";
 import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
 import { convertAppointmentData } from "../../utils/helper";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
+import { storeToRefs } from "pinia";
 
 const store = useCompanyStore();
 const appointmentsData = ref([]);

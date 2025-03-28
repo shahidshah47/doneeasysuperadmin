@@ -12,6 +12,10 @@
           errorMessage ? 'border-red-500' : 'border-gray-300',
         ]"
         @update:model-value="updateValue"
+        :enable-time-picker="false"
+        :format="'dd/MM/yyyy'"
+        :auto-apply="true"
+        :date-format="'dd/MM/yyyy'"
       />
       <span v-if="icon" class="absolute right-3 top-3">
         <img :src="icon" alt="Calendar Icon" class="w-5 h-5" />

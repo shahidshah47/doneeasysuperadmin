@@ -106,7 +106,7 @@ const props = defineProps({
 });
 
 const handleViewDetails = () => {
-  companyStore.toggleCompanyDetail(props.company.value);
+  companyStore.toggleCompanyDetail();
 };
 
 console.log(props.appointmentDetails, "props appointment details");
