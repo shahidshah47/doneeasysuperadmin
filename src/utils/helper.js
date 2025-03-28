@@ -197,16 +197,8 @@ export const convertTimeTo12HourFormat = (time24) => {
   // Convert to 12-hour format
   hour = hour % 12 || 12;
 
-<<<<<<< HEAD
   // Format the time as "hh:mm:ss AM/PM"
   const time12 = minutes && seconds && period ? `${hour.toString().padStart(2, '0')}:${minutes}:${seconds} ${period}` : '---';
-=======
-  // Format the time as "hh:mm:ss AM/PM"
-  const time12 =
-    minutes && seconds && period
-      ? `${hour.toString().padStart(2, "0")}:${minutes}:${seconds} ${period}`
-      : "---";
->>>>>>> origin/appointment-v1
 
   return time12;
 };
