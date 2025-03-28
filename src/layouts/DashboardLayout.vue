@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useCompanyStore, useSurveyStore } from "../store";
+import { useAppointmentStore, useCompanyStore, useSurveyStore } from "../store";
 import { storeToRefs } from "pinia";
 
 import Breadcrumb from "../components/Breadcrumb.vue";
@@ -16,9 +16,11 @@ import NoteModal from "../components/common/NoteModal/NoteModal.vue";
 const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
+const appointmentStore = useAppointmentStore();
 const surveyStore = useSurveyStore();
-const { isDetail, isCompanyDetail, isMaterialDetails, isServiceDetails, modalDesc, companyDetails } =
+const { isDetail, isCompanyDetail, modalDesc } =
   storeToRefs(companyStore);
+const { isMaterialDetails, isServiceDetails, serviceDetails, materialDetails } = storeToRefs(appointmentStore);
 const { selectedNote } = storeToRefs(surveyStore);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
@@ -47,10 +49,9 @@ if (!localStorage?.getItem("token")) {
 const closeAllModals = () => {
   companyStore.isDetail = false;
   companyStore.isCompanyDetail = false;
-  companyStore.isMaterialDetails = false;
-  companyStore.isServiceDetails = false;
+  appointmentStore.isMaterialDetails = false;
+  appointmentStore.isServiceDetails = false;
   surveyStore.selectedNote = null;
-
   // Ensure `overflow-hidden` is removed after state updates
   setTimeout(() => {
     if (
@@ -89,8 +90,8 @@ const closeAllModals = () => {
   </div>
 
   <DetailsModel v-if="isDetail" @close="closeAllModals" :description="modalDesc" />
-  <MaterialsModal v-if="isMaterialDetails" @close="closeAllModals" />
-  <ServicesModal v-if="isServiceDetails" @close="closeAllModals" />
-  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" :details="companyDetails" />
+  <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails" @close="closeAllModals" />
+  <ServicesModal v-if="isServiceDetails" :serviceDetails="serviceDetails" @close="closeAllModals" />
+  <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
   <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
 </template>

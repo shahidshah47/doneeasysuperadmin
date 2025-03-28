@@ -191,7 +191,7 @@ export const convertTimeTo12HourFormat = (time24) => {
     hour = hour % 12 || 12;
 
     // Format the time as "hh:mm:ss AM/PM"
-    const time12 =  minutes && seconds && period ? `${hour.toString().padStart(2, '0')}:${minutes}:${seconds} ${period}` : '---';
+    const time12 = minutes && seconds && period ? `${hour.toString().padStart(2, '0')}:${minutes}:${seconds} ${period}` : '---';
 
     return time12;
 };
@@ -344,4 +344,25 @@ export function getOrdinalNumber(index) {
     if (mod10 === 2 && mod100 !== 12) return `${index}nd`;
     if (mod10 === 3 && mod100 !== 13) return `${index}rd`;
     return `${index}th`;
+}
+
+export function formatDateAtMidnight(isoString, adjustments = {}) {
+    const date = new Date(isoString);
+
+    if (adjustments.years || adjustments.months || adjustments.days) {
+        const result = new Date(date);
+
+        if (adjustments.years) result.setFullYear(result.getFullYear() + adjustments.years);
+        if (adjustments.months) result.setMonth(result.getMonth() + adjustments.months);
+        if (adjustments.days) result.setDate(result.getDate() + adjustments.days);
+
+        return formatDateOnly(result) + " 00:00:00";
+    }
+
+    return formatDateOnly(date) + " 00:00:00";
+}
+
+export function formatDateOnly(date) {
+    const pad = (num) => num.toString().padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
