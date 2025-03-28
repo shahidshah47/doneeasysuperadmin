@@ -71,7 +71,7 @@ const closeAllModals = () => {
   <div class="flex min-h-screen">
     <!-- Sidebar -->
     <div
-      class="bg-white shadow fixed left-0 top-0 bottom-0 w-[95px] overflow-y-auto"
+      class="bg-white shadow fixed left-0 top-0 bottom-0 w-[95px] overflow-y-auto z-[9999]"
     >
       <SideBar />
     </div>

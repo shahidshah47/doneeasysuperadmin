@@ -19,220 +19,97 @@
       >
     </button>
   </div>
-  <div class="row my-4 flex">
-    <div class="col-md-6 flex flex-col">
-      <SectionHeading
-        title="Orders Details"
-        customClass="!text-base !font-semibold text-dm-blue leading-5"
-      />
-
-      <div class="card border-0 rounded-3 flex-grow">
-        <div class="card-body position-relative">
-          <div
-            class="flex items-center gap-3 bg-blue-200 py-1 px-2 rounded-md w-[20%] mb-1"
-          >
-            <p class="!text-sm !text-dm-blue font-semibold leading-5 mb-0">
-              ID: 98374861
-            </p>
-            <div class="flex items-center gap-2">
-              <img
-                :src="getImageUrl('copy.svg')"
-                alt="copy-icon"
-                class="w-4 h-4"
-              />
-              <div class="bg-grayColor w-[1.5px] h-2.5"></div>
-              <img
-                :src="getImageUrl('share-2.svg')"
-                alt="share-icon"
-                class="w-4 h-4"
-              />
-            </div>
-          </div>
-          <h4
-            class="text-dm-blue !font-semibold leading-4 !text-[20px] font-theme"
-          >
-            Laundry Services
-          </h4>
-
-          <div class="row g-2 mb-2">
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Start Duration"
-                value="Sat, 19 Nov 2023"
-                className="flex flex-col gap-1"
-              />
-            </div>
-
-            <div class="col-md-6">
-              <InfoDisplay
-                label="End Duration"
-                value="Sat, 19 Nov 2023"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Order Type"
-                value="Recurring"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Contract duration"
-                value="Yearly 365 days"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Service Type"
-                value="On Demand"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Payment Status"
-                value="Paid 50%"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Order Amount"
-                value="AED 1230.00"
-                className="flex flex-col gap-1"
-              />
-            </div>
-          </div>
-
-          <div class="row">
-            <ProfileCard
-              imageSrc="../../../assets/images2/manager.png"
-              altText="manager img"
-              subText="Manager"
-              mainText="John Doe"
-            />
-            <ProfileCard
-              imageSrc="../../../assets/images2/ltd.png"
-              altText="ltd"
-              mainText="XYZ Bito Group Pvt Ltd"
-              linkText="View Details"
-            />
-          </div>
-
-          <div class="mt-4">
-            <SummaryCard
-              title="Customer Summary"
-              description="Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentum tellus."
-              readMoreLink="#"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 flex flex-col">
-      <div>
-        <div class="flex">
-          <div class="flex items-center gap-2 mb-2">
-            <h5 class="fw-semibold !text-base !text-dm-blue m-0">
-              Upload Site Pictures
-            </h5>
-            <img
-              :src="getImageUrl('info-circle-2.svg')"
-              alt="info-circle-icon"
-              class="w-5 h-5"
-            />
-          </div>
-          <p
-            class="!text-grayColor text-sm leading-5 !font-semibold mb-0 ms-auto font-theme"
-          >
-            View All
-          </p>
-        </div>
-        <div class="flex space-x-3">
-          <img
-            v-for="(image, index) in images"
-            :key="index"
-            :src="getSurvyUrl(image.src)"
-            :alt="image.alt"
-            class="w-24 h-24 !rounded-xl object-cover border border-white-100"
-          />
-        </div>
-      </div>
-      <div>
-        <h5 class="fw-semibold mt-3 !text-base !text-dm-blue">
-          Order Location
-        </h5>
-        <div class="flex-1 flex">
-          <LocationCard
-            class="flex-grow h-full"
-            address="123 Main St."
-            imageSrc="../../../assets/images2/map-2.png"
-            buttonText="Open Map"
-          />
-        </div>
-        <div>
-          <h5 class="fw-semibold !text-base !text-dm-blue mt-3">Attachments</h5>
-          <FileCard
-            fileIcon="../../../assets/images2/file-icon.png"
-            fileName="Company Profile"
-            fileSize="3.2mb"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 flex flex-col">
-      <div class="flex">
-        <h5 class="fw-semibold !text-base !text-dm-blue mb-2">Attachments</h5>
-
-        <p
-          class="!text-grayColor text-sm leading-5 !font-semibold mb-0 ms-auto font-theme"
-        >
-          View All
-        </p>
-      </div>
-      <FileCard
-        fileIcon="../../../assets/images2/file-icon.png"
-        fileName="Company Profile"
-        fileSize="3.2mb"
-      />
-
-      <DescriptionCard
-        title="Additional terms"
-        content="Custom content goes here..."
-        linkText="read more"
-        :lineClamp="3"
-      />
-    </div>
-  </div>
+  <OrderSummary
+    v-if="orderData && activeTab === 'Summary'"
+    :orderData="orderData"
+  />
+  <OfferDetail v-if="orderData && activeTab === 'Offers'" />
 </template>
 
 <script setup>
-import { ref } from "vue";
-import InfoDisplay from "../../../components/common/InfoDisplay/InfoDisplay.vue";
-import ProfileCard from "../../../components/common/ProfileCard/ProfileCard.vue";
-import SummaryCard from "../../../components/common/SummaryCard/SummaryCard.vue";
-import UserProfileCard from "../../../components/common/UserProfileCard/UserProfileCard.vue";
-import LocationCard from "../../../components/common/LocationCard/LocationCard.vue";
-import FileCard from "../../../components/common/FileCard/FileCard.vue";
-import DescriptionCard from "../../../components/common/DescriptionCard/DescriptionCard.vue";
-import SectionHeading from "../../../components/common/SectionHeading/SectionHeading.vue";
+import { useToast } from "primevue/usetoast";
+import { ref, onMounted, watch, toRaw } from "vue";
+import { useRoute } from "vue-router";
+import api from "../../../api";
+import OrderSummary from "../../../components/Order/OrderSummary.vue";
+import OfferDetail from "../../../components/Order/OfferDetail.vue";
 
-const images = [
-  { src: "site-survey.jpg", alt: "Profile 1" },
-  { src: "site-survey.jpg", alt: "Profile 2" },
-  { src: "site-survey.jpg", alt: "Profile 3" },
-];
-
+const route = useRoute();
+const orderId = ref(null);
+const orderData = ref(null);
+const toast = useToast();
 const activeTab = ref("Summary");
+
 const tabs = ref([
   { name: "Summary", count: null },
-  { name: "Offers", count: 15 },
-  { name: "Site Survey", count: 2 },
-  { name: "Chats", count: 23 },
+  { name: "Offers", count: 0 },
+  { name: "Site Survey", count: 0 },
+  { name: "Chats", count: 0 },
 ]);
+
+onMounted(() => {
+  orderId.value = route.params.id || route.path.split("/").pop();
+});
+const fetchOrderData = async () => {
+  if (!orderId.value) return;
+
+  let endpoint = "";
+  if (activeTab.value === "Summary") {
+    endpoint = `/superadmin/order/${orderId.value}`;
+  } else if (activeTab.value === "Offers") {
+    endpoint = `/superadmin/order/offers/list?order_id=${orderId.value}`;
+  } else if (activeTab.value === "Site Survey") {
+    endpoint = `/superadmin/order/site-surveys/list?order_id=${orderId.value}`;
+  } else {
+    orderData.value = null;
+    return;
+  }
+
+  try {
+    const response = await api.get(endpoint, {
+      headers: {
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
+    });
+
+    if (response?.status === 200 && response.data) {
+      orderData.value = response.data.data;
+
+      // Update count dynamically based on fetched data length
+      const dataLength = Array.isArray(orderData.value)
+        ? orderData.value.length
+        : null;
+      const tab = tabs.value.find((t) => t.name === activeTab.value);
+      if (tab) tab.count = dataLength;
+
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response.data.message || "Data retrieved successfully",
+        life: 3000,
+      });
+    }
+  } catch (error) {
+    orderData.value = null;
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: error.response?.data?.message || "Failed to retrieve data",
+      life: 3000,
+    });
+  }
+};
+
+onMounted(() => {
+  orderId.value = route.params.id || route.path.split("/").pop();
+  if (orderId.value) {
+    fetchOrderData();
+  }
+});
+
+watch(activeTab, () => {
+  fetchOrderData();
+});
 
 const formatCount = (count) => {
   if (count !== null && count < 10) {
@@ -241,13 +118,19 @@ const formatCount = (count) => {
   return count;
 };
 
-const getImageUrl = (path) => {
-  return new URL(`../../../assets/image/icons/${path}`, import.meta.url).href;
-};
+watch(activeTab, (newTab) => {
+  if (newTab === "Summary") {
+    if (orderId.value) {
+      fetchOrder(orderId.value);
+    }
+  } else {
+    orderData.value = null;
+  }
+});
 
-const getSurvyUrl = (imageName) => {
-  return new URL(`../../../assets/image/${imageName}`, import.meta.url).href;
-};
+watch(orderData, (newData) => {
+  console.log("orderData updated:", toRaw(newData));
+});
 </script>
 
 <style scoped>

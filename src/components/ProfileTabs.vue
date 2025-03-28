@@ -1,50 +1,13 @@
 <template>
-  <div class="tabs-section mt-5">
+  <div class="tabs-section mt-3">
     <ul class="nav nav-tabs d-flex justify-content-around border-0">
-      <li class="nav-item">
+      <li v-for="tab in tabs" :key="tab.path" class="nav-item">
         <router-link
-          :to="`/super-admin/company-details/${companyId}/employees/details`"
-          class="nav-link"
-          active-class="active-tab"
-          exact
-        >
-          Info
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyId}/employees/appointment`"
+          :to="`/super-admin/company-details/${companyId}/employees/${tab.path}`"
           class="nav-link"
           active-class="active-tab"
         >
-          Appointments
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyId}/employees/site-survey`"
-          class="nav-link"
-          active-class="active-tab"
-        >
-          Site Survey
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyId}/employees/chat-history`"
-          class="nav-link"
-          active-class="active-tab"
-        >
-          Chat History
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyId}/employees/rating-reviews`"
-          class="nav-link"
-          active-class="active-tab"
-        >
-          Rating & Reviews
+          {{ tab.label }}
         </router-link>
       </li>
     </ul>
@@ -52,11 +15,19 @@
 </template>
 
 <script setup>
-import { useRoute } from "vue-router";
-import { computed } from "vue";
+import { defineProps } from "vue";
 
-const route = useRoute();
-const companyId = computed(() => route.params.companyId);
+defineProps({
+  companyId: String,
+});
+
+const tabs = [
+  { label: "Info", path: "details" },
+  { label: "Appointments", path: "appointment" },
+  { label: "Site Survey", path: "site-survey" },
+  { label: "Chat History", path: "chat-history" },
+  { label: "Rating & Reviews", path: "rating-reviews" },
+];
 </script>
 
 <style scoped>
@@ -80,8 +51,10 @@ const companyId = computed(() => route.params.companyId);
 }
 
 .nav-link {
-  color: #6c757d;
+  color: #868599;
   border: none !important;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .nav-link:hover {

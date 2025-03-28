@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted, nextTick, onUnmounted, computed } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import api from "../api";
 // import DataTable from "datatables.net-bs5";
-import { convertUserData, getStatusId, transformData } from "../utils/helper";
+import { formatDate } from "../utils/helper";
 import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore } from "../store";
 import DataTable from "primevue/datatable";
@@ -19,20 +19,21 @@ import { FilterMatchMode } from "@primevue/core/api";
 import Dropdown from "primevue/dropdown";
 import ThemeDatatable from "../components/common/ThemeDatatable/ThemeDatatable.vue";
 import Pagination from "../components/common/Pagination/Pagination.vue";
-
+import { toRaw } from "vue";
+import { watch } from "vue";
 const store = useCompanyStore();
-// const companiesData = ref([]);
+const ordersData = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const statusBtn = ref(1);
 const router = useRouter();
 const toast = useToast();
-const vendorRes = ref(null);
 const rowsPerPageDropdown = ref([]);
+
 const pagination = ref({
-  currentPage: 0,
+  currentPage: 1,
   lastPage: 0,
-  perPage: 0,
+  perPage: 20,
   total: 0,
   firstPageUrl: null,
   lastPageUrl: null,
@@ -41,8 +42,75 @@ const pagination = ref({
   links: [],
 });
 
-const fetchData = async (id, page) => {
+const handleFetchVendor = (id, page) => {
+  fetchData(id, page);
+  statusBtn.value = id;
+};
+
+const ORDER_TYPES = {
+  1: "One-time",
+  2: "Reoccurring",
+};
+
+const fetchData = async (id, page, perPage = 20) => {
   console.log(id, page, "id and page");
+  try {
+    let url = `/superadmin/orders?status=${id}&page=${page}&per_page=${perPage}`;
+
+    const response = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
+    });
+
+    if (response?.status === 200 && response.data) {
+      const { data } = response;
+
+      pagination.value = {
+        currentPage: data.current_page ?? 1,
+        lastPage: data.last_page ?? 1,
+        perPage: data.per_page ?? perPage,
+        total: data.total ?? 0,
+        firstPageUrl: data.first_page_url ?? null,
+        lastPageUrl: data.last_page_url ?? null,
+        nextPageUrl: data.next_page_url ?? null,
+        prevPageUrl: data.prev_page_url ?? null,
+        links: data.links ?? [],
+      };
+
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: data.message || "Orders retrieved successfully",
+        life: 3000,
+      });
+      ordersData.value = Array.isArray(data.data)
+        ? data.data.map((item) => ({
+            id: item.id,
+            organizationName: {
+              name: item.company?.company_name || "N/A",
+              logo: item.company?.company_logo?.file_path || "",
+            },
+            description: item.description || "N/A",
+            vertical: {
+              name: item.verticle?.name || "",
+              logo: item.verticle?.image_path || "",
+            },
+            expectedStartDate: formatDate(item.start_date),
+            expectedEndDate: formatDate(item.end_date),
+            noOfDays: item.days_count ?? 0,
+            type: ORDER_TYPES[item?.type] || "N/A",
+            offers: item.offers_count ?? 0,
+            chats: item.chats_count ?? 0,
+            surveyRequest: item.contract_duration ?? "N/A",
+            status: item.status || "Unknown",
+          }))
+        : [];
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error("Error in fetchData:", err);
+  }
 };
 
 const handleClickToDetails = (id, type) => {
@@ -53,17 +121,12 @@ const handleClickToDetails = (id, type) => {
   }
 };
 
-const handleFetchOrder = (id, page) => {
-  fetchData(id, 1);
-  statusBtn.value = id;
-};
-
 const selectedCompany = ref();
 
 const statusOptions = ["All", "Active", "Pending", "Cancelled"];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "companyName", header: ["Organisation ", "Name ID"] },
+  { field: "organizationName", header: ["Organisation ", "Name ID"] },
   { field: "description", header: "Description" },
   {
     field: "vertical",
@@ -74,7 +137,7 @@ const columns = ref([
   },
   { field: "expectedStartDate", header: ["Expected ", " Start Date"] },
   { field: "expectedEndDate", header: ["Expected ", " End Date"] },
-  { field: "noOfDays", header: ["Expected ", "Days"] },
+  { field: "noOfDays", header: ["No. of ", "Days"] },
   { field: "type", header: "Type" },
   { field: "offers", header: "Offers" },
   {
@@ -91,7 +154,8 @@ const columns = ref([
 const filters = ref({
   id: { value: null, matchMode: FilterMatchMode.EQUALS },
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
+  "organizationName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
+  "vertical.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
 const getStatusClass = (status) => {
@@ -113,58 +177,6 @@ const getStatusClass = (status) => {
 
 const updateStatus = async (data) => {};
 
-const companiesData = ref([
-  {
-    id: 1,
-    companyName: { name: "TechCorp", logo: "Avatar.png" },
-    description:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's ",
-    vertical: { name: "Software", image: "Avatar.png" },
-    expectedStartDate: "2024-07-10",
-    expectedEndDate: "2025-07-10",
-    noOfDays: 365,
-    type: "One-time",
-    offers: "20",
-    chats: 15,
-    surveyRequest: 3,
-    status: "Active",
-  },
-  {
-    id: 2,
-    companyName: { name: "HealthPlus", logo: "Avatar.png" },
-    description: "Healthcare solutions provider",
-    vertical: { name: "Software", image: "Avatar.png" },
-    expectedStartDate: "2024-08-01",
-    expectedEndDate: "2025-08-01",
-    noOfDays: 365,
-    type: "Reoccurring",
-    offers: "250",
-    chats: 8,
-    surveyRequest: 2,
-    status: "Inactive",
-  },
-  {
-    id: 3,
-    companyName: { name: "EduSmart", logo: "Avatar.png" },
-    description: "E-learning platform",
-    vertical: { name: "Software", image: "Avatar.png" },
-    expectedStartDate: "2024-09-15",
-    expectedEndDate: "2025-09-15",
-    noOfDays: 365,
-    type: "Hot Orders",
-    offers: "300",
-    chats: 20,
-    surveyRequest: 5,
-    status: "Monitory",
-  },
-]);
-
-onMounted(() => {
-  nextTick(() => {
-    console.log("Hardcoded data loaded:", companiesData.value);
-  });
-});
-
 onMounted(() => {
   nextTick(() => {
     fetchData(1, 1);
@@ -175,14 +187,13 @@ const getImageUrl = (imagePath) => {
   return new URL(`../assets/images2/${imagePath}`, import.meta.url).href;
 };
 
-const handleNextPage = (page) => {
-  console.log(page, "page");
+const handlePerPage = async (props) => {
+  fetchData(statusBtn.value, props[0], props[1]);
 };
-
 const typeClasses = {
   "One-time": "!text-accent-green !bg-green-200",
-  Reoccurring: "!text-accent-green bg-green-200",
-  "Hot Orders": "!text-light-orange bg-blush-100",
+  Reoccurring: "!text-accent-green !bg-green-200",
+  "Hot Orders": "!text-light-orange !bg-blush-100",
 };
 </script>
 
@@ -194,22 +205,14 @@ const typeClasses = {
 
     <div class="p-4 bg-white rounded-3 shadow relative">
       <ThemeDatatable
-        :value="companiesData"
+        :value="ordersData"
         v-model:selection="selectedCompany"
         v-model:filters="filters"
         :filterFields="[
           'id',
-          'companyName.name',
+          'organizationName.name',
           'description',
-          'verticals',
-          'expectedStartDate',
-          'expectedEndDate',
-          'noOfDays',
-          'type',
-          'offers',
-          'chats',
-          'surveyRequest',
-          'status',
+          'vertical.name',
         ]"
         :columns="columns"
         :paginator="true"
@@ -223,42 +226,32 @@ const typeClasses = {
           <div class="flex justify-between items-center mb-2">
             <div class="flex gap-3">
               <button
-                @click="handleFetchOrder('All')"
+                @click="handleFetchVendor(1)"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'All' ? 'bg-primary text-white' : 'btn-light'
+                  statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
                 All
               </button>
+
               <button
-                @click="handleFetchOrder('Active')"
+                @click="handleFetchVendor(2)"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Active' ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                Active
-              </button>
-              <button
-                @click="handleFetchOrder('Inactive')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Inactive'
-                    ? 'bg-primary text-white'
-                    : 'btn-light'
+                  statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
                 Pending
               </button>
               <button
-                @click="handleFetchOrder('Monitory')"
+                @click="handleFetchVendor(3)"
                 :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Monitory'
-                    ? 'bg-primary text-white'
-                    : 'btn-light'
+                  statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'
                 }`"
               >
                 Cancelled
               </button>
             </div>
+
             <div class="flex gap-3">
               <div class="flex justify-end">
                 <IconField>
@@ -272,6 +265,15 @@ const typeClasses = {
                   </InputIcon>
                 </IconField>
               </div>
+              <div class="flex items-center">
+                <button class="btn btn-light bg-white border-0">
+                  Filters by <i class="fas fa-filter"></i>
+                </button>
+                <span class="border-start mx-2" style="height: 24px"></span>
+                <button class="btn btn-light bg-white border-0">
+                  Columns <i class="fas fa-columns"></i>
+                </button>
+              </div>
             </div>
           </div>
         </template>
@@ -280,15 +282,15 @@ const typeClasses = {
           ><span>{{ data.id }}</span></template
         >
 
-        <template v-slot:companyName="{ data }">
+        <template v-slot:organizationName="{ data }">
           <div class="flex items-center gap-2">
             <img
-              :src="getImageUrl(data.companyName.logo)"
+              :src="data.organizationName.logo"
               alt="Company Logo"
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
             <span class="font-semibold text-dm-blue">{{
-              data.companyName.name
+              data.organizationName.name
             }}</span>
           </div>
         </template>
@@ -316,7 +318,7 @@ const typeClasses = {
         <template v-slot:vertical="{ data }">
           <div class="flex items-center gap-2">
             <img
-              :src="getImageUrl(data.vertical.image)"
+              :src="data.vertical.logo"
               alt="Vertical Image"
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
@@ -327,13 +329,11 @@ const typeClasses = {
         </template>
 
         <template #expectedStartDate="{ data }">
-          <span>{{
-            new Date(data.expectedStartDate).toLocaleDateString()
-          }}</span>
+          <span>{{ data.expectedStartDate }}</span>
         </template>
 
         <template #expectedEndDate="{ data }">
-          <span>{{ new Date(data.expectedEndDate).toLocaleDateString() }}</span>
+          <span>{{ data.expectedEndDate }}</span>
         </template>
 
         <template #noOfDays="{ data }">
@@ -343,7 +343,7 @@ const typeClasses = {
         <template #type="{ data }">
           <span
             class="font-semibold px-2 py-1 rounded"
-            :class="typeClasses[data.type] || 'text-gray-600 bg-gray-200'"
+            :class="typeClasses[data.type]"
           >
             {{ data.type }}
           </span>
@@ -409,6 +409,7 @@ const typeClasses = {
             :firstPageCallback="firstPageCallback"
             :lastPageCallback="lastPageCallback"
             :rowChangeCallback="rowChangeCallback"
+            @perPageClick="(cPage, perPage) => handlePerPage(cPage, perPage)"
             :prevPageCallback="prevPageCallback"
             @nextPageClick="(page) => fetchData(statusBtn, page)"
             :nextPageCallback="nextPageCallback"
@@ -416,6 +417,16 @@ const typeClasses = {
             :perPage="pagination.perPage"
             :totalEntries="pagination.total"
           />
+          <!-- <div class="flex gap-4 justify-between items-center w-full">
+                        <Button icon="pi pi-chevron-left" rounded text @click="prevPageCallback" :disabled="page === 0" />
+                        <div class="text-color font-medium">
+                            <span class="hidden sm:block">Showing {{ first }} to {{ last }} of {{ totalRecords }} Entries</span>
+                        </div>
+                        <div class="">
+                            <button type="button"><i class="fa fa-chevron-right"></i>left</button>
+                        </div>
+                        <Button icon="pi pi-chevron-right" rounded text @click="nextPageCallback" :disabled="page === pageCount - 1" />
+                    </div> -->
         </template>
       </Paginator>
     </div>
