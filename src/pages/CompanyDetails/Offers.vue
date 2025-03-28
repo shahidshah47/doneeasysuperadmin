@@ -212,11 +212,11 @@ const handleClickToDetails = () => {
   const companyId = route.params.companyId;
   if (companyId) {
     router.push({
-      path: "/super-admin/company-details/offers/details",
-      query: { companyId },
+      path: `/super-admin/company-details/${companyId}/site-survey/details`,
     });
   }
 };
+
 const statusBtn = ref(1);
 
 const pagination = ref({
