@@ -13,7 +13,7 @@
       <form @submit.prevent="onSubmit">
         <div class="flex flex-col !bg-white-100 rounded-bl-2xl rounded-br-2xl py-3 shadow-soft-blue space-y-4">
           <div class="px-6 flex flex-col gap-3">
-            <InputField :label="serviceDetails?.item_number ?? 'Item No 1'" name="title" v-model="title" v-bind="titleAttrs" type="text" />
+            <InputField :label="serviceDetails?.item_number ?? itemNumber" name="title" v-model="title" v-bind="titleAttrs" type="text" />
             <TextareaField label="Service Description" name="description" 
               :rows="2" v-model="description" v-bind="descriptionAttrs" :disabled="false" />
             <InputField label="Unit Price" name="unit_price" 
@@ -57,6 +57,8 @@ const toast = useToast();
 
 const props = defineProps({
   serviceDetails: Object,
+  appointOfferId: Number,
+  itemNumber: String
 });
 
 const emit = defineEmits(['close']);
@@ -76,6 +78,7 @@ const { handleSubmit, setFieldValue, defineField, values } = useForm({
     quantity: 0,
     title: "",
     description: "",
+    item_number: "",
     total: 0,
     delivery_time: ""
   }
@@ -94,7 +97,6 @@ watch(
   () => props.serviceDetails,
   (newData) => {
     if (newData) {
-      console.log(newData);
       setFieldValue("id", newData.id);
       setFieldValue("title", newData.title);
       setFieldValue("item_number", newData.item_number);
@@ -102,8 +104,9 @@ watch(
       setFieldValue("unit_price", newData.unit_price);
       setFieldValue("quantity", newData.quantity);
       setFieldValue("delivery_time", newData.delivery_time);
-
       setFieldValue("total", Number(newData.quantity) * Number(newData.unit_price))
+    } else {
+      setFieldValue("item_number", props.itemNumber);
     }
   },
   { deep: true, immediate: true }
@@ -133,43 +136,41 @@ const closeModal = () => {
 };
 
 const onSubmit = handleSubmit(async (values) => {
-  console.log("Form submitted successfully:", {
-    ...values,
-    quantity: Number(values.quantity),
-    unit_price: Number(values.unit_price),
-    sub_total: values.total,
-    delivery_time: formatDateAtMidnight(values.delivery_time)
-  });
-  if (id) {
-    const response = await api.post("/superadmin/user/appointment/offer/" + route.params.appointmentId + "/services/add-update", {
+  let response;
+  if (id.value) {
+    response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/services/add-update", {
       ...values,
       quantity: Number(values.quantity),
       unit_price: Number(values.unit_price),
       sub_total: values.total,
       delivery_time: formatDateAtMidnight(values.delivery_time)
     });
-    console.log(response, "service has updated");
-    if (response.status === 200) {
-      emit('close');
-      isVisible.value = false;
-      toast.add({
-        severity: "success",
-        summary: "Success",
-        detail: response?.data?.message,
-        life: 3000,
-      });
-    }
   } else {
-    const response = await api.post("/superadmin/user/appointment/offer/" + route.params.appointmentId + "/services/add-update", {
+    response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/services/add-update", {
       title: values.title,
       description: values.description,
       quantity: Number(values.quantity),
       unit_price: Number(values.unit_price),
       sub_total: values.total,
+      item_number: values.item_number,
       delivery_time: formatDateAtMidnight(values.delivery_time),
       total: values.total
     });
-    console.log(response, "service has created");
+  }
+  if (response && response?.status === 200) {
+    closeModal();
+    toast.add({
+      severity: "success",
+      summary: "Success",
+      detail: response?.data?.message,
+      life: 3000,
+    });
+  } else {
+    toast.error({
+      severity: "error",
+      summary: "Error",
+      detail: "Something went wrong!"
+    });
   }
 });
 

@@ -20,7 +20,7 @@ const appointmentStore = useAppointmentStore();
 const surveyStore = useSurveyStore();
 const { isDetail, isCompanyDetail, modalDesc } =
   storeToRefs(companyStore);
-const { isMaterialDetails, isServiceDetails, serviceDetails, materialDetails } = storeToRefs(appointmentStore);
+const { isMaterialDetails, isServiceDetails, serviceDetails, materialDetails, appointmentDetails } = storeToRefs(appointmentStore);
 const { selectedNote } = storeToRefs(surveyStore);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
@@ -64,6 +64,7 @@ const closeAllModals = () => {
       document.body.classList.remove("overflow-hidden");
     }
   }, 0);
+  appointmentStore.setIsServiceUpdated(true);
 };
 </script>
 
@@ -90,8 +91,11 @@ const closeAllModals = () => {
   </div>
 
   <DetailsModel v-if="isDetail" @close="closeAllModals" :description="modalDesc" />
-  <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails" @close="closeAllModals" />
-  <ServicesModal v-if="isServiceDetails" :serviceDetails="serviceDetails" @close="closeAllModals" />
+  <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails" :appointOfferId="appointmentDetails?.offer?.id" @close="closeAllModals" />
+  <ServicesModal v-if="isServiceDetails" :serviceDetails="serviceDetails" 
+    :itemNumber="`Item No ` + (appointmentDetails?.offer?.services?.length + 1)" 
+    :appointOfferId="appointmentDetails?.offer?.id" 
+    @close="closeAllModals" />
   <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
   <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
 </template>

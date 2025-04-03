@@ -42,20 +42,6 @@
         :itemTitle="`Item No ${index + 1}`"
         @edit="(data) => handleClickEdit(data)"
       />
-      <!-- :sessionName="service.title"
-        serviceTitle="Service Description"
-        :serviceDescription="service.description"
-        editLink="/super-admin/company-details/info/authentication"
-        unitPriceLabel="Unit Price"
-        :unitPrice="`AED ${service.unit_price}`"
-        quantityLabel="Quantity"
-        :quantity="service.quantity"
-        totalLabel="Total"
-        :total="`AED ${service.total}`"
-        deliveryTimeLabel="Delivery Time"
-        :deliveryTime="
-          convertTimeTo12HourFormat(service.delivery_time.split(' ')[1])
-        " -->
     </div>
   </div>
 
@@ -84,7 +70,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import BreakDown from "../../../components/common/BreakDown/BreakDown.vue";
 import PaymentCard from "../../../components/common/PaymentCard/PaymentCard.vue";
 import ServiceCard from "../../../components/common/ServiceCard/ServiceCard.vue";
@@ -130,9 +116,6 @@ const isVendorOrAdmin = computed(() => {
 const handleServices = () => {
   appointStore.toggleIsServiceDetails();
 };
-onMounted(() => {
-  companyStore.resetDetails();
-});
 
 const handleMaterials = () => {
   appointStore.toggleIsMaterialDetails();
@@ -171,6 +154,8 @@ const fetchAppointDetailsById = async (id) => {
         detail: message,
         life: 3000,
       });
+      appointStore.setAppointmentDetails(appointmentDetails.value);
+      appointStore.setIsServiceUpdated(false);
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -180,9 +165,17 @@ const fetchAppointDetailsById = async (id) => {
   }
 };
 
+watch(() => appointStore.isServiceUpdated, (val) => {
+  console.log(val, "is Service Updated");
+  if (val) {
+    fetchAppointDetailsById(route.params.appointmentId);
+  }
+});
+
 onMounted(() => {
   window.scroll(0, 0);
   fetchAppointDetailsById(route.params.appointmentId);
+  companyStore.resetDetails();
 });
 </script>
 

@@ -46,6 +46,9 @@ export const useAppointmentStore = defineStore("appointmentStore", {
     isMaterialDetails: false,
     serviceDetails: null,
     materialDetails: null,
+    appointmentDetails: null,
+    isServiceUpdated: false,
+    isMaterialUpdated: false,
   }),
   actions: {
     toggleIsServiceDetails(data) {
@@ -63,6 +66,12 @@ export const useAppointmentStore = defineStore("appointmentStore", {
       } else {
         this.materialDetails = null;
       }
+    },
+    setAppointmentDetails(data) {
+      this.appointmentDetails = data;
+    },
+    setIsServiceUpdated(data) {
+      this.isServiceUpdated = data;
     },
     resetDetails() {
       this.isServiceDetails = false;
