@@ -1,14 +1,15 @@
 <template>
-  <div
-    v-if="isVisible"
-    class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-slate-gray backdrop-blur-md z-50"
+  <Modal
+    :isVisible="isVisible"
+    :modalStyles="modalStyles"
+    @update:isVisible="closeModal"
   >
-    <div class="relative overflow-y-auto" :style="modalStyles">
+    <div class="modal-content rounded-2xl overflow-x-hidden">
       <div
         class="flex flex-row items-center justify-between !bg-light-lilac rounded-tl-2xl rounded-tr-2xl px-6 py-2"
       >
         <h2 class="!text-[20px] !font-semibold text-dm-blue m-0">
-          More details
+          {{ title }}
         </h2>
         <button
           @click="closeModal"
@@ -25,18 +26,12 @@
         <p v-html="description" class="!text-dark-indigo-100 !text-base"></p>
       </div>
     </div>
-  </div>
+  </Modal>
 </template>
 
 <script setup>
-import {
-  ref,
-  computed,
-  onMounted,
-  onBeforeUnmount,
-  defineProps,
-  nextTick,
-} from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, defineProps } from "vue";
+import Modal from "../Modal/Modal.vue";
 
 const isVisible = ref(true);
 const screenWidth = ref(window.innerWidth);
@@ -53,12 +48,8 @@ const modalStyles = computed(() => ({
   maxHeight: "90vh",
 }));
 
-const closeModal = async () => {
+const closeModal = () => {
   isVisible.value = false;
-
-  // Wait for Vue to update DOM, then remove overflow-hidden
-  await nextTick();
-  document.body.classList.remove("overflow-hidden");
 };
 
 const updateScreenSize = () => {
@@ -68,15 +59,13 @@ const updateScreenSize = () => {
 
 onMounted(() => {
   window.addEventListener("resize", updateScreenSize);
-
-  // Add `overflow-hidden` when modal appears
-  document.body.classList.add("overflow-hidden");
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", updateScreenSize);
-
-  // Remove `overflow-hidden` to ensure it's not left behind
-  document.body.classList.remove("overflow-hidden");
 });
 </script>
+
+<style scoped>
+/* You can add any additional styles for the modal here */
+</style>

@@ -1,28 +1,28 @@
 <template>
   <div class="row">
-    <div class="col-7 px-0 d-flex gap-0">
+    <div class="col-7 px-0 d-flex gap-0 cursor-pointer" @click="handleClick">
       <div>
         <img :src="resolvedImageSrc" :alt="altText" />
       </div>
       <div>
         <p class="fw-bold mb-0 text-base">{{ jobTitle }}</p>
-        <p class="text-secondary mb-0 small-font">
+        <p class="text-secondary mb-0 font-xs">
           {{ company }} - {{ employmentType }}
         </p>
-        <div class="flex items-center text-secondary mb-0 small-font gap-2">
+        <div class="flex items-center text-secondary mb-0 font-xs gap-2">
           <p class="mb-0">{{ duration }}</p>
           <p class="text-[8px] mb-0">●</p>
           <p class="mb-0">
             {{ experience }}
           </p>
         </div>
-        <p class="text-secondary mb-0 small-font">{{ location }}</p>
+        <p class="text-secondary mb-0 font-xs">{{ location }}</p>
       </div>
     </div>
     <div class="col-5 px-0">
       <p class="text-primary mb-0 text-sm">Role & Responsibilities</p>
       <ul
-        class="mb-0 small-font cursor-pointer custom-dot-list !pl-2"
+        class="mb-0 font-xs cursor-pointer custom-dot-list !pl-2"
         data-bs-toggle="modal"
         data-bs-target="#experienceModal"
       >
@@ -36,6 +36,8 @@
 
 <script setup>
 import { computed } from "vue";
+
+const emit = defineEmits();
 
 const props = defineProps({
   imageSrc: String, // Only filename, e.g., "emp_detail_1.png"
@@ -54,10 +56,14 @@ const resolvedImageSrc = computed(
   () =>
     new URL(`../../../assets/images2/${props.imageSrc}`, import.meta.url).href
 );
+
+const handleClick = () => {
+  emit("click");
+};
 </script>
 
 <style scoped>
-.small-font {
+.font-xs {
   font-size: 12px;
 }
 .cursor-pointer {

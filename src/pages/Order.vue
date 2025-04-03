@@ -21,6 +21,8 @@ import ThemeDatatable from "../components/common/ThemeDatatable/ThemeDatatable.v
 import Pagination from "../components/common/Pagination/Pagination.vue";
 import { toRaw } from "vue";
 import { watch } from "vue";
+import StatusButtons from "../components/common/StatusButtons/StatusButtons.vue";
+import SearchAndFilter from "../components/common/SearchAndFilter/SearchAndFilter.vue";
 const store = useCompanyStore();
 const ordersData = ref([]);
 const loading = ref(true);
@@ -223,57 +225,23 @@ const typeClasses = {
         :currentPage="pagination.currentPage"
       >
         <template #header>
-          <div class="flex justify-between items-center mb-2">
-            <div class="flex gap-3">
-              <button
-                @click="handleFetchVendor(1)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                All
-              </button>
-
-              <button
-                @click="handleFetchVendor(2)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                Pending
-              </button>
-              <button
-                @click="handleFetchVendor(3)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                Cancelled
-              </button>
+          <div class="grid grid-cols-10 items-center gap-4 mb-6">
+            <div class="flex gap-3 col-span-6">
+              <StatusButtons
+                :statusBtn="statusBtn"
+                :buttons="[
+                  { label: 'All', value: 1 },
+                  { label: 'Approved', value: 2 },
+                  { label: 'Cancelled', value: 3 },
+                ]"
+                @update:statusBtn="handleFetchVendor"
+              />
             </div>
-
-            <div class="flex gap-3">
-              <div class="flex justify-end">
-                <IconField>
-                  <InputText
-                    v-model="filters['global'].value"
-                    placeholder="Search"
-                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
-                  />
-                  <InputIcon>
-                    <i class="fas fa-search"></i>
-                  </InputIcon>
-                </IconField>
-              </div>
-              <div class="flex items-center">
-                <button class="btn btn-light bg-white border-0">
-                  Filters by <i class="fas fa-filter"></i>
-                </button>
-                <span class="border-start mx-2" style="height: 24px"></span>
-                <button class="btn btn-light bg-white border-0">
-                  Columns <i class="fas fa-columns"></i>
-                </button>
-              </div>
+            <div class="flex gap-3 items-center w-full col-span-4">
+              <SearchAndFilter
+                v-model="filters['global'].value"
+                placeholder="Search"
+              />
             </div>
           </div>
         </template>
