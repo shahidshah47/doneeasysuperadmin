@@ -8,7 +8,7 @@ export const useCompanyStore = defineStore("companyStore", {
     isDetail: false,
     isCompanyDetail: false,
     modalDesc: "",
-    companyDetails: null
+    companyDetails: null,
   }),
   actions: {
     setCompanies(data) {
@@ -77,7 +77,7 @@ export const useAppointmentStore = defineStore("appointmentStore", {
       this.isServiceDetails = false;
       this.isMaterialDetails = false;
     },
-  }
+  },
 });
 
 export const useUserStore = defineStore("userStore", {
@@ -98,6 +98,23 @@ export const useSurveyStore = defineStore("surveyStore", {
   actions: {
     setSelectedNote(data) {
       this.selectedNote = data;
+    },
+  },
+});
+
+export const useEmployeeStore = defineStore("employeeStore", {
+  state: () => ({
+    isVisible: false,
+    modalData: null,
+  }),
+  actions: {
+    openModal(data) {
+      this.isVisible = true;
+      this.modalData = data;
+    },
+    closeModal() {
+      this.isVisible = false;
+      this.modalData = null;
     },
   },
 });

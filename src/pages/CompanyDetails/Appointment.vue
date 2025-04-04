@@ -7,44 +7,37 @@
       </keep-alive>
     </div>
     <div class="p-4 bg-white rounded-3 shadow relative">
-      <ThemeDatatable :value="appointmentsData" v-model:selection="selectedAppointment" v-model:filters="filters"
+      <ThemeDatatable
+        :value="appointmentsData"
+        v-model:selection="selectedAppointment"
+        v-model:filters="filters"
         :filterFields="filterFields"
-        :columns="columns" :paginator="true" :rows="20" :rowsPerPageOptions="[5, 10, 20, 50]" :totalRecords="pagination.total"
-        :totalPageCount="pagination.lastPage">
+        :columns="columns"
+        :paginator="true"
+        :rows="20"
+        :rowsPerPageOptions="[5, 10, 20, 50]"
+        :totalRecords="pagination.total"
+        :totalPageCount="pagination.lastPage"
+      >
         <template #header>
-          <div class="flex justify-between items-center mb-2">
-            <div class="flex gap-3">
-              <button @click="handleFetchAppointment(4)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 4 ? 'bg-primary text-white' : 'btn-light'}`">All</button>
-              <button @click="handleFetchAppointment(1)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'}`">Pending</button>
-              <button @click="handleFetchAppointment(2)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'}`">Schedule</button>
-              <button @click="handleFetchAppointment(3)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'}`">Completed</button>
+          <div class="grid grid-cols-10 items-center gap-4 mb-6">
+            <div class="flex gap-3 col-span-6">
+              <StatusButtons
+                :statusBtn="statusBtn"
+                :buttons="[
+                  { label: 'All', value: 4 },
+                  { label: 'Pending', value: 1 },
+                  { label: 'Schedule', value: 2 },
+                  { label: 'Completed', value: 3 },
+                ]"
+                @update:statusBtn="handleFetchAppointment"
+              />
             </div>
-            <div class="flex gap-3">
-              <div class="flex justify-end">
-                <IconField>
-                  <InputText
-                    v-model="filters['global'].value"
-                    placeholder="Search"
-                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
-                  />
-                  <InputIcon>
-                    <i class="fas fa-search"></i>
-                  </InputIcon>
-                </IconField>
-              </div>
-              <div class="flex items-center">
-                <button class="btn btn-light bg-white border-0">
-                  Filters by <i class="fas fa-filter"></i>
-                </button>
-                <span class="border-start mx-2" style="height: 24px"></span>
-                <button class="btn btn-light bg-white border-0">
-                  Columns <i class="fas fa-columns"></i>
-                </button>
-              </div>
+            <div class="flex gap-3 items-center w-full col-span-4">
+              <SearchAndFilter
+                v-model="filters['global'].value"
+                placeholder="Search"
+              />
             </div>
           </div>
         </template>
@@ -66,7 +59,9 @@
         <template #title="{ data }">
           <div class="flex items-start gap-1 flex-col">
             <span class="">{{ data.title.name }}</span>
-            <span class="text-sm font-bold text-dm-blue line-clamp-1">{{ data.title.description }}</span>
+            <span class="text-sm font-bold text-dm-blue line-clamp-1">{{
+              data.title.description
+            }}</span>
           </div>
         </template>
         <template #verticle="{ data }">
@@ -85,12 +80,20 @@
           <div class="text-md text-dm-blue font-bold">{{ data.orderType }}</div>
         </template>
         <template #expectedDateAndTime="{ data }">
-          <div class="text-md text-dm-blue font-bold">{{ data.expectedDateAndTime }}</div>
+          <div class="text-md text-dm-blue font-bold">
+            {{ data.expectedDateAndTime }}
+          </div>
         </template>
         <template #payment="{ data }">
-          <div :class="`px-3 py-2 rounded-xl font-bold`" :style="{ 
-            backgroundColor: data.payment.bgColor, color: data.payment.color 
-          }">{{ data.payment.name }}</div>
+          <div
+            :class="`px-3 py-2 rounded-xl font-bold`"
+            :style="{
+              backgroundColor: data.payment.bgColor,
+              color: data.payment.color,
+            }"
+          >
+            {{ data.payment.name }}
+          </div>
         </template>
         <template #orderAmount="{ data }">
           <div class="flex gap-2 items-center">
@@ -99,7 +102,15 @@
           </div>
         </template>
         <template #progressState="{ data }">
-          <div :class="`px-3 py-2 rounded-xl font-bold`" :style="{ backgroundColor: data.progressState.bgColor, color: data.progressState.color }">{{ data.progressState.name }}</div>
+          <div
+            :class="`px-3 py-2 rounded-xl font-bold`"
+            :style="{
+              backgroundColor: data.progressState.bgColor,
+              color: data.progressState.color,
+            }"
+          >
+            {{ data.progressState.name }}
+          </div>
         </template>
         <template #actions="{ data }">
           <div class="flex gap-2">
@@ -125,14 +136,43 @@
         </template>
       </ThemeDatatable>
 
-      <Paginator :rows="pagination.perPage" :totalRecords="pagination.total" v-if="pagination.total > 0">
+      <Paginator
+        :rows="pagination.perPage"
+        :totalRecords="pagination.total"
+        v-if="pagination.total > 0"
+      >
         <template
-          #container="{ first, last, page, pageCount, rows, firstPageCallback, lastPageCallback, rowChangeCallback, prevPageCallback, nextPageCallback, totalRecords }">
-          <Pagination :first="first" :last="last" :page="page" :pageCount="pageCount" :rows="rows"
-            :firstPageCallback="firstPageCallback" :lastPageCallback="lastPageCallback"
-            :rowChangeCallback="rowChangeCallback" :prevPageCallback="prevPageCallback" @perPageClick="(cPage, perPage) => handlePerPage(cPage, perPage)"
-            @nextPageClick="(page) => fetchData(statusBtn, page)" :nextPageCallback="nextPageCallback"
-            :totalRecords="totalRecords" :perPage="pagination.perPage" :totalEntries="pagination.total" />
+          #container="{
+            first,
+            last,
+            page,
+            pageCount,
+            rows,
+            firstPageCallback,
+            lastPageCallback,
+            rowChangeCallback,
+            prevPageCallback,
+            nextPageCallback,
+            totalRecords,
+          }"
+        >
+          <Pagination
+            :first="first"
+            :last="last"
+            :page="page"
+            :pageCount="pageCount"
+            :rows="rows"
+            :firstPageCallback="firstPageCallback"
+            :lastPageCallback="lastPageCallback"
+            :rowChangeCallback="rowChangeCallback"
+            :prevPageCallback="prevPageCallback"
+            @perPageClick="(cPage, perPage) => handlePerPage(cPage, perPage)"
+            @nextPageClick="(page) => fetchData(statusBtn, page)"
+            :nextPageCallback="nextPageCallback"
+            :totalRecords="totalRecords"
+            :perPage="pagination.perPage"
+            :totalEntries="pagination.total"
+          />
           <!-- <div class="flex gap-4 justify-between items-center w-full">
                   <Button icon="pi pi-chevron-left" rounded text @click="prevPageCallback" :disabled="page === 0" />
                   <div class="text-color font-medium">
@@ -161,6 +201,8 @@ import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatabl
 import { convertAppointmentData } from "../../utils/helper";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
 import { storeToRefs } from "pinia";
+import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
+import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
 
 const store = useCompanyStore();
 const appointmentsData = ref([]);
@@ -183,14 +225,14 @@ const pagination = ref({
 });
 
 const filterFields = ref([
-  'id', 
-  'organizationName.name', 
-  'verticle.name', 
-  'title.name', 
-  'orderType', 
-  'orderAmount',
-  'payment.name',
-  'progressState.name'
+  "id",
+  "organizationName.name",
+  "verticle.name",
+  "title.name",
+  "orderType",
+  "orderAmount",
+  "payment.name",
+  "progressState.name",
 ]);
 
 // const getImagePath = (imageName) => {
@@ -198,23 +240,33 @@ const filterFields = ref([
 // };
 
 const handleClickToDetails = (data) => {
-  let url = "/super-admin/company-details/" + route.params.companyId + "/appointment/" + data.id + "/details"
+  let url =
+    "/super-admin/company-details/" +
+    route.params.companyId +
+    "/appointment/" +
+    data.id +
+    "/details";
   if (data.orderTypeId === 2) {
-    url = "/super-admin/company-details/" + route.params.companyId + "/appointment/" + data.id + "/reoccurring/details"
-  };
+    url =
+      "/super-admin/company-details/" +
+      route.params.companyId +
+      "/appointment/" +
+      data.id +
+      "/reoccurring/details";
+  }
   router.push(url);
 };
 
 const fetchData = async (id, page = 1, perPage = null) => {
   try {
-    let url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}`
+    let url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}`;
     if (perPage) {
-      url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}`
+      url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}`;
     }
     const response = await api.get(url, {
       headers: {
-        Authorization: `Bearer ${localStorage?.getItem("token")}`
-      }
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
     });
     if (response?.status === 200) {
       const { data } = response.data;
@@ -248,7 +300,7 @@ const fetchData = async (id, page = 1, perPage = null) => {
 onMounted(() => {
   nextTick(() => {
     fetchData(statusBtn.value, 1);
-  })
+  });
 });
 
 const handlePerPage = async (props) => {
@@ -263,9 +315,20 @@ const handleFetchAppointment = (id) => {
 const selectedAppointment = ref();
 const copyUrl = (id) => {
   const location = window.location;
-  navigator.clipboard.writeText(location.origin + "/super-admin/company-details/" + route.params.companyId + "/appointment/" + id + "/details");
-  toast.add({ severity: "success", summary: "Success",
-    detail: "Copied to clipboard!", life: 3000 });
+  navigator.clipboard.writeText(
+    location.origin +
+      "/super-admin/company-details/" +
+      route.params.companyId +
+      "/appointment/" +
+      id +
+      "/details"
+  );
+  toast.add({
+    severity: "success",
+    summary: "Success",
+    detail: "Copied to clipboard!",
+    life: 3000,
+  });
 };
 
 const statusOptions = ["In Progress", "On Location", "Waiting", "Cancelled"];
@@ -275,7 +338,11 @@ const columns = ref([
   { field: "title", header: "Title & Description", class: "w-48" },
   { field: "verticle", header: "Vertical", class: "w-56" },
   { field: "orderType", header: "Order Type" },
-  { field: "expectedDateAndTime", header: "Expected Delivery Date & Time", class: "w-42" },
+  {
+    field: "expectedDateAndTime",
+    header: "Expected Delivery Date & Time",
+    class: "w-42",
+  },
   { field: "payment", header: "Payment" },
   { field: "orderAmount", header: "Order Amount" },
   { field: "progressState", header: "Progress State" },

@@ -44,13 +44,13 @@
           />
         </div>
         <div>
-          <div class="d-flex justify-content-between">
+          <div class="flex justify-between">
             <SectionHeading
               title="Experiences"
               customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
             />
 
-            <p class="text-grayColor text-sm">View All</p>
+            <p class="text-grayColor text-sm font-semibold">View All</p>
           </div>
           <div class="bg-white p-3 rounded-4 mb-3 row">
             <ExperienceCard
@@ -66,6 +66,7 @@
                 'Handled laundry operations efficiently',
                 'Ensured high standards of cleaning and customer satisfaction',
               ]"
+              @click="openModal"
             />
           </div>
         </div>
@@ -73,7 +74,7 @@
 
       <div class="col-md-3">
         <SectionHeading
-          title="Attachments"
+          title="Documents"
           customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
         />
 
@@ -90,181 +91,53 @@
             customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
           />
         </div>
-        <h5 class="fw-bold mt-5">Assign Verticals</h5>
-        <div class="rounded-4 border-0 rounded shadow-sm bg-white mb-3">
-          <div class="d-flex gap-3 align-items-center px-3 pt-3 mb-3">
-            <div class="icon">
-              <img
-                src="../../../assets/images2/electronics-icon.png"
-                alt="Category Icon"
-                width="40"
-              />
-            </div>
-            <div class="category-title">
-              <h6 class="mb-0 fw-bold">Home Repair & Maintenance Services</h6>
-            </div>
-          </div>
 
-          <div
-            class="d-flex justify-content-between bg-white rounded px-2 pb-3"
-          >
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">554</p>
-              <p class="text-muted mb-0 small-font">Jan</p>
-            </div>
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">34</p>
-              <p class="text-muted mb-0 small-font">Feb</p>
-            </div>
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">123</p>
-              <p class="text-muted mb-0 small-font">March</p>
-            </div>
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">338</p>
-              <p class="text-muted mb-0 small-font">April</p>
-            </div>
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">1,034</p>
-              <p class="text-muted mb-0 small-font">May</p>
-            </div>
-          </div>
-        </div>
-        <div class="rounded-4 border-0 rounded shadow-sm bg-white">
-          <div class="d-flex gap-3 align-items-center px-3 pt-3 mb-3">
-            <div class="icon">
-              <img
-                src="../../../assets/images2/electronics-icon.png"
-                alt="Category Icon"
-                width="40"
-              />
-            </div>
-            <div class="category-title">
-              <h6 class="mb-0 fw-bold">Home Repair & Maintenance Services</h6>
-            </div>
-          </div>
-
-          <div
-            class="d-flex justify-content-between bg-white rounded px-2 pb-3"
-          >
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">554</p>
-              <p class="text-muted mb-0 small-font">Jan</p>
-            </div>
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">34</p>
-              <p class="text-muted mb-0 small-font">Feb</p>
-            </div>
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">123</p>
-              <p class="text-muted mb-0 small-font">March</p>
-            </div>
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">338</p>
-              <p class="text-muted mb-0 small-font">April</p>
-            </div>
-            <div class="stats-section text-center me-2 py-1 px-3 rounded-3">
-              <p class="text-primary fw-bold mb-0">1,034</p>
-              <p class="text-muted mb-0 small-font">May</p>
-            </div>
-          </div>
-        </div>
+        <AssignVerticalCard
+          title="Home Repair & Maintenance Services"
+          icon="electronics-icon.png"
+          :stats="[
+            { value: '554', label: 'Jan' },
+            { value: '34', label: 'Feb' },
+            { value: '123', label: 'March' },
+            { value: '338', label: 'April' },
+            { value: '1,034', label: 'May' },
+          ]"
+        />
       </div>
 
       <div class="col-md-3">
-        <h5 class="fw-bold">Skills</h5>
-        <div class="rounded-4 border-0 rounded shadow-sm bg-white p-3 mb-3">
-          <span class="badge primary-bg rounded-3 p-2 me-2 mb-2"
-            >Garment Care</span
-          >
-          <span class="badge primary-bg rounded-3 p-2 me-2 mb-2"
-            >Garment Care</span
-          >
-          <span class="badge primary-bg rounded-3 p-2 mb-2">Garment Care</span>
-          <span class="badge primary-bg rounded-3 p-2 me-2">Garment Care</span>
-          <span class="badge primary-bg rounded-3 p-2">Garment Care</span>
+        <div>
+          <SectionHeading
+            title="Skills"
+            customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
+          />
+          <SkillList :tags="['Garment Care', 'Care', 'Garment']" />
         </div>
-        <h5 class="fw-bold">Licenses & Certifications</h5>
-        <div class="rounded-4 border-0 rounded shadow-sm bg-white p-3 mb-3">
-          <div class="text-center mb-3">
-            <img
-              src="../../../assets/images2/license.png"
-              alt="license"
-              class="w-100"
+
+        <div>
+          <div class="flex justify-between">
+            <SectionHeading
+              title="Licenses & Certifications"
+              customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
             />
+
+            <p class="text-grayColor text-sm font-semibold">View All</p>
           </div>
-          <p class="fw-bold mb-0">Diploma in Laudry</p>
-          <p class="text-secondary mb-0 small-font">Dubai Laundry Institure</p>
-          <p class="text-secondary small-font">
-            Sep 2022 - Sep 2024 | Credential ID9384932
-          </p>
-          <a href="#" class="text-primary text-decoration-none text-uppercase"
-            >View Image</a
-          >
+          <div class="flex flex-col gap-3">
+            <div v-for="(document, index) in documents" :key="index">
+              <DocumentPreview
+                :imageName="document.imageName"
+                :title="document.title"
+                :institute="document.institute"
+                :duration="document.duration"
+                :credentialId="document.credentialId"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- <div class="modal fade" id="experienceModal" tabindex="-1" aria-labelledby="experienceModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="experienceModalLabel">Experiences</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="text-center">
-                        <img src="../../../assets/images2/Illustration.png" class="experience-logo"
-                            alt="Company Logo" />
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <p class="text-primary small-font mb-0">Designation</p>
-                            <p class="fw-semibold">Laundry Expert</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="text-primary small-font mb-0">Company</p>
-                            <p class="fw-semibold">ABS Private Ltd</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="text-primary small-font mb-0">Employment Type</p>
-                            <p class="fw-semibold">Full-time</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="text-primary small-font mb-0">Location</p>
-                            <p class="fw-semibold">Abu Dabai</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="text-primary small-font mb-0">Start Date</p>
-                            <p class="fw-semibold">September, 2022</p>
-                        </div>
-                        <div class="col-6">
-                            <p class="text-primary small-font mb-0">End Date</p>
-                            <p class="fw-semibold">September 2024</p>
-                        </div>
-                    </div>
-
-                    <p class="text-primary mb-0 small-font">Role & Responsibilities</p>
-                    <ul class="small-font">
-                        <li>
-                            Lorem ipsum dolor sit, amet consectetur adipisicing elit. A,
-                            dolorem.
-                        </li>
-                        <li>
-                            Lorem ipsum dolor sit, amet consectetur adipisicing elit. A,
-                            dolorem.
-                        </li>
-                        <li>
-                            Lorem ipsum dolor sit, amet consectetur adipisicing elit. A,
-                            dolorem.
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div> -->
 </template>
 
 <script setup>
@@ -276,9 +149,54 @@ import { useRoute } from "vue-router";
 import SummaryCard from "../../../components/common/SummaryCard/SummaryCard.vue";
 import ExperienceCard from "../../../components/common/ExperienceCard/ExperienceCard.vue";
 import FileCard from "../../../components/common/FileCard/FileCard.vue";
+import AssignVerticalCard from "../../../components/common/AssignVerticalCard/AssignVerticalCard.vue";
+import SkillList from "../../../components/common/SkillList/SkillList.vue";
+import DocumentPreview from "../../../components/common/DocumentPreview/DocumentPreview.vue";
+import { ref } from "vue";
+import { useEmployeeStore } from "../../../store";
 
 const route = useRoute();
+const modalStore = useEmployeeStore();
 const companyId = route.params.companyId;
+
+const documents = ref([
+  {
+    imageName: "license.png",
+    title: "Diploma in Laundry",
+    institute: "Dubai Laundry Institute",
+    duration: "Sep 2022 - Sep 2024",
+    credentialId: "9384932",
+  },
+  {
+    imageName: "license.png",
+    title: "Diploma in Laundry",
+    institute: "Dubai Laundry Institute",
+    duration: "Sep 2022 - Sep 2024",
+    credentialId: "9384932",
+  },
+]);
+
+const openModal = () => {
+  modalStore.openModal({
+    logoUrl: new URL(
+      `../../../assets/images2/emp_detail_1.png`,
+      import.meta.url
+    ).href,
+    details: {
+      Designation: "Laundry Expert",
+      Company: "ABS Private Ltd",
+      "Employment Type": "Full-time",
+      Location: "Abu Dhabi",
+      "Start Date": "September, 2022",
+      "End Date": "September 2024",
+    },
+    responsibilities: [
+      "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
+      "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
+      "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
+    ],
+  });
+};
 </script>
 
 <style scoped>
@@ -382,10 +300,6 @@ const companyId = route.params.companyId;
 .form-label {
   font-size: 14px;
   font-weight: 600;
-}
-
-.stats-section {
-  background-color: #f6f7fa;
 }
 
 @media (max-width: 991px) {

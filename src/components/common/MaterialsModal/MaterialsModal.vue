@@ -1,9 +1,10 @@
 <template>
-  <div
-    v-if="isVisible"
-    class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-slate-gray backdrop-blur-md z-50"
+  <Modal
+    :isVisible="isVisible"
+    :modalStyles="modalStyles"
+    @update:isVisible="closeModal"
   >
-    <div class="relative overflow-y-auto" :style="modalStyles">
+    <div class="modal-content rounded-4">
       <div
         class="flex flex-row items-center justify-between !bg-light-lilac rounded-tl-2xl rounded-tr-2xl px-6 py-2"
       >
@@ -70,89 +71,76 @@
         </div>
       </form>
     </div>
-  </div>
+  </Modal>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import TextareaField from "../Inputs/TextareaField/TextareaField.vue";
 import InputField from "../Inputs/InputField/InputField.vue";
 import CheckboxField from "../Inputs/CheckboxField/CheckboxField.vue";
 import ThemeButton from "../ThemeButton/ThemeButton.vue";
+import Modal from "../Modal/Modal.vue";
 
-export default {
-  components: {
-    TextareaField,
-    InputField,
-    CheckboxField,
-    ThemeButton,
-  },
-  setup() {
-    const schema = yup.object({
-      unitPrice: yup
-        .number()
-        .typeError("Unit Price must be a number")
-        .required("Unit Price is required")
-        .positive("Unit Price must be greater than zero"),
-      quantity: yup
-        .number()
-        .typeError("Quantity must be a number")
-        .required("Quantity is required")
-        .integer("Quantity must be a whole number"),
-    });
+const isVisible = ref(true);
+const screenWidth = ref(window.innerWidth);
+const screenHeight = ref(window.innerHeight);
+const applyToVerticals = ref(false);
 
-    const { handleSubmit, errors } = useForm({ validationSchema: schema });
+const unitPrice = useField("unitPrice");
+const quantity = useField("quantity");
 
-    const unitPrice = useField("unitPrice");
-    const quantity = useField("quantity");
+const schema = yup.object({
+  unitPrice: yup
+    .number()
+    .typeError("Unit Price must be a number")
+    .required("Unit Price is required")
+    .positive("Unit Price must be greater than zero"),
+  quantity: yup
+    .number()
+    .typeError("Quantity must be a number")
+    .required("Quantity is required")
+    .integer("Quantity must be a whole number"),
+});
 
-    const onSubmit = handleSubmit((values) => {
-      console.log("Form submitted successfully:", values);
-    });
+const { handleSubmit, errors } = useForm({
+  validationSchema: schema,
+});
 
-    return {
-      unitPrice,
-      quantity,
-      errors,
-      onSubmit,
-    };
-  },
-  data() {
-    return {
-      isVisible: true,
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
-      applyToVerticals: false,
-    };
-  },
-  computed: {
-    modalStyles() {
-      return {
-        width: this.screenWidth < 768 ? "90vw" : "45vw",
-        height: this.screenHeight < 600 ? "80vh" : "auto",
-        maxHeight: "90vh",
-      };
-    },
-    total() {
-      return (this.unitPrice.value || 0) * (this.quantity.value || 0);
-    },
-  },
-  methods: {
-    closeModal() {
-      this.isVisible = false;
-      this.$emit("close");
-    },
-    updateScreenSize() {
-      this.screenWidth = window.innerWidth;
-      this.screenHeight = window.innerHeight;
-    },
-  },
-  mounted() {
-    window.addEventListener("resize", this.updateScreenSize);
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.updateScreenSize);
-  },
+const onSubmit = handleSubmit((values) => {
+  console.log("Form submitted successfully:", values);
+});
+
+const modalStyles = computed(() => ({
+  width: screenWidth.value < 768 ? "90vw" : "45vw",
+  height: screenHeight.value < 600 ? "80vh" : "auto",
+  maxHeight: "90vh",
+}));
+
+const total = computed(() => (unitPrice.value || 0) * (quantity.value || 0));
+
+const closeModal = () => {
+  isVisible.value = false;
+  // Use the event emitting mechanism if needed
+  // emit('close');
 };
+
+const updateScreenSize = () => {
+  screenWidth.value = window.innerWidth;
+  screenHeight.value = window.innerHeight;
+};
+
+onMounted(() => {
+  window.addEventListener("resize", updateScreenSize);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", updateScreenSize);
+});
 </script>
+
+<style scoped>
+/* You can customize modal styles here if needed */
+</style>

@@ -17,63 +17,24 @@
         :totalPageCount="6"
       >
         <template #header>
-          <div class="flex justify-between items-center mb-2">
-            <div class="flex gap-3">
-              <button
-                @click="handleFetchAppointment(1)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
-                  statusBtn === 1 ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                All
-              </button>
-              <button
-                @click="handleFetchAppointment(2)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
-                  statusBtn === 2 ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                Pending
-              </button>
-              <button
-                @click="handleFetchAppointment(3)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
-                  statusBtn === 3 ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                Schedule
-              </button>
-              <button
-                @click="handleFetchAppointment(4)"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary ${
-                  statusBtn === 4 ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                Completed
-              </button>
+          <div class="grid grid-cols-10 items-center gap-4 mb-6">
+            <div class="flex gap-3 col-span-6">
+              <StatusButtons
+                :statusBtn="statusBtn"
+                :buttons="[
+                  { label: 'All', value: 1 },
+                  { label: 'Pending', value: 2 },
+                  { label: 'Schedule', value: 3 },
+                  { label: 'Completed', value: 4 },
+                ]"
+                @update:statusBtn="handleFetchAppointment"
+              />
             </div>
-            <div class="flex gap-3">
-              <div class="flex justify-end">
-                <IconField>
-                  <InputText
-                    v-model="filters['global'].value"
-                    placeholder="Search"
-                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
-                  />
-                  <InputIcon>
-                    <i class="fas fa-search"></i>
-                  </InputIcon>
-                </IconField>
-              </div>
-              <div class="flex items-center">
-                <button class="btn btn-light bg-white border-0">
-                  Filters by <i class="fas fa-filter"></i>
-                </button>
-                <span class="border-start mx-2" style="height: 24px"></span>
-                <button class="btn btn-light bg-white border-0">
-                  Columns <i class="fas fa-columns"></i>
-                </button>
-              </div>
+            <div class="flex gap-3 items-center w-full col-span-4">
+              <SearchAndFilter
+                v-model="filters['global'].value"
+                placeholder="Search"
+              />
             </div>
           </div>
         </template>
@@ -131,7 +92,7 @@
           </div>
         </template>
 
-        <template #actions="{ data }">
+        <template>
           <div class="flex gap-2">
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
@@ -141,13 +102,11 @@
             </button>
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="handleDelete(data?.id)"
             >
               <i class="fa-regular fa-trash-can text-primary"></i>
             </button>
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="copyUrl(data?.id)"
             >
               <i class="fa-regular fa-share-from-square text-primary"></i>
             </button>
@@ -200,6 +159,8 @@ import Pagination from "../../components/common/Pagination/Pagination.vue";
 import { FilterMatchMode } from "@primevue/core/api";
 
 import { useRoute, useRouter } from "vue-router";
+import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
+import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
 const selectedSurvey = ref();
 const router = useRouter();
 const route = useRoute();
@@ -212,7 +173,7 @@ const handleClickToDetails = () => {
   const companyId = route.params.companyId;
   if (companyId) {
     router.push({
-      path: `/super-admin/company-details/${companyId}/site-survey/details`,
+      path: `/super-admin/company-details/${companyId}/offers/details`,
     });
   }
 };

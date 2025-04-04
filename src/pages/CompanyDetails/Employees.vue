@@ -196,11 +196,6 @@ const typeClasses = {
   Reoccurring: "!text-accent-green bg-green-200",
   "Hot Orders": "!text-light-orange bg-blush-100",
 };
-
-const updateCurrentWork = (data) => {
-  console.log("Updated work status:", data.currentWork);
-  // Add API call or logic to update the status in your database if needed.
-};
 </script>
 
 <template>
@@ -214,20 +209,7 @@ const updateCurrentWork = (data) => {
         :value="companiesData"
         v-model:selection="selectedCompany"
         v-model:filters="filters"
-        :filterFields="[
-          'id',
-          'companyName.name',
-          'description',
-          'verticals',
-          'expectedStartDate',
-          'expectedEndDate',
-          'noOfDays',
-          'type',
-          'offers',
-          'chats',
-          'surveyRequest',
-          'status',
-        ]"
+        :filterFields="['id', 'companyName.name', 'description', 'verticals']"
         :columns="columns"
         :paginator="true"
         :rows="pagination.perPage"
@@ -355,7 +337,7 @@ const updateCurrentWork = (data) => {
               <img
                 :src="getImageIcon('chevron-down.svg')"
                 alt="Employee Image"
-                class="min-w-3.5 max-w-3.5- min-h-3,5 max-h-3.5 w-2.5 h-2.5 rounded-xl object-cover"
+                class="w-2.5 h-2 rounded-xl object-cover"
               />
             </template>
           </Dropdown>
@@ -399,7 +381,7 @@ const updateCurrentWork = (data) => {
               <img
                 :src="getImageIcon('chevron-down.svg')"
                 alt="Employee Image"
-                class="min-w-3.5 max-w-3.5- min-h-3,5 max-h-3.5 w-2.5 h-2.5 rounded-xl object-cover"
+                class="w-2.5 h-2 rounded-xl object-cover"
               /> </template
           ></Dropdown>
         </template>
