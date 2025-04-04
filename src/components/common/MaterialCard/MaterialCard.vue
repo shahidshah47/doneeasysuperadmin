@@ -30,18 +30,6 @@ import { convertTimeTo12HourFormat } from "../../../utils/helper";
 const props = defineProps({
     data: Object,
     itemTitle: String,
-    sessionName: String,
-    serviceTitle: String,
-    serviceDescription: String,
-    editLink: String,
-    unitPriceLabel: String,
-    unitPrice: String,
-    quantityLabel: String,
-    quantity: String,
-    totalLabel: String,
-    total: String,
-    deliveryTimeLabel: String,
-    deliveryTime: String,
     clickHandler: Function,
 });
 

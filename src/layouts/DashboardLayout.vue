@@ -1,7 +1,12 @@
 <script setup>
 import { computed, reactive, ref, watch, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useAppointmentStore, useCompanyStore, useSurveyStore } from "../store";
+import {
+  useAppointmentStore,
+  useCompanyStore,
+  useEmployeeStore,
+  useSurveyStore,
+} from "../store";
 import { storeToRefs } from "pinia";
 
 import Breadcrumb from "../components/Breadcrumb.vue";
@@ -12,15 +17,19 @@ import CompanyModal from "../components/common/CompanyModal/CompanyModal.vue";
 import MaterialsModal from "../components/common/MaterialsModal/MaterialsModal.vue";
 import ServicesModal from "../components/common/ServicesModal/ServicesModal.vue";
 import NoteModal from "../components/common/NoteModal/NoteModal.vue";
+import ExperienceModal from "../components/common/ExperienceModal/ExperienceModal.vue";
 
 const route = useRoute();
 const router = useRouter();
 const companyStore = useCompanyStore();
 const appointmentStore = useAppointmentStore();
 const surveyStore = useSurveyStore();
-const { isDetail, isCompanyDetail, modalDesc } =
-  storeToRefs(companyStore);
-const { isMaterialDetails, isServiceDetails, serviceDetails, materialDetails } = storeToRefs(appointmentStore);
+const employeeStore = useEmployeeStore();
+
+const { isVisible } = storeToRefs(employeeStore);
+const { isDetail, isCompanyDetail, modalDesc } = storeToRefs(companyStore);
+const { isMaterialDetails, isServiceDetails, serviceDetails, materialDetails, appointmentDetails } =
+  storeToRefs(appointmentStore);
 const { selectedNote } = storeToRefs(surveyStore);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
@@ -47,11 +56,17 @@ if (!localStorage?.getItem("token")) {
 }
 
 const closeAllModals = () => {
+  if ((!isMaterialDetails.value || !isServiceDetails.value) && !isDetail.value) {
+    appointmentStore.setIsServiceUpdated(true);
+  }
+
   companyStore.isDetail = false;
   companyStore.isCompanyDetail = false;
   appointmentStore.isMaterialDetails = false;
   appointmentStore.isServiceDetails = false;
+  employeeStore.isVisible = false;
   surveyStore.selectedNote = null;
+
   // Ensure `overflow-hidden` is removed after state updates
   setTimeout(() => {
     if (
@@ -59,7 +74,8 @@ const closeAllModals = () => {
       !isCompanyDetail.value ||
       !isMaterialDetails.value ||
       !isServiceDetails.value ||
-      !selectedNote.value
+      !selectedNote.value ||
+      !isVisible.value
     ) {
       document.body.classList.remove("overflow-hidden");
     }
@@ -71,7 +87,7 @@ const closeAllModals = () => {
   <div class="flex min-h-screen">
     <!-- Sidebar -->
     <div
-      class="bg-white shadow fixed left-0 top-0 bottom-0 w-[95px] overflow-y-auto z-[9999]"
+      class="bg-white shadow fixed left-0 top-0 bottom-0 w-[95px] overflow-y-auto z-[999]"
     >
       <SideBar />
     </div>
@@ -89,9 +105,16 @@ const closeAllModals = () => {
     </div>
   </div>
 
-  <DetailsModel v-if="isDetail" @close="closeAllModals" :description="modalDesc" />
-  <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails" @close="closeAllModals" />
-  <ServicesModal v-if="isServiceDetails" :serviceDetails="serviceDetails" @close="closeAllModals" />
+  <DetailsModel v-if="isDetail" @close="closeAllModals" title="More Details" :description="modalDesc" />
+  <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails"
+    :itemNumber="`Item No ` + (appointmentDetails?.offer?.quotations?.length + 1)"  
+    :appointOfferId="appointmentDetails?.offer?.id" 
+    @close="closeAllModals" />
+  <ServicesModal v-if="isServiceDetails" :serviceDetails="serviceDetails" 
+    :itemNumber="`Item No ` + (appointmentDetails?.offer?.services?.length + 1)" 
+    :appointOfferId="appointmentDetails?.offer?.id" 
+    @close="closeAllModals" />
   <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
   <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
+  <ExperienceModal v-if="isVisible" @close="closeAllModals" />
 </template>

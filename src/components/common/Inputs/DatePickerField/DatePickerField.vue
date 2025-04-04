@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-1">
-    <label v-if="label" class="text-sm font-medium text-gray-700">{{
+    <label v-if="label" class="!text-base !text-dm-blue mb-2 block !font-bold">{{
       label
     }}</label>
     <div class="relative">
@@ -12,10 +12,8 @@
           errorMessage ? 'border-red-500' : 'border-gray-300',
         ]"
         @update:model-value="updateValue"
-        :enable-time-picker="false"
-        :format="'dd/MM/yyyy'"
         :auto-apply="true"
-        :date-format="'dd/MM/yyyy'"
+        time-picker-inline
       />
       <span v-if="icon" class="absolute right-3 top-3">
         <img :src="icon" alt="Calendar Icon" class="w-5 h-5" />

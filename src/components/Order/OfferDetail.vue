@@ -1,8 +1,12 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-
+import api from "../../api";
+// import DataTable from "datatables.net-bs5";
+import { formatDate, formatTime } from "../../utils/helper";
 import { useRoute, useRouter } from "vue-router";
-
+import { useCompanyStore } from "../../store";
+import DataTable from "primevue/datatable";
+import Column from "primevue/column";
 import {
   Button,
   IconField,
@@ -12,17 +16,17 @@ import {
   useToast,
 } from "primevue";
 import { FilterMatchMode } from "@primevue/core/api";
-import Dropdown from "primevue/dropdown";
-import ThemeDatatable from "../common/ThemeDatatable/ThemeDatatable.vue";
-import Pagination from "../common/Pagination/Pagination.vue";
+import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
+import Pagination from "../../components/common/Pagination/Pagination.vue";
+import { toRaw } from "vue";
+import { watch } from "vue";
+const offersData = ref([]);
 
-const ordersData = ref([]);
-const loading = ref(true);
 const error = ref(null);
 const statusBtn = ref(1);
 const router = useRouter();
 const toast = useToast();
-const rowsPerPageDropdown = ref([]);
+const route = useRoute();
 
 const pagination = ref({
   currentPage: 1,
@@ -36,11 +40,6 @@ const pagination = ref({
   links: [],
 });
 
-const handleFetchVendor = (id, page) => {
-  fetchData(id, page);
-  statusBtn.value = id;
-};
-
 const ORDER_TYPES = {
   1: "One-time",
   2: "Reoccurring",
@@ -48,37 +47,79 @@ const ORDER_TYPES = {
 
 const fetchData = async (id, page, perPage = 20) => {
   console.log(id, page, "id and page");
+  try {
+    let url = `/superadmin/order/offers/list?order_id=${id}&page=${page}&per_page=${perPage}`;
+
+    const response = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
+    });
+
+    if (response?.status === 200 && response.data) {
+      const { data } = response;
+
+      pagination.value = {
+        currentPage: data.current_page ?? 1,
+        lastPage: data.last_page ?? 1,
+        perPage: data.per_page ?? perPage,
+        total: data.total ?? 0,
+        firstPageUrl: data.first_page_url ?? null,
+        lastPageUrl: data.last_page_url ?? null,
+        nextPageUrl: data.next_page_url ?? null,
+        prevPageUrl: data.prev_page_url ?? null,
+        links: data.links ?? [],
+      };
+
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: data.message || "Orders retrieved successfully",
+        life: 3000,
+      });
+
+      offersData.value = Array.isArray(data.data)
+        ? data.data.map((item) => ({
+            id: item.id,
+            organizationName: {
+              name: item.company?.company_name || "N/A",
+              logo: item.company?.company_logo?.file_path || "",
+            },
+            deliveryTime: formatTime(item.delivery_time) || "N/A",
+            deliveryDate: formatDate(item.delivery_date) || "N/A",
+            materialsCount: item.materials_count ?? 0,
+            servicesCount: item.services_count ?? 0,
+            type: ORDER_TYPES[item?.type] || "N/A",
+            offers: item.grand_total ?? "0.00",
+            actions: "View", // Placeholder, update with an actual handler if needed
+          }))
+        : [];
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error("Error in fetchData:", err);
+  }
 };
 
-const handleClickToDetails = (id, type) => {};
+const handleClickToDetails = (id, type) => {
+  console.log("🚀 ~ handleClickToDetails ~ id:", id);
+  // if (type === "Hot Orders") {
+  //   router.push("/super-admin/order/" + id + "/details/hot-orders");
+  // } else {
+  //   router.push("/super-admin/order/" + id + "/details");
+  // }
+};
 
-const selectedCompany = ref();
-
-const statusOptions = ["All", "Active", "Pending", "Cancelled"];
 const columns = ref([
   { field: "id", header: "ID" },
   { field: "organizationName", header: ["Organisation ", "Name ID"] },
-  { field: "description", header: "Description" },
-  {
-    field: "vertical",
-    header: "Verticals",
-    icon: "chevron-down.svg",
-    iconWidth: 14,
-    iconHeight: 14,
-  },
-  { field: "expectedStartDate", header: ["Expected ", " Start Date"] },
-  { field: "expectedEndDate", header: ["Expected ", " End Date"] },
-  { field: "noOfDays", header: ["No. of ", "Days"] },
+
+  { field: "deliveryTime", header: ["Proposed ", "Delivery Time"] },
+  { field: "deliveryDate", header: ["Proposed ", " Delivery Date"] },
+  { field: "materialsCount", header: ["No. ", "of Materials"] },
+  { field: "servicesCount", header: ["No. ", "of Services"] },
   { field: "type", header: "Type" },
-  { field: "offers", header: "Offers" },
-  {
-    field: "chats",
-    header: "Chats",
-    icon: "info-circle.svg",
-    iconWidth: 20,
-    iconHeight: 20,
-  },
-  { field: "surveyRequest", header: ["Survey ", "Request"] },
+  { field: "offers", header: "Total Offer Value" },
   { field: "actions", header: "Action" },
 ]);
 
@@ -86,33 +127,15 @@ const filters = ref({
   id: { value: null, matchMode: FilterMatchMode.EQUALS },
   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   "organizationName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "vertical.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
-
-const getStatusClass = (status) => {
-  switch (status) {
-    case "Active":
-      return { backgroundColor: "#D6FFEF", color: "#00995C" }; // Green
-    case "Deactivated":
-      return { backgroundColor: "#E7E7EB", color: "#0E0D35" }; // Yellow
-    case "Inactive":
-      return { backgroundColor: "#E7E7EB", color: "#575672" }; // Red
-    case "Monitory":
-      return { backgroundColor: "#FCEED9", color: "#DC8B13" }; // Red
-    case "Banned":
-      return { backgroundColor: "#FFE5E5", color: "#FF5555" }; // Red
-    default:
-      return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
-  }
-};
-
-const updateStatus = async (data) => {};
 
 onMounted(() => {
   nextTick(() => {
-    fetchData(1, 1);
+    const idFromUrl = route.params.id || route.path.split("/").pop();
+    fetchData(idFromUrl, 1);
   });
 });
+
 const handlePerPage = async (props) => {
   fetchData(statusBtn.value, props[0], props[1]);
 };
@@ -121,21 +144,23 @@ const typeClasses = {
   Reoccurring: "!text-accent-green !bg-green-200",
   "Hot Orders": "!text-light-orange !bg-blush-100",
 };
+
+watch(offersData, (newData) => {
+  console.log("orderData updated:", toRaw(newData));
+});
 </script>
 
 <template>
-  <div class="row my-4 flex">
+  <div>
+    <div class="flex justify-between items-center mb-4">
+      <div class="fs-4 fw-bold">Order</div>
+    </div>
+
     <div class="p-4 bg-white rounded-3 shadow relative">
       <ThemeDatatable
-        :value="ordersData"
-        v-model:selection="selectedCompany"
+        :value="offersData"
         v-model:filters="filters"
-        :filterFields="[
-          'id',
-          'organizationName.name',
-          'description',
-          'vertical.name',
-        ]"
+        :filterFields="['id', 'organizationName.name']"
         :columns="columns"
         :paginator="true"
         :rows="pagination.perPage"
@@ -169,6 +194,76 @@ const typeClasses = {
                 </button>
               </div>
             </div>
+          </div>
+        </template>
+
+        <template #id="{ data }"
+          ><span>{{ data.id }}</span></template
+        >
+
+        <template v-slot:organizationName="{ data }">
+          <div class="flex items-center gap-2">
+            <img
+              :src="data.organizationName.logo"
+              alt="Company Logo"
+              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+            />
+            <span class="font-semibold text-dm-blue">{{
+              data.organizationName.name
+            }}</span>
+          </div>
+        </template>
+
+        <template #deliveryTime="{ data }">
+          <span>{{ data.deliveryTime }}</span>
+        </template>
+
+        <template #deliveryDate="{ data }">
+          <span>{{ data.deliveryDate }}</span>
+        </template>
+        <template #materialsCount="{ data }">
+          <span>{{ data.materialsCount }}</span>
+        </template>
+        <template #servicesCount="{ data }">
+          <span>{{ data.servicesCount }}</span>
+        </template>
+        <template #type="{ data }">
+          <span
+            class="font-semibold px-2 py-1 rounded"
+            :class="typeClasses[data.type]"
+          >
+            {{ data.type }}
+          </span>
+        </template>
+        <template #offers="{ data }">
+          <div class="flex items-center gap-2">
+            <span class="text-vivid-purple !text-sm">AED</span>
+            <span class="font-semibold text-dm-blue !text-xl">{{
+              data.offers
+            }}</span>
+          </div>
+        </template>
+
+        <template #actions="{ data }">
+          <div class="flex gap-2">
+            <button
+              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              @click="handleClickToDetails(data?.id)"
+            >
+              <i class="fa-regular fa-eye text-primary"></i>
+            </button>
+            <button
+              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              @click="handleClickToDetails(data?.id)"
+            >
+              <i class="fa-regular fa-trash-can text-primary"></i>
+            </button>
+            <button
+              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              @click="handleClickToDetails(data?.id)"
+            >
+              <i class="fa-regular fa-share-from-square text-primary"></i>
+            </button>
           </div>
         </template>
       </ThemeDatatable>

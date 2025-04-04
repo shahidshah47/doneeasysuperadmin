@@ -48,8 +48,9 @@ export const transformData = (data) => {
         : "AED 0",
       status: status,
       verticalSubscribed: item.verticles_count,
-      registeredDate: `${item.created_at.split("T")[0]}<br>${item.created_at.split("T")[1].split(".")[0]
-        }`,
+      registeredDate: `${item.created_at.split("T")[0]}<br>${
+        item.created_at.split("T")[1].split(".")[0]
+      }`,
       statusColor: statusColor,
       textColor: textColor,
     };
@@ -198,7 +199,10 @@ export const convertTimeTo12HourFormat = (time24) => {
   hour = hour % 12 || 12;
 
   // Format the time as "hh:mm:ss AM/PM"
-  const time12 = minutes && seconds && period ? `${hour.toString().padStart(2, '0')}:${minutes}:${seconds} ${period}` : '---';
+  const time12 =
+    minutes && seconds && period
+      ? `${hour.toString().padStart(2, "0")}:${minutes}:${seconds} ${period}`
+      : "---";
 
   return time12;
 };
@@ -376,8 +380,10 @@ export function formatDateAtMidnight(isoString, adjustments = {}) {
   if (adjustments.years || adjustments.months || adjustments.days) {
     const result = new Date(date);
 
-    if (adjustments.years) result.setFullYear(result.getFullYear() + adjustments.years);
-    if (adjustments.months) result.setMonth(result.getMonth() + adjustments.months);
+    if (adjustments.years)
+      result.setFullYear(result.getFullYear() + adjustments.years);
+    if (adjustments.months)
+      result.setMonth(result.getMonth() + adjustments.months);
     if (adjustments.days) result.setDate(result.getDate() + adjustments.days);
 
     return formatDateOnly(result) + " 00:00:00";
@@ -386,11 +392,25 @@ export function formatDateAtMidnight(isoString, adjustments = {}) {
   return formatDateOnly(date) + " 00:00:00";
 }
 
-export function formatDateOnly(date) {
-  const pad = (num) => num.toString().padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+export const formatDateAtQuote = (dateString) => {
+  const date = new Date(dateString);
+  
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
+export function formatDateOnly(date) {
+  const pad = (num) => num.toString().padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate()
+  )}`;
+}
 
 export const formatDate = (inputDate) => {
   if (!inputDate) return "";
@@ -405,4 +425,14 @@ export const formatDate = (inputDate) => {
       year: "numeric",
     })
     .replace(",", ""); // Removes the comma after the day
+};
+
+export const formatTime = (timeString) => {
+  if (!timeString) return "";
+
+  const [hours, minutes] = timeString.split(":").map(Number);
+  let period = hours >= 12 ? "PM" : "AM";
+  let formattedHours = hours % 12 || 12; // Convert 0 to 12 for AM
+
+  return `${formattedHours}:${String(minutes).padStart(2, "0")} ${period} `;
 };
