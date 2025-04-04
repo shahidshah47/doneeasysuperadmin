@@ -78,7 +78,7 @@
           class="flex justify-end gap-3 border-t-[1.5px] py-6 border-solid border-soft-pastel-blue px-6"
         >
           <ThemeButton label="Cancel" @click="closeModal" />
-          <ThemeButton label="Save" variant="primary" type="submit" />
+          <ThemeButton :label="serviceDetails ? 'Update' : 'Save'" variant="primary" type="submit" />
         </div>
       </div>
     </form>
@@ -102,7 +102,7 @@ import TextareaField from "../Inputs/TextareaField/TextareaField.vue";
 import InputField from "../Inputs/InputField/InputField.vue";
 import ThemeButton from "../ThemeButton/ThemeButton.vue";
 import DatePickerField from "../Inputs/DatePickerField/DatePickerField.vue";
-import { formatDateAtMidnight } from "../../../utils/helper";
+import { formatDateAtMidnight, formatDateAtQuote } from "../../../utils/helper";
 import api from "../../../api";
 import { useRoute } from "vue-router";
 import { useToast } from "primevue";
@@ -210,6 +210,7 @@ const closeModal = () => {
 };
 
 const onSubmit = handleSubmit(async (values) => {
+  // console.log(values, formatDateAtQuote(values.delivery_time), "values");
   let response;
   if (id.value) {
     response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/services/add-update", {
@@ -217,7 +218,7 @@ const onSubmit = handleSubmit(async (values) => {
       quantity: Number(values.quantity),
       unit_price: Number(values.unit_price),
       sub_total: values.total,
-      delivery_time: formatDateAtMidnight(values.delivery_time)
+      delivery_time: formatDateAtQuote(values.delivery_time)
     });
   } else {
     response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/services/add-update", {
@@ -227,7 +228,7 @@ const onSubmit = handleSubmit(async (values) => {
       unit_price: Number(values.unit_price),
       sub_total: values.total,
       item_number: values.item_number,
-      delivery_time: formatDateAtMidnight(values.delivery_time),
+      delivery_time: formatDateAtQuote(values.delivery_time),
       total: values.total
     });
   }

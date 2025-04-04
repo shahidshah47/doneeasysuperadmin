@@ -56,12 +56,17 @@ if (!localStorage?.getItem("token")) {
 }
 
 const closeAllModals = () => {
+  if ((!isMaterialDetails.value || !isServiceDetails.value) && !isDetail.value) {
+    appointmentStore.setIsServiceUpdated(true);
+  }
+
   companyStore.isDetail = false;
   companyStore.isCompanyDetail = false;
   appointmentStore.isMaterialDetails = false;
   appointmentStore.isServiceDetails = false;
   employeeStore.isVisible = false;
   surveyStore.selectedNote = null;
+
   // Ensure `overflow-hidden` is removed after state updates
   setTimeout(() => {
     if (
@@ -75,7 +80,6 @@ const closeAllModals = () => {
       document.body.classList.remove("overflow-hidden");
     }
   }, 0);
-  appointmentStore.setIsServiceUpdated(true);
 };
 </script>
 
@@ -101,8 +105,11 @@ const closeAllModals = () => {
     </div>
   </div>
 
-  <DetailsModel v-if="isDetail" @close="closeAllModals" :description="modalDesc" />
-  <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails" :appointOfferId="appointmentDetails?.offer?.id" @close="closeAllModals" />
+  <DetailsModel v-if="isDetail" @close="closeAllModals" title="More Details" :description="modalDesc" />
+  <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails"
+    :itemNumber="`Item No ` + (appointmentDetails?.offer?.quotations?.length + 1)"  
+    :appointOfferId="appointmentDetails?.offer?.id" 
+    @close="closeAllModals" />
   <ServicesModal v-if="isServiceDetails" :serviceDetails="serviceDetails" 
     :itemNumber="`Item No ` + (appointmentDetails?.offer?.services?.length + 1)" 
     :appointOfferId="appointmentDetails?.offer?.id" 

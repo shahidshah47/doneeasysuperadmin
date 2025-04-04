@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, defineProps } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, defineProps, defineEmits } from "vue";
 import Modal from "../Modal/Modal.vue";
 
 const isVisible = ref(true);
@@ -42,6 +42,8 @@ const props = defineProps({
   description: String,
 });
 
+const emit = defineEmits(['close']);
+
 const modalStyles = computed(() => ({
   width: screenWidth.value < 768 ? "90vw" : "70vw",
   height: screenHeight.value < 600 ? "80vh" : "auto",
@@ -50,6 +52,7 @@ const modalStyles = computed(() => ({
 
 const closeModal = () => {
   isVisible.value = false;
+  emit('close');
 };
 
 const updateScreenSize = () => {
