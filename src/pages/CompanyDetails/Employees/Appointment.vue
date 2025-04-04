@@ -3,7 +3,7 @@
     <ProfileHeader />
     <ProfileTabs />
   </article>
-  <div class="p-4 bg-white rounded-3 shadow relative">
+  <div class="p-4 bg-white-100 !rounded-2xl relative">
     <ThemeDatatable
       :value="appointmentData"
       v-model:selection="selectedCompany"
@@ -145,19 +145,12 @@
         </div>
       </template>
       <template #status="{ data }">
-        <Dropdown
-          v-model="data.status"
-          :options="statusOptions"
-          @change="updateStatus(data)"
+        <div
           :style="getStatusClass(data.status)"
-          class="p-dropdown-sm !font-semibold"
-          ><template #dropdownicon>
-            <img
-              :src="getImageIcon('chevron-down.svg')"
-              alt="Employee Image"
-              class="w-2.5 h-2 rounded-xl object-cover"
-            /> </template
-        ></Dropdown>
+          class="px-2 py-1 rounded-lg font-semibold"
+        >
+          {{ data.status }}
+        </div>
       </template>
 
       <template #actions="{ data }">
@@ -262,7 +255,7 @@ const handleClickToDetails = () => {
   const companyId = route.params.companyId;
   if (companyId) {
     router.push({
-      path: `/super-admin/company-details/${companyId}/employees/details`,
+      path: `/super-admin/company-details/${companyId}/employees/appointment/details`,
     });
   }
 };
@@ -279,17 +272,17 @@ const columns = ref([
   { field: "id", header: "ID" },
   { field: "description", header: "Title & Description" },
   { field: "company", header: "Company Name" },
-  { field: "contact", header: "Contact" },
   { field: "manager", header: "Manager" },
+  { field: "contact", header: "Contact" },
   {
     field: "vertical",
     header: "Vertical",
     icon: "chevron-down.svg",
-    iconWidth: 12,
-    iconHeight: 12,
+    iconWidth: 10,
+    iconHeight: 10,
   },
-  { field: "status", header: "Status" },
   { field: "delivery_date", header: ["Expected ", "Delivery Date & Time"] },
+  { field: "status", header: "Status" },
   { field: "actions", header: "Action" },
 ]);
 

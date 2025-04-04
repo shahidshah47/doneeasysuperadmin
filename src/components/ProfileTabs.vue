@@ -16,10 +16,11 @@
 
 <script setup>
 import { defineProps } from "vue";
+import { useRoute } from "vue-router"; // Import useRoute hook
 
-defineProps({
-  companyId: String,
-});
+// Get the companyId from the route parameters
+const route = useRoute();
+const companyId = route.params.companyId; // Access companyId from the route params
 
 const tabs = [
   { label: "Info", path: "details" },
@@ -37,17 +38,16 @@ const tabs = [
   position: relative;
   color: #495057;
 }
-
 .active-tab::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 50%;
   bottom: 0;
   height: 4px;
   background-color: #5825eb;
   width: 100%;
-  margin: 0 auto;
+  transform: translateX(-50%) scaleX(2); /* Center and scale the underline */
+  transform-origin: center center; /* Ensure scaling is applied from the center */
 }
 
 .nav-link {
