@@ -4,7 +4,9 @@
     :key="index"
     class="inline-flex flex-col gap-2"
   >
-    <p class="theme-label font-theme-bold leading-3.5">{{ item.label }}</p>
+    <p class="text-sm font-semibold leading-3.5 text-vivid-purple m-0">
+      {{ item.label }}
+    </p>
     <h5 class="font-theme-bold !text-2xl">
       <span
         v-if="item.prefix"
@@ -12,37 +14,38 @@
       >
         {{ item.prefix }}
       </span>
-      {{ item.value || 0 }}
+      {{ item.value ?? 0 }}
     </h5>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    companyData: {
-      type: Object,
-      required: true,
-    },
+<script setup>
+import { computed } from "vue";
+
+const props = defineProps({
+  companyData: {
+    type: Object,
+    required: true,
+    default: () => ({ company: {} }),
   },
-  computed: {
-    stats() {
-      return [
-        {
-          label: "Total Revenue Generated",
-          value: this.companyData?.company?.org_revenue_sum,
-          prefix: "AED",
-        },
-        {
-          label: "No. of Order Completed",
-          value: this.companyData?.company?.completed_order,
-        },
-        {
-          label: "No. of Verticals",
-          value: this.companyData?.company?.verticles_count,
-        },
-      ];
+});
+
+const stats = computed(() => {
+  const company = props.companyData?.company || {};
+  return [
+    {
+      label: "Total Revenue Generated",
+      value: company.org_revenue_sum ?? 0,
+      prefix: "AED",
     },
-  },
-};
+    {
+      label: "No. of Order Completed",
+      value: company.completed_order ?? 0,
+    },
+    {
+      label: "No. of Verticals",
+      value: company.verticles_count ?? 0,
+    },
+  ];
+});
 </script>

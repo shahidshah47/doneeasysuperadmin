@@ -1,7 +1,7 @@
 <template>
   <nav aria-label="breadcrumb" class="flex gap-4 items-center mb-4">
     <router-link to="/" class="custom-text-dark">
-      <i class="fas fa-home"></i>
+      <i class="fas fa-home text-dm-blue"></i>
     </router-link>
     <ol
       class="custom-breadcrumb font-theme-bold flex m-0 items-center gap-4 !text-base"
@@ -32,7 +32,12 @@
         >
           {{ crumb.label }}
         </router-link>
-        <span v-else class="font-theme-bold" :class="index !== 0 ? 'ml-4' : ''">{{ crumb.label }}</span>
+        <span
+          v-else
+          class="font-theme-bold"
+          :class="index !== 0 ? 'ml-4' : ''"
+          >{{ crumb.label }}</span
+        >
       </li>
     </ol>
   </nav>
@@ -80,7 +85,8 @@ const crumbs = computed(() => {
 }
 
 .custom-text-dark {
-  color: #0e0d35 !important;
+  color: #6e6e86 !important;
+  font-weight: normal;
 }
 
 .custom-text-dark:hover {

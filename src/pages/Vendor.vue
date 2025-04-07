@@ -44,6 +44,9 @@ const pagination = ref({
 const getImagePath = (imageName) => {
   return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
 };
+const getImageIcon = (imageName) => {
+  return new URL(`../assets/image/icons/${imageName}`, import.meta.url).href;
+};
 
 const dashboardStats = ref([
   {
@@ -156,7 +159,7 @@ const columns = ref([
   { field: "companyName", header: "Organization Name" },
   { field: "fullName", header: "Full Name" },
   { field: "role", header: "Role" },
-  { field: "contact", header: "Contact / Email" },
+  { field: "contact", header: ["Contact /", "Email"] },
   { field: "totalRevenue", header: ["Total Revenue ", "Generated"] },
   { field: "totalSpending", header: ["Total ", "Spending"] },
   { field: "status", header: "Status" },
@@ -253,7 +256,9 @@ onMounted(() => {
     <div class="flex justify-between items-center mb-4">
       <div class="fs-4 fw-bold">Vendor</div>
       <div class="fs-4">
-        <button class="btn btn-primary py-2 px-4">Add Vendor</button>
+        <button class="btn btn-primary py-2 px-4 !font-semibold">
+          Add Vendor
+        </button>
       </div>
     </div>
 
@@ -263,34 +268,38 @@ onMounted(() => {
         :key="index"
         class="col-md-3"
       >
-        <div class="card border-0 shadow p-2">
-          <div class="card-header bg-white fw-bold border-bottom-0 mt-1">
+        <div class="bg-white border-0 px-4 py-6 rounded-xl">
+          <div class="font-bold border-bottom-0 mt-1 text-base">
             {{ stat.title }}
             <img class="float-end" :src="getImagePath('Frame 48096300.png')" />
           </div>
-          <div class="card-body flex justify-between">
-            <div>
-              <p class="fs-3 fw-bold mb-0 !text-[3.5rem] leading-24">
-                {{ stat.number }}
+          <div class="card-body flex justify-between mt-4">
+            <div class="w-full">
+              <div class="flex justify-between items-center mb-1">
+                <p class="text-4xl text-dm-blue font-bold m-0">
+                  {{ stat.number }}
+                </p>
+                <div
+                  v-if="stat.percentage"
+                  class="self-center text-sm px-3 py-1 rounded font-bold text-center"
+                  :style="{
+                    backgroundColor: stat.percentageColor || '#fff',
+                    color: stat.textColor,
+                  }"
+                >
+                  {{ stat.percentage }}
+                </div>
+              </div>
+              <p class="text-grayColor text-sm font-normal">
+                {{ stat.timePeriod }}
               </p>
-              <p class="fs-6 text-muted">{{ stat.timePeriod }}</p>
-            </div>
-            <div
-              v-if="stat.percentage"
-              class="self-center fs-6 p-2 rounded-2 fw-bold text-center ms-2"
-              :style="{
-                backgroundColor: stat.percentageColor || '#fff',
-                color: stat.textColor,
-              }"
-            >
-              {{ stat.percentage }}
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="p-4 bg-white rounded-3 shadow relative">
+    <div class="p-4 bg-white-100 !rounded-2xl relative">
       <ThemeDatatable
         :value="companiesData"
         v-model:selection="selectedCompany"
@@ -337,7 +346,7 @@ onMounted(() => {
               alt="Company Logo"
               class="xl:min-w-10 xl:max-w-10 xl:min-h-10 xl:max-h-10 md:min-w-8 lg:max-w-8 lg:min-h-8 lg:max-h-8 w-full rounded-xl object-cover"
             />
-            <span class="font-semibold text-dm-blue lg:text-xs xl:text-sm">{{
+            <span class="font-semibold text-dm-blue text-sm">{{
               data.companyName.name
             }}</span>
           </div>
@@ -350,26 +359,24 @@ onMounted(() => {
               alt="Company Logo"
               class="xl:min-w-10 xl:max-w-10 xl:min-h-10 xl:max-h-10 md:min-w-8 lg:max-w-8 lg:min-h-8 lg:max-h-8 w-full rounded-xl object-cover"
             />
-            <span class="font-semibold text-dm-blue lg:text-xs xl:text-sm">{{
+            <span class="font-semibold text-dm-blue text-sm">{{
               data.fullName.name
             }}</span>
           </div>
         </template>
 
         <template #role="{ data }">
-          <span class="font-semibold lg:text-xs xl:text-sm text-dm-blue">{{
+          <span class="font-semibold text-sm text-dm-blue">{{
             data.role
           }}</span>
         </template>
 
         <template #contact="{ data }">
-          <div
-            class="w-max flex flex-col flex-wrap gap-0 lg:text-xs xl:text-sm"
-          >
+          <div class="flex flex-col flex-wrap gap-0 text-sm">
             <span class="font-semibold text-dm-blue">{{
               data.contact.mobile
             }}</span>
-            <span class="text-primary font-semibold">{{
+            <span class="text-primary font-semibold md:w-20 md:truncate">{{
               data.contact.email
             }}</span>
           </div>
@@ -378,16 +385,14 @@ onMounted(() => {
         <template #totalRevenue="{ data }">
           <div class="flex gap-2 items-center">
             <span class="text-primary font-semibold text-sm">AED</span>
-            <span class="text-2xl font-bold">{{ data.totalRevenue ?? 0 }}</span>
+            <span class="text-xl font-bold">{{ data.totalRevenue ?? 0 }}</span>
           </div>
         </template>
 
         <template #totalSpending="{ data }">
           <div class="flex gap-2 items-center">
             <span class="text-primary font-semibold text-sm">AED</span>
-            <span class="text-2xl font-bold">{{
-              data.totalSpending ?? 0
-            }}</span>
+            <span class="text-xl font-bold">{{ data.totalSpending ?? 0 }}</span>
           </div>
         </template>
 
@@ -398,7 +403,14 @@ onMounted(() => {
             @change="updateStatus(data)"
             :style="getStatusClass(data.status)"
             class="p-dropdown-sm font-bold"
-          ></Dropdown>
+          >
+            <template #dropdownicon>
+              <img
+                :src="getImageIcon('chevron-down.svg')"
+                class="w-2.5 h-2.5"
+              />
+            </template>
+          </Dropdown>
         </template>
 
         <template #verticalsSubscribed="{ data }">
@@ -411,22 +423,24 @@ onMounted(() => {
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
-              <i class="fa-regular fa-eye text-primary"></i>
+              <i class="fa-regular fa-eye text-primary text-sm"></i>
             </button>
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleDelete(data?.id)"
             >
-              <i class="fa-regular fa-trash-can text-primary"></i>
+              <i class="fa-regular fa-trash-can text-primary text-sm"></i>
             </button>
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="copyUrl(data?.id)"
             >
-              <i class="fa-regular fa-share-from-square text-primary"></i>
+              <i
+                class="fa-regular fa-share-from-square text-primary text-sm"
+              ></i>
             </button>
           </div>
         </template>

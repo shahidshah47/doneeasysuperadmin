@@ -31,9 +31,13 @@ const { isDetail, isCompanyDetail, modalDesc } = storeToRefs(companyStore);
 const { isMaterialDetails, isServiceDetails, serviceDetails, materialDetails, appointmentDetails } =
   storeToRefs(appointmentStore);
 const { selectedNote } = storeToRefs(surveyStore);
+const companyId = computed(() => route.params.id);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
 const isOrderRoute = computed(() => route.path === "/super-admin/order");
+const isCompanyDetailsRoute = computed(() =>
+  route.path.includes("/employees/appointment/details")
+);
 
 // Prevent scrolling when isDetail is true
 watchEffect(() => {
@@ -87,17 +91,20 @@ const closeAllModals = () => {
   <div class="flex min-h-screen">
     <!-- Sidebar -->
     <div
-      class="bg-white shadow fixed left-0 top-0 bottom-0 w-[95px] overflow-y-auto z-[999]"
+      class="bg-white shadow fixed left-0 top-0 bottom-0 w-[95px] overflow-y-auto z-[999] min-w-28 vivid-scrollbar"
     >
       <SideBar />
     </div>
 
     <!-- Content Section -->
-    <div class="flex-1 !pl-[95px]">
+    <div class="flex-1 pl-34 pr-10 py-3 overflow-hidden">
       <div class="p-4">
         <!-- TopBar -->
         <TopBar />
-        <Breadcrumb v-if="!isVendorRoute && !isOrderRoute" class="pt-4" />
+        <Breadcrumb
+          v-if="!isVendorRoute && !isOrderRoute && !isCompanyDetailsRoute"
+          class="pt-4"
+        />
 
         <!-- Main Content -->
         <router-view></router-view>

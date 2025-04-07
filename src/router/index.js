@@ -282,6 +282,13 @@ const routes = [
         },
       },
       {
+        path: "/super-admin/company-details/:companyId/employees/appointment/details",
+        component: () =>
+          import(
+            "../pages/CompanyDetails/Employees/AppointmentDetails/Detail.vue"
+          ),
+      },
+      {
         path: "/super-admin/company-details/:companyId/employees/site-survey",
         component: () =>
           import("../pages/CompanyDetails/Employees/SiteSurvey.vue"),

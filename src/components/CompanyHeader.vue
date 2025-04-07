@@ -7,7 +7,7 @@
             :src="
               getCompanyUserImage(store?.companyData?.user?.profile_picture)
             "
-            class="w-24 h-24 object-cover rounded-2xl"
+            class="w-24 h-24 object-cover rounded-2xl shadow-lavendar-card"
             alt="Company Logo"
             loading="lazy"
           />
@@ -36,7 +36,9 @@
         <RevenueStats :companyData="store.companyData" />
 
         <div class="inline-flex flex-col gap-2">
-          <p class="theme-label font-theme-bold leading-3.5">Rating</p>
+          <p class="text-sm font-semibold leading-3.5 text-vivid-purple m-0">
+            Rating
+          </p>
           <div class="flex flex-row items-center gap-3">
             <StarRating :rating="4" :width="20" :height="20" />
             <div class="rounded-3xl px-4 py-[3px] bg-light-lilac">
@@ -86,7 +88,7 @@ const getImageUrl = (path) => {
 .company-header {
   background-color: #fcfdff;
   padding: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
   margin-bottom: 20px;
 }
 

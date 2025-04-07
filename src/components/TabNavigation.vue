@@ -2,81 +2,17 @@
   <div class="tabs-section mt-5">
     <ul class="nav nav-tabs flex justify-around border-0">
       <li
-        class="nav-item font-bold"
-        :class="{
-          'active-tab':
-            $route.path.includes('/super-admin/company-details/') &&
-            $route.path.includes('/info'),
-        }"
+        v-for="(tab, index) in tabs"
+        :key="index"
+        class="nav-item"
+        :class="{ 'active-tab': isActiveTab(tab.path) }"
       >
         <router-link
-          :to="`/super-admin/company-details/${companyStore.companyId}/info`"
-          class="nav-link !text-sm !font-bold"
-        >
-          Info
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyStore.companyId}/appointment`"
-          class="nav-link !text-sm !font-bold"
+          :to="`/super-admin/company-details/${companyStore.companyId}${tab.path}`"
+          class="nav-link !text-sm !font-semibold"
           active-class="active-tab"
         >
-          Appointments
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyStore.companyId}/site-survey`"
-          class="nav-link !text-sm !font-bold"
-          active-class="active-tab"
-        >
-          Site Survey
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyStore.companyId}/offers`"
-          class="nav-link !text-sm !font-bold"
-          active-class="active-tab"
-        >
-          Offers
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyStore.companyId}/employees`"
-          class="nav-link !text-sm !font-bold"
-          active-class="active-tab"
-        >
-          Employees
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyStore.companyId}/verticals`"
-          class="nav-link !text-sm !font-bold"
-          active-class="active-tab"
-        >
-          Verticals
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyStore.companyId}/chat-history`"
-          class="nav-link !text-sm !font-bold"
-          active-class="active-tab"
-        >
-          Chats History
-        </router-link>
-      </li>
-      <li class="nav-item">
-        <router-link
-          :to="`/super-admin/company-details/${companyStore.companyId}/finance`"
-          class="nav-link !text-sm !font-bold"
-          active-class="active-tab"
-        >
-          Finance
+          {{ tab.label }}
         </router-link>
       </li>
     </ul>
@@ -84,12 +20,27 @@
 </template>
 
 <script setup>
-import { watch, onMounted } from "vue";
+import { computed, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useCompanyStore } from "../store";
 
-const route = useRoute();
+const route = useRoute(); // Use useRoute() to get the current route
 const companyStore = useCompanyStore();
+
+const tabs = [
+  { label: "Info", path: "/info" },
+  { label: "Appointments", path: "/appointment" },
+  { label: "Site Survey", path: "/site-survey" },
+  { label: "Offers", path: "/offers" },
+  { label: "Employees", path: "/employees" },
+  { label: "Verticals", path: "/verticals" },
+  { label: "Chats History", path: "/chat-history" },
+  { label: "Finance", path: "/finance" },
+];
+
+const isActiveTab = (tabPath) => {
+  return route.path.includes(tabPath); // Use route instead of $route
+};
 
 watch(
   () => route.params.companyId,
@@ -112,32 +63,32 @@ onMounted(() => {
   background-color: #fff !important;
   border: none !important;
   position: relative;
-  color: #5825eb !important; /* Active tab text color */
-  font-weight: bold;
+  color: #5825eb !important;
 }
 
 .active-tab::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -21px;
-  height: 4px;
+  left: 50%;
+  bottom: -22.5px;
+  height: 3px;
   background-color: #5825eb;
   width: 100%;
-  margin: 0 auto;
+  transform: translateX(-50%) scaleX(2);
+  transform-origin: center center;
 }
 
 .nav-link {
-  color: #868599; /* Default (inactive) tab text color */
+  color: #868599;
   border: none !important;
+  padding-bottom: 0 !important;
 }
 
 .nav-link:hover {
-  color: #5825eb; /* Text color changes to active color on hover */
+  color: #5825eb;
 }
 
 .active-tab .nav-link {
-  color: #5825eb !important; /* Ensure active tab text remains #5825EB */
+  color: #5825eb !important;
 }
 </style>

@@ -134,8 +134,8 @@ const columns = ref([
     field: "vertical",
     header: "Verticals",
     icon: "chevron-down.svg",
-    iconWidth: 14,
-    iconHeight: 14,
+    iconWidth: 10,
+    iconHeight: 10,
   },
   { field: "expectedStartDate", header: ["Expected ", " Start Date"] },
   { field: "expectedEndDate", header: ["Expected ", " End Date"] },
@@ -146,8 +146,8 @@ const columns = ref([
     field: "chats",
     header: "Chats",
     icon: "info-circle.svg",
-    iconWidth: 20,
-    iconHeight: 20,
+    iconWidth: 18,
+    iconHeight: 18,
   },
   { field: "surveyRequest", header: ["Survey ", "Request"] },
   { field: "actions", header: "Action" },
@@ -205,7 +205,7 @@ const typeClasses = {
       <div class="fs-4 fw-bold">Order</div>
     </div>
 
-    <div class="p-4 bg-white rounded-3 shadow relative">
+    <div class="p-4 bg-white-100 !rounded-2xl relative">
       <ThemeDatatable
         :value="ordersData"
         v-model:selection="selectedCompany"
@@ -336,17 +336,17 @@ const typeClasses = {
             :options="statusOptions"
             @change="updateStatus(data)"
             :style="getStatusClass(data.status)"
-            class="p-dropdown-sm !font-semibold"
+            class="p-dropdown-sm !font-semibold !text-sm"
           ></Dropdown>
         </template>
 
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id, data?.type)"
             >
-              <i class="fa-regular fa-eye text-primary"></i>
+              <i class="fa-regular fa-eye text-primary text-sm"></i>
             </button>
           </div>
         </template>

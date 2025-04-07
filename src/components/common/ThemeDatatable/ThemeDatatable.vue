@@ -41,6 +41,7 @@ const emit = defineEmits(["update:selection", "update:filters"]);
     :globalFilterFields="props.filterFields"
     tableStyle="min-width: 50rem"
     class="custom-datatable"
+    scrollable
   >
     <template #header>
       <slot name="header"></slot>
@@ -52,9 +53,7 @@ const emit = defineEmits(["update:selection", "update:filters"]);
     <Column v-for="col in columns" :key="col.field" :field="col.field">
       <template #header>
         <div class="header-container">
-          <div
-            class="header-text xl:text-base lg:text-sm md:text-xs !text-grayish-purple !font-semibold"
-          >
+          <div class="header-text text-sm !text-grayish-purple !font-semibold">
             <span v-if="Array.isArray(col.header)">
               <span v-for="(line, index) in col.header" :key="index">
                 {{ line }} <br v-if="index !== col.header.length - 1" />
@@ -90,7 +89,7 @@ const emit = defineEmits(["update:selection", "update:filters"]);
 .header-container {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 12px;
 }
 
 .header-text {
