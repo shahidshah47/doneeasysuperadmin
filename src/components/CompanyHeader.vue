@@ -71,7 +71,7 @@ const getImagePath = (imageName) => {
 };
 
 const getCompanyUserImage = (img) => {
-  return img.file_path;
+  return img?.file_path;
 };
 
 const getImageUrl = (path) => {

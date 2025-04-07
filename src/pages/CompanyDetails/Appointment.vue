@@ -206,6 +206,7 @@ import StatusButtons from "../../components/common/StatusButtons/StatusButtons.v
 
 const store = useCompanyStore();
 const appointmentsData = ref([]);
+const selectedAppointment = ref();
 const loading = ref(true);
 const error = ref(null);
 const statusBtn = ref(4);
@@ -312,7 +313,6 @@ const handleFetchAppointment = (id) => {
   statusBtn.value = id;
 };
 
-const selectedAppointment = ref();
 const copyUrl = (id) => {
   const location = window.location;
   navigator.clipboard.writeText(

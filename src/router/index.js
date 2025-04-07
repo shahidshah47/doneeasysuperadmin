@@ -168,7 +168,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/site-survey/details",
+        path: "/super-admin/company-details/:companyId/site-survey/:siteSurveyId/details",
         component: () =>
           import("../pages/CompanyDetails/SiteSurvey/Details.vue"),
         meta: {

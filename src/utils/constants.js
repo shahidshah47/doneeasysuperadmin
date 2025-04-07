@@ -1,3 +1,8 @@
+export const green = { bgColor: "#D6FFEF", color: "#00995C" };
+export const yellow = { bgColor: "#FCEED9", color: "#DC8B13" };
+export const red = { bgColor: "#FFE5E5", color: "#FF5555" };
+export const gray = { bgColor: "#E7E7EB", color: "#575672" };
+export const blue = { bgColor: "#CCDDFF", color: "#5B93FF" };
 
 export const mapStyles = [
     {
