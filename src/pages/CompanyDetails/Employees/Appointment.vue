@@ -18,54 +18,24 @@
       :currentPage="pagination.currentPage"
     >
       <template #header>
-        <div class="flex justify-between items-center mb-2">
-          <div class="flex gap-3">
-            <button
-              @click="handleFetchOrder('All')"
-              :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                statusBtn === 'All' ? 'bg-primary text-white' : 'btn-light'
-              }`"
-            >
-              All
-            </button>
-            <button
-              @click="handleFetchOrder('Support')"
-              :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                statusBtn === 'Active' ? 'bg-primary text-white' : 'btn-light'
-              }`"
-            >
-              In Progress
-            </button>
-            <button
-              @click="handleFetchOrder('Admin')"
-              :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                statusBtn === 'Inactive' ? 'bg-primary text-white' : 'btn-light'
-              }`"
-            >
-              Schedule
-            </button>
-            <button
-              @click="handleFetchOrder('Manager')"
-              :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                statusBtn === 'Monitory' ? 'bg-primary text-white' : 'btn-light'
-              }`"
-            >
-              Completed
-            </button>
+        <div class="grid grid-cols-10 items-center gap-4 mb-6">
+          <div class="flex gap-3 col-span-6">
+            <StatusButtons
+              :statusBtn="statusBtn"
+              :buttons="[
+                { label: 'All', value: 1 },
+                { label: 'In Progress', value: 2 },
+                { label: 'Schedule', value: 3 },
+                { label: 'Completed', value: 4 },
+              ]"
+              @update:statusBtn="handleFetchOrder"
+            />
           </div>
-          <div class="flex gap-3">
-            <div class="flex justify-end">
-              <IconField>
-                <InputText
-                  v-model="filters['global'].value"
-                  placeholder="Search"
-                  class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
-                />
-                <InputIcon>
-                  <i class="fas fa-search"></i>
-                </InputIcon>
-              </IconField>
-            </div>
+          <div class="flex gap-3 items-center w-full col-span-4">
+            <SearchAndFilter
+              v-model="filters['global'].value"
+              placeholder="Search"
+            />
           </div>
         </div>
       </template>
@@ -147,7 +117,7 @@
       <template #status="{ data }">
         <div
           :style="getStatusClass(data.status)"
-          class="px-2 py-1 rounded-lg font-semibold"
+          class="px-2 py-1 rounded-lg font-semibold whitespace-nowrap"
         >
           {{ data.status }}
         </div>
@@ -220,6 +190,8 @@ import ProfileTabs from "../../../components/ProfileTabs.vue";
 import { useRoute, useRouter } from "vue-router";
 import Dropdown from "primevue/dropdown";
 import { FilterMatchMode } from "@primevue/core/api";
+import SearchAndFilter from "../../../components/common/SearchAndFilter/SearchAndFilter.vue";
+import StatusButtons from "../../../components/common/StatusButtons/StatusButtons.vue";
 const route = useRoute();
 const companyId = computed(() => route.query.companyId);
 
