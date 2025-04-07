@@ -380,3 +380,24 @@ export const paymentTermsStatus = (status) => {
             return { gradient: "text-gray-500", statusText: "Unknown" }
     }
 };
+
+export const getOrderStatus = (status) => {
+    switch (status) {
+        case 1:
+            return { ...green, statusText: "Active" }
+        case 2:
+            return { ...red, statusText: "Canceled" }
+        case 3:
+            return { ...green, statusText: "Accepted" }
+        case 4:
+            return { ...yellow, statusText: "Pending Payment" }
+        case 5:
+            return { ...gray, statusText: "Out of Scope" }
+        case 6:
+            return { ...green, statusText: "Completed" }
+        case 7:
+            return { ...gray, statusText: "Delivered" }
+        default:
+            break;
+    }
+}

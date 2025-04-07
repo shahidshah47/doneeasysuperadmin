@@ -215,8 +215,6 @@ const pagination = ref({
   links: [],
 });
 
-const handleDelete = async (id) => {};
-
 const fetchData = async (id, page = 1, perPage = null) => {
   try {
     let url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}`;
@@ -313,5 +311,7 @@ const filters = ref({
 const getImagePath = (imageName) => {
   return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
 };
+
+const handleDelete = async (id) => {};
 
 </script>

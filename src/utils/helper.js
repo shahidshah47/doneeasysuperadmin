@@ -231,7 +231,7 @@ export const convertAppointmentData = (appointment) => {
       appointment.delivery_date +
       " " +
       convertTimeTo12HourFormat(appointment.delivery_time),
-    orderAmount: appointment.order.total_budget,
+    orderAmount: formatWithCommas(appointment.order.total_budget),
     payment: getAppointPaymentStatus(appointment.paid_percentage),
     progressState: getAppointProgressStatus(appointment.progress_status),
   };
@@ -254,8 +254,8 @@ export const convertSiteSurveyData = (site_survey) => {
       name: site_survey.order.verticle.name,
     },
     scheduleStartDateAndEndDate: site_survey.order.start_date + " / " + site_survey.order.end_date,
-    orderAmount: site_survey.order.total_budget,
-    surveyStatus: getSiteSurveyStatus(site_survey.progress_status),
+    orderAmount: formatWithCommas(site_survey.order.total_budget),
+    surveyStatus: getAppointProgressStatus(site_survey.progress_status),
   };
 };
 
@@ -433,3 +433,7 @@ export const formatTime = (timeString) => {
 
   return `${formattedHours}:${String(minutes).padStart(2, "0")} ${period} `;
 };
+
+export const formatWithCommas = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
