@@ -33,7 +33,7 @@
 <script setup>
 import { computed, watch } from "vue";
 import { useField } from "vee-validate";
-import Select from "primevue/select"; // Use the Select component instead of Dropdown
+import Select from "primevue/select";
 
 // Props
 const props = defineProps({
