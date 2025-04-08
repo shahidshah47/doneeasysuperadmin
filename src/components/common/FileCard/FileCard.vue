@@ -1,6 +1,5 @@
 <template>
   <div class="d-flex align-items-center bg-white border-0 rounded-4 mb-3">
-    <!-- Icon and File Name Section -->
     <div
       class="d-flex bg-success-subtle justify-content-center p-3 rounded-start-4"
     >
@@ -16,9 +15,8 @@
       <p class="text-secondary mb-0 ms-3">{{ fileSize }}</p>
     </div>
 
-    <!-- Icons Section -->
     <div class="d-flex align-items-center cursor-pointer gap-3 me-3 ms-auto">
-      <div class="bg-light-lilac p-1 rounded">
+      <div v-if="isEyeIcon" class="bg-light-lilac p-1 rounded">
         <img
           :src="getImageUrl('../../../assets/image/icons/eye.svg')"
           alt="View File"
@@ -40,33 +38,38 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    fileIcon: {
-      type: String,
-      required: true,
-    },
-    fileName: {
-      type: String,
-      default: "Company Profile",
-    },
-    fileSize: {
-      type: String,
-      default: "3.2mb",
-    },
+<script setup>
+import { onMounted } from "vue";
+
+const props = defineProps({
+  fileIcon: {
+    type: String,
+    required: true,
   },
-  methods: {
-    getImageUrl(imagePath) {
-      return new URL(imagePath, import.meta.url).href;
-    },
-    viewFile() {
-      console.log("Viewing file:", this.fileName);
-    },
-    downloadFile() {
-      console.log("Downloading file:", this.fileName);
-    },
+  fileName: {
+    type: String,
+    default: "Company Profile",
   },
+  fileSize: {
+    type: String,
+    default: "3.2mb",
+  },
+  isEyeIcon: {
+    type: Boolean,
+    default: true,
+  },
+});
+
+const getImageUrl = (imagePath) => {
+  return new URL(imagePath, import.meta.url).href;
+};
+
+const viewFile = () => {
+  console.log("Viewing file:", props.fileName);
+};
+
+const downloadFile = () => {
+  console.log("Downloading file:", props.fileName);
 };
 </script>
 

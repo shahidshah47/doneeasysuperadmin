@@ -1,6 +1,6 @@
 <template>
   <button
-    class="btn me-2 mb-1 !font-semibold"
+    class="btn me-2 mb-1 !font-semibold focus:outline-none focus:ring-0 active:outline-none active:ring-0"
     @click="goBack"
     style="text-transform: none !important"
   >
@@ -9,6 +9,7 @@
     </span>
     <span> Back </span>
   </button>
+
   <div class="d-flex my-2 mb-4">
     <button
       class="btn me-2 !font-semibold"
