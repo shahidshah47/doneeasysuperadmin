@@ -1,8 +1,8 @@
 <script setup>
-import { ref, onMounted, nextTick, onUnmounted, computed } from "vue";
+import { ref, onMounted, nextTick, onUnmounted, computed, watch } from "vue";
 import api from "../api";
 // import DataTable from "datatables.net-bs5";
-import { convertUserData, getStatusId, transformData } from "../utils/helper";
+import { convertUserData, debounce, getStatusId, transformData } from "../utils/helper";
 import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore } from "../store";
 import {
@@ -40,6 +40,7 @@ const pagination = ref({
   prevPageUrl: null,
   links: [],
 });
+const searchTerm = ref("");
 
 const getImagePath = (imageName) => {
   return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
@@ -84,12 +85,15 @@ const dashboardStats = ref([
   },
 ]);
 
-const fetchData = async (id, page, perPage = null) => {
+const fetchData = async (id, page, perPage = null, search = '') => {
   console.log(id, page, "id and page");
   try {
-    let url = `/superadmin/dashboard?status=${id}&page=${page}`;
+    let url = `/superadmin/dashboard?status=${id}&page=${page}&search=${search}`;
     if (perPage) {
       url = `/superadmin/dashboard?status=${id}&page=${page}&per_page=${perPage}`;
+    }
+    if (perPage && search !== "") {
+      url = `/superadmin/dashboard?status=${id}&page=${page}&per_page=${perPage}&search=${search}`
     }
     const response = await api.get(url, {
       headers: {
@@ -134,7 +138,17 @@ const handleClickToDetails = (id) => {
   router.push("/super-admin/company-details/" + id + "/info");
 };
 
+const debouncedFetch = debounce((val) => {
+  fetchData(statusBtn.value, 1, null, val)
+}, 500);
+
+watch(() => searchTerm.value, (newVal, oldValue) => {
+  console.log(newVal, oldValue, "newVal and oldValue");
+  debouncedFetch(newVal);
+});
+
 const handleFetchVendor = (id, page) => {
+  searchTerm.value = '';
   fetchData(id, 1);
   statusBtn.value = id;
 };
@@ -176,20 +190,6 @@ const columns = ref([
   { field: "actions", header: "Action" },
 ]);
 
-const filters = ref({
-  id: { value: null, matchMode: FilterMatchMode.EQUALS },
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "fullName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  role: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  contact: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  totalRevenue: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
-  totalSpending: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
-  status: { value: null, matchMode: FilterMatchMode.EQUALS },
-  verticlesSubscribed: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
-  registeredOn: { value: null, matchMode: FilterMatchMode.DATE_IS },
-});
-
 const getStatusClass = (status) => {
   switch (status) {
     case "Active":
@@ -217,6 +217,7 @@ const handleDelete = async (id) => {
         detail: response?.data?.message,
         life: 3000,
       });
+      searchTerm.value = '';
       fetchData(statusBtn.value);
     }
   } catch (err) {
@@ -232,7 +233,7 @@ const updateStatus = async (data) => {
       status: getStatusId(data?.status),
     });
     if (response.status === 200) {
-      fetchData(statusBtn.value, 1);
+      fetchData(statusBtn.value, 1, null, searchTerm.value);
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -241,7 +242,7 @@ const updateStatus = async (data) => {
 };
 
 const handlePerPage = async (props) => {
-  fetchData(statusBtn.value, props[0], props[1]);
+  fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
 };
 
 onMounted(() => {
@@ -303,8 +304,6 @@ onMounted(() => {
       <ThemeDatatable
         :value="companiesData"
         v-model:selection="selectedCompany"
-        v-model:filters="filters"
-        :filterFields="['id', 'companyName.name', 'fullName.name', 'role']"
         :columns="columns"
         :paginator="true"
         :rows="pagination.perPage"
@@ -328,7 +327,7 @@ onMounted(() => {
             </div>
             <div class="flex gap-3 items-center w-full col-span-4">
               <SearchAndFilter
-                v-model="filters['global'].value"
+                v-model="searchTerm"
                 placeholder="Search"
               />
             </div>

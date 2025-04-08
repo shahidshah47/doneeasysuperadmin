@@ -437,3 +437,13 @@ export const formatTime = (timeString) => {
 export const formatWithCommas = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+export const debounce = (func, delay) => {
+  let timer
+  return function (...args) {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
+      func.apply(this, args)
+    }, delay)
+  }
+}
