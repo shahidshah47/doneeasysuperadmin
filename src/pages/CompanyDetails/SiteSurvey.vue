@@ -6,15 +6,16 @@
     </div>
     <div class="p-3 mb-1 bg-white rounded-3">
       <ThemeDatatable
-        :value="vendorData"
+        :value="siteSurveysData"
         v-model:selection="selectedSurvey"
         v-model:filters="filters"
+        :filterFields="filterFields"
         :columns="columns"
         :paginator="true"
         :rows="20"
         :rowsPerPageOptions="[5, 10, 20, 50]"
-        :totalRecords="120"
-        :totalPageCount="6"
+        :totalRecords="pagination.total"
+        :totalPageCount="pagination.lastPage"
       >
         <template #header>
           <div class="grid grid-cols-10 items-center gap-4 mb-6">
@@ -22,12 +23,12 @@
               <StatusButtons
                 :statusBtn="statusBtn"
                 :buttons="[
-                  { label: 'All', value: 1 },
-                  { label: 'Pending', value: 2 },
-                  { label: 'Schedule', value: 3 },
+                  { label: 'All', value: 4 },
+                  { label: 'Pending', value: 1 },
+                  { label: 'Schedule', value: 2 },
                   { label: 'Completed', value: 3 },
                 ]"
-                @update:statusBtn="handleFetchAppointment"
+                @update:statusBtn="handleFetchSiteSurvey"
               />
             </div>
             <div class="flex gap-3 items-center w-full col-span-4">
@@ -45,51 +46,59 @@
         <template #organizationName="{ data }">
           <div class="flex items-center gap-2">
             <img
-              :src="getImagePath(data.companyImage)"
+              :src="data.organizationName.logo"
               alt="Company Logo"
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
-
             <span class="font-semibold text-dm-blue">{{
-              data.companyName
+              data.organizationName.name
             }}</span>
           </div>
         </template>
 
         <template #title="{ data }">
           <div class="flex items-start gap-1 flex-col">
-            <span>{{ data.ceoManager }}</span>
-            <span class="text-sm font-bold text-dm-blue">{{
-              data.contactEmail
-            }}</span>
+            <span>{{ data.title.name }}</span>
+            <span class="text-sm font-bold text-dm-blue">{{ data.title.description }}</span>
           </div>
         </template>
 
         <template #verticle="{ data }">
-          <p class="text-md text-dm-blue font-bold">
-            {{ data.verticalSubscribed }}
-          </p>
+          <div class="flex items-center gap-2">
+            <img
+              :src="data.verticle.image"
+              alt="Company Logo"
+              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+            />
+            <span class="font-semibold text-dm-blue">{{
+              data.verticle.name
+            }}</span>
+          </div>
         </template>
 
-        <template #orderType="{ data }">
-          <p class="text-md text-dm-blue font-bold">{{ data.status }}</p>
-        </template>
-
-        <template #expectedDateAndTime="{ data }">
+        <template #scheduleStartDateAndEndDate="{ data }">
           <p
             class="text-md text-dm-blue font-bold"
-            v-html="formatDate(data.registeredDate)"
+            v-html="data.scheduleStartDateAndEndDate"
           ></p>
         </template>
 
         <template #orderAmount="{ data }">
-          <div class="flex flex-col">
-            <p class="text-md text-dm-blue font-bold">
-              {{ data.totalRevenue }}
-            </p>
-            <p class="text-md text-dm-blue font-bold">
-              {{ data.totalSpending }}
-            </p>
+          <div class="flex gap-2 items-center">
+            <span class="text-primary font-semibold text-sm">AED</span>
+            <span class="text-2xl font-bold">{{ data.orderAmount ?? 0 }}</span>
+          </div>
+        </template>
+
+        <template #surveyStatus="{ data }">
+          <div
+            :class="`px-3 py-2 rounded-xl font-bold`"
+            :style="{
+              backgroundColor: data.surveyStatus.bgColor,
+              color: data.surveyStatus.color,
+            }"
+          >
+            {{ data.surveyStatus.name }}
           </div>
         </template>
 
@@ -97,7 +106,7 @@
           <div class="flex gap-2">
             <button
               class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="handleClickToDetails()"
+              @click="handleClickToDetails(data?.id)"
             >
               <i class="fa-regular fa-eye text-primary"></i>
             </button>
@@ -116,7 +125,11 @@
           </div>
         </template>
       </ThemeDatatable>
-      <Paginator :rows="pagination.perPage" :totalRecords="pagination.total">
+      <Paginator
+        :rows="pagination.perPage"
+        :totalRecords="pagination.total"
+        v-if="pagination.total > 0"
+      >
         <template
           #container="{
             first,
@@ -142,6 +155,7 @@
             :lastPageCallback="lastPageCallback"
             :rowChangeCallback="rowChangeCallback"
             :prevPageCallback="prevPageCallback"
+            @perPageClick="(cPage, perPage) => handlePerPage(cPage, perPage)"
             @nextPageClick="(page) => fetchData(statusBtn, page)"
             :nextPageCallback="nextPageCallback"
             :totalRecords="totalRecords"
@@ -155,7 +169,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 import CompanyHeader from "../../components/CompanyHeader.vue";
 import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
@@ -164,22 +178,30 @@ import { IconField, InputIcon, InputText, Paginator, useToast } from "primevue";
 import { useRoute, useRouter } from "vue-router";
 import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
 import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
+import api from "../../api";
+import { convertSiteSurveyData } from "../../utils/helper";
+
 const selectedSurvey = ref();
 const router = useRouter();
 const route = useRoute();
-const formatDate = (date) => {
-  return date.replace(/\n/g, "<br>"); // Convert newlines to <br>
-};
-const handleClickToDetails = () => {
-  const companyId = route.params.companyId;
-  if (companyId) {
-    router.push({
-      path: `/super-admin/company-details/${companyId}/site-survey/details`,
-    });
-  }
-};
+const siteSurveysData = ref([]);
+const loading = ref(true);
+const error = ref(null);
+const statusBtn = ref(4);
+const toast = useToast();
 
-const statusBtn = ref(1);
+const filterFields = ref([
+  "id",
+  "organizationName.name",
+  "verticle.name",
+  "title.name",
+  "orderAmount",
+  "surveyStatus.name",
+]);
+
+const handleClickToDetails = (id) => {
+  router.push("/super-admin/company-details/" + route.params.companyId + "/site-survey/" + id + "/details");
+};
 
 const pagination = ref({
   currentPage: 0,
@@ -193,77 +215,86 @@ const pagination = ref({
   links: [],
 });
 
-const handleFetchAppointment = (id) => {};
-
-const copyUrl = (id) => {
-  const companyId = route.params.companyId;
-  if (companyId) {
-    router.push({
-      path: "/super-admin/company-details/site-survey/SurveyDetails/details",
-      query: { companyId },
+const fetchData = async (id, page = 1, perPage = null) => {
+  try {
+    let url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}`;
+    if (perPage) {
+      url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}`;
+    }
+    const response = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
     });
+    if (response?.status === 200) {
+      const { data } = response.data;
+      pagination.value = {
+        currentPage: response.data.current_page,
+        lastPage: response.data.last_page,
+        perPage: response.data.per_page,
+        total: response.data.total,
+        firstPageUrl: response.data.first_page_url,
+        lastPageUrl: response.data.last_page_url,
+        nextPageUrl: response.data.next_page_url,
+        prevPageUrl: response.data.prev_page_url,
+        links: response.data.links,
+      };
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message,
+        life: 3000,
+      });
+      siteSurveysData.value = data.map((item) => convertSiteSurveyData(item));
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error("Error in fetchData:", err);
   }
 };
 
-const handleDelete = async (id) => {};
+onMounted(() => {
+  nextTick(() => {
+    fetchData(statusBtn.value, 1);
+  });
+});
 
-const fetchData = async (_id, page = 1) => {
-  //   try {
-  //     const response = await api.get(
-  //       `/superadmin/user/appointments?user_id=${route.params.companyId}&status=${id}&page=${page}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${localStorage?.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-  //     // console.log(response, "res from appointments");
-  //     if (response?.status === 200) {
-  //       const { data } = response.data;
-  //       pagination.value = {
-  //         currentPage: response.data.current_page,
-  //         lastPage: response.data.last_page,
-  //         perPage: response.data.per_page,
-  //         total: response.data.total,
-  //         firstPageUrl: response.data.first_page_url,
-  //         lastPageUrl: response.data.last_page_url,
-  //         nextPageUrl: response.data.next_page_url,
-  //         prevPageUrl: response.data.prev_page_url,
-  //         links: response.data.links,
-  //       };
-  //       toast.add({
-  //         severity: "success",
-  //         summary: "Success",
-  //         detail: response?.data?.message,
-  //         life: 3000,
-  //       });
-  //       appointmentsData.value = data?.map((item) =>
-  //         appointmentsData(item)
-  //       );
-  //     }
-  //   } catch (err) {
-  //     error.value = "Error fetching data";
-  //     console.error("Error in fetchData:", err);
-  //   }
+
+const handlePerPage = async (props) => {
+  fetchData(statusBtn.value, props[0], props[1]);
 };
 
-// onMounted(() => {
-//   fetchData(1);
-// });
+const handleFetchSiteSurvey = (id) => {
+  fetchData(id, 1);
+  statusBtn.value = id;
+};
+
+const copyUrl = (id) => {
+  const location = window.location;
+  navigator.clipboard.writeText(
+    location.origin +
+      "/super-admin/company-details/" +
+      route.params.companyId +
+      "/site-survey/" +
+      id +
+      "/details"
+  );
+  toast.add({
+    severity: "success",
+    summary: "Success",
+    detail: "Copied to clipboard!",
+    life: 3000,
+  });
+};
 
 const columns = ref([
   { field: "id", header: "ID" },
   { field: "organizationName", header: "Organization Name" },
   { field: "title", header: "Title & Description" },
   { field: "verticle", header: "Vertical" },
-  { field: "orderType", header: "Order Type" },
-  {
-    field: "expectedDateAndTime",
-    header: ["Expected Delivery", "Date & Time"],
-  },
-  { field: "payment", header: "Payment" },
+  { field: "scheduleStartDateAndEndDate", header: "Schedule Start Date / End Date" },
   { field: "orderAmount", header: "Order Amount" },
-  { field: "progressState", header: "Progress State" },
+  { field: "surveyStatus", header: "Survey Status" },
   { field: "actions", header: "Action" },
 ]);
 
@@ -273,72 +304,14 @@ const filters = ref({
   "organizationName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
   "title.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
   "verticle.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  orderType: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  payment: { value: null, matchMode: FilterMatchMode.CONTAINS },
   orderAmount: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  progressState: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  surveyStatus: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
 const getImagePath = (imageName) => {
   return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
 };
 
-const vendorData = ref([
-  {
-    id: "OFC 001",
-    companyName: "ABS Company Pvt.",
-    companyImage: "Avatar.png",
-    ceoManager: "Floyd Miles",
-    managerImage: "Avatar (5).png",
-    contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-    totalRevenue: "AED 32,100",
-    totalSpending: "AED 32,100",
-    status: "Active",
-    verticalSubscribed: 16,
-    registeredDate: "2020-05-17<br>10:00 AM",
-    statusColor: "lightgreen",
-  },
-  {
-    id: "OFC 002",
-    companyName: "Big Kahuna Ltd.",
-    companyImage: "Avatar.png",
-    ceoManager: "Kristin Watson",
-    managerImage: "Avatar (4).png",
-    contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-    totalRevenue: "AED 32,100",
-    totalSpending: "AED 32,100",
-    status: "Banned",
-    verticalSubscribed: 23,
-    registeredDate: "2020-05-17<br>10:00 AM",
-    statusColor: "#ffb09c",
-  },
-  {
-    id: "OFC 003",
-    companyName: "Barone LLC.",
-    companyImage: "Avatar (5).png",
-    ceoManager: "Albert Flores",
-    managerImage: "Avatar (4).png",
-    contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-    totalRevenue: "AED 32,100",
-    totalSpending: "AED 32,100",
-    status: "Inactive",
-    verticalSubscribed: 23,
-    registeredDate: "2020-05-17<br>10:00 AM",
-    statusColor: "lightgrey",
-  },
-  {
-    id: "OFC 004",
-    companyName: "Biffco Enterprises Ltd.",
-    companyImage: "Avatar.png",
-    ceoManager: "Dianne Russell",
-    managerImage: "Avatar (4).png",
-    contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-    totalRevenue: "AED 32,100",
-    totalSpending: "AED 32,100",
-    status: "Monitory",
-    verticalSubscribed: 23,
-    registeredDate: "2020-05-17<br>10:00 AM",
-    statusColor: "lightyellow",
-  },
-]);
+const handleDelete = async (id) => {};
+
 </script>

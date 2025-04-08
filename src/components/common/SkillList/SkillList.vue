@@ -3,7 +3,7 @@
     <div
       v-for="(tag, index) in tags"
       :key="index"
-      class="!bg-light-purple rounded-xl p-2 text-white-100 font-semibold text-sm inline-block"
+      class="!bg-light-purple rounded-xl p-2 text-white-100 font-semibold text-sm inline-block whitespace-nowrap"
     >
       {{ tag }}
     </div>

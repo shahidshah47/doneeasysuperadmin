@@ -114,11 +114,11 @@
           >
         </div>
         <div
-          class="bg-white py-4 pl-4 pr-2 rounded-xl flex flex-col gap-3 flex-1"
+          class="bg-white py-4 pl-4 pr-2 rounded-xl flex-1"
         >
-          <div class="max-h-[45rem] overflow-auto vivid-scrollbar pr-2">
+          <div class="max-h-[45rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3">
             <div
-              v-for="(user, index) in companyStore?.companyData?.company?.users"
+              v-for="(user, index) in infoDetails?.company?.users"
               class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start"
               :key="index"
             >
@@ -163,8 +163,7 @@
         >
           <div class="max-h-[45rem] overflow-auto vivid-scrollbar pr-2">
             <div
-              v-for="(address, index) in companyStore?.companyData?.company
-                ?.addresses"
+              v-for="(address, index) in infoDetails?.company?.addresses"
               class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start"
               :key="index"
             >
@@ -173,6 +172,20 @@
                   Main Office
                 </p>
                 <p class="!font-bold !text-base m-0">{{ address?.address }}</p>
+              </div>
+              <StyledButton
+                :text="' View Details'"
+                :className="'w-auto !px-4 !py-2 !rounded-[6px]'"
+                :buttonType="'primary'"
+              />
+            </div>
+            <div class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start" 
+              v-if="infoDetails?.company?.addresses?.length === 0">
+              <div class="inline-flex flex-col">
+                <p class="text-xs font-normal text-vivid-purple mb-1">
+                  Main Office
+                </p>
+                <p class="!font-bold !text-base m-0">{{ infoDetails?.company.address }}</p>
               </div>
               <StyledButton
                 :text="' View Details'"
@@ -574,6 +587,7 @@ import StyledButton from "../../components/common/StyledButton/StyledButton.vue"
 const route = useRoute();
 const loading = ref(true);
 const error = ref(null);
+const infoDetails = ref(null);
 const companyDetails = ref(null);
 const legalDocsDetails = ref(null);
 const companyStore = useCompanyStore();
@@ -708,6 +722,7 @@ const fetchCompanyDetailsById = async (id) => {
     const response = await api.get("/superadmin/user/details/" + id);
     if (response.status === 200) {
       companyStore.setCompanyData(response.data?.data);
+      infoDetails.value = response?.data?.data;
       const user = response?.data?.data?.user;
       companyDetails.value = getCompanyDetails(response?.data?.data?.company);
       locationData.value = {

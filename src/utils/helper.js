@@ -1,3 +1,5 @@
+import { blue, gray, green, red, yellow } from "./constants";
+
 export const transformData = (data) => {
   return data.map((item, index) => {
     // Determine the status based on the 'status' field
@@ -96,28 +98,28 @@ export const convertUserData = (user) => {
   switch (user.status) {
     case 1:
       status = "Active";
-      statusColor = "#D6FFEF";
-      textColor = "#00995C";
+      statusColor = green.bgColor;
+      textColor = green.color;
       break;
     case 2:
       status = "Deactivated";
-      statusColor = "#E7E7EB";
-      textColor = "#0E0D35";
+      statusColor = gray.bgColor;
+      textColor = gray.color;
       break;
     case 3:
       status = "Inactive";
-      statusColor = "#E7E7EB";
-      textColor = "#575672";
+      statusColor = gray.bgColor;
+      textColor = gray.color;
       break;
     case 4:
       status = "Monitory";
-      statusColor = "#FCEED9";
-      textColor = "#DC8B13";
+      statusColor = yellow.bgColor;
+      textColor = yellow.color;
       break;
     case 5:
       status = "Banned";
-      statusColor = "#FFE5E5";
-      textColor = "#FF5555";
+      statusColor = red.bgColor;
+      textColor = red.color;
       break;
     // Add more cases if there are other status values
     default:
@@ -209,42 +211,6 @@ export const convertTimeTo12HourFormat = (time24) => {
 
 // Utility function to convert API response to table format
 export const convertAppointmentData = (appointment) => {
-  let status;
-  let statusColor;
-  let textColor;
-  switch (appointment.progress_status) {
-    case 1:
-      status = "Active";
-      statusColor = "#D6FFEF";
-      textColor = "#00995C";
-      break;
-    case 2:
-      status = "Deactivated";
-      statusColor = "#E7E7EB";
-      textColor = "#0E0D35";
-      break;
-    case 3:
-      status = "Inactive";
-      statusColor = "#E7E7EB";
-      textColor = "#575672";
-      break;
-    case 4:
-      status = "Monitory";
-      statusColor = "#FCEED9";
-      textColor = "#DC8B13";
-      break;
-    case 5:
-      status = "Banned";
-      statusColor = "#FFE5E5";
-      textColor = "#FF5555";
-      break;
-    // Add more cases if there are other status values
-    default:
-      status = "Unknown";
-      statusColor = "lightgrey";
-      textColor = "#000";
-  }
-
   return {
     id: appointment.id,
     organizationName: {
@@ -265,53 +231,84 @@ export const convertAppointmentData = (appointment) => {
       appointment.delivery_date +
       " " +
       convertTimeTo12HourFormat(appointment.delivery_time),
-    orderAmount: appointment.order.total_budget,
+    orderAmount: formatWithCommas(appointment.order.total_budget),
     payment: getAppointPaymentStatus(appointment.paid_percentage),
     progressState: getAppointProgressStatus(appointment.progress_status),
   };
 };
 
+// Utility function to convert API response to table format
+export const convertSiteSurveyData = (site_survey) => {
+  return {
+    id: site_survey.id,
+    organizationName: {
+      logo: site_survey.user.profile_picture?.file_path || "",
+      name: site_survey.user.name || "N/A",
+    },
+    title: {
+      name: site_survey.order.title,
+      description: site_survey.order.description,
+    },
+    verticle: {
+      image: site_survey.order.verticle.image_path,
+      name: site_survey.order.verticle.name,
+    },
+    scheduleStartDateAndEndDate: site_survey.order.start_date + " / " + site_survey.order.end_date,
+    orderAmount: formatWithCommas(site_survey.order.total_budget),
+    surveyStatus: getAppointProgressStatus(site_survey.progress_status),
+  };
+};
+
+export const getSiteSurveyStatus = (status) => {
+  switch (status) {
+    case 0:
+      return { name: "Not started", ...gray };
+    case 1:
+      return { name: "In Transit", ...blue };
+    case 2:
+      return { name: "Surveying", ...yellow };
+    case 3:
+      return { name: "Cancelled", ...red };
+    case 4:
+      return { name: "Completed", ...green };
+    default:
+      return { name: "Unknown", ...gray };
+  }
+};
+
 export const getAppointPaymentStatus = (paidPercentage) => {
   switch (paidPercentage) {
     case "100":
-      return { name: "Released", bgColor: "#D6FFEF", color: "#00995C" };
+      return { name: "Released", ...green };
     case "50":
-      return { name: "Half Done", bgColor: "#D6FFEF", color: "#00995C" };
+      return { name: "Half Done", ...green };
     default:
-      return { name: "Pending", bgColor: "#FFE5E5", color: "#FF5555" };
+      return { name: "Pending", ...red };
   }
 };
 
 export const getAppointProgressStatus = (status) => {
   switch (status) {
     case 1:
-      return { name: "Started", bgColor: "#D6FFEF", color: "#00995C" };
+      return { name: "Started", ...green };
     case 2:
-      return { name: "Reached", bgColor: "#D6FFEF", color: "#00995C" };
+      return { name: "Reached", ...green };
     case 3:
-      return { name: "Working", bgColor: "#D6FFEF", color: "#00995C" };
+      return { name: "Working", ...green };
     case 4:
-      return { name: "Finished", bgColor: "#D6FFEF", color: "#00995C" };
+      return { name: "Finished", ...green };
     case 5:
-      return { name: "Issue Reported", bgColor: "#FFE5E5", color: "#FF5555" };
+      return { name: "Issue Reported", ...red };
     case 6:
-      return { name: "Need More Time", bgColor: "#FFE5E5", color: "#FF5555" };
+      return { name: "Need More Time", ...red };
     case 7:
-      return { name: "Nearly Finish", bgColor: "#D6FFEF", color: "#00995C" };
+      return { name: "Nearly Finish", ...green };
     case 8:
-      return {
-        name: "Need More Material",
-        bgColor: "#FFE5E5",
-        color: "#FF5555",
-      };
+      return { name: "Need More Material", ...red };
     case 9:
-      return {
-        name: "Pending From Client",
-        bgColor: "#FFE5E5",
-        color: "#FF5555",
-      };
+      return { name: "Pending From Client", ...red };
     default:
-      return { name: "Other", bgColor: "#E7E7EB", color: "#575672" };
+      return { name: "Other", ...gray };
   }
 };
 
@@ -436,3 +433,7 @@ export const formatTime = (timeString) => {
 
   return `${formattedHours}:${String(minutes).padStart(2, "0")} ${period} `;
 };
+
+export const formatWithCommas = (number) => {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}

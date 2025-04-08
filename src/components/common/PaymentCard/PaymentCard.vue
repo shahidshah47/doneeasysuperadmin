@@ -2,7 +2,10 @@
   <div class="!bg-light-lilac rounded-xl p-3 col-span-1">
     <div class="d-flex align-items-center justify-content-between">
       <div>
-        <span class="badge text-dark !py-2 font-bold" :style="{ backgroundColor: badgeBgColor }">
+        <span
+          class="badge text-dark !py-2 font-bold"
+          :style="{ backgroundColor: badgeBgColor }"
+        >
           {{ badgeText }}
         </span>
         <p class="!font-bold mb-0 mt-2" :style="{ color: '#2e2e2e' }">
@@ -21,16 +24,18 @@
             amount
           }}</span>
         </p>
-        <span :class="statusClass" class="text-sm font-bold">{{
-          status
-        }}</span>
+        <span
+          :class="statusClass"
+          class="text-sm font-bold whitespace-nowrap"
+          >{{ status }}</span
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps } from "vue";
 
 const props = defineProps({
   badgeText: {
@@ -61,7 +66,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  statusClass: String
+  statusClass: String,
 });
 </script>
 
