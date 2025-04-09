@@ -423,24 +423,34 @@ onMounted(() => {
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
-              <i class="fa-regular fa-eye text-primary text-sm"></i>
+              <img
+                src="../assets/image/icons/eye-2.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
             <button
-              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleDelete(data?.id)"
             >
-              <i class="fa-regular fa-trash-can text-primary text-sm"></i>
+              <img
+                src="../assets/image/icons/trash.svg"
+                alt="trash-icon"
+                class="w-4 h-4"
+              />
             </button>
             <button
-              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="copyUrl(data?.id)"
             >
-              <i
-                class="fa-regular fa-share-from-square text-primary text-sm"
-              ></i>
+              <img
+                src="../assets/image/icons/share.svg"
+                alt="share-icon"
+                class="w-4 h-4"
+              />
             </button>
           </div>
         </template>

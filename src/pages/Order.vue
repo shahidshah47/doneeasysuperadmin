@@ -343,10 +343,14 @@ const typeClasses = {
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id, data?.type)"
             >
-              <i class="fa-regular fa-eye text-primary text-sm"></i>
+              <img
+                src="../assets/image/icons/eye-2.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
           </div>
         </template>

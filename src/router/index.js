@@ -211,7 +211,10 @@ const routes = [
         meta: {
           breadcrumb: [
             { label: "Vendor", link: "/super-admin/vendor" },
-            { label: "Offers", link: "/super-admin/company-details/offers" },
+            {
+              label: "Offers",
+              link: "/super-admin/company-details/:companyId/offers",
+            },
           ],
         },
       },
@@ -223,11 +226,11 @@ const routes = [
             { label: "Vendor", link: "/super-admin/vendor" },
             {
               label: "Offers",
-              link: "/super-admin/company-details/offers",
+              link: "/super-admin/company-details/:companyId/offers",
             },
             {
               label: "Details",
-              link: "/super-admin/company-details/offers/details",
+              link: "/super-admin/company-details/:companyId/offers/details",
             },
           ],
         },

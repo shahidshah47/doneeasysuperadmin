@@ -228,9 +228,7 @@ export const convertAppointmentData = (appointment) => {
     orderTypeId: appointment.order.type,
     orderType: appointment.order.type === 1 ? "One-time" : "Reoccuring",
     expectedDateAndTime:
-      appointment.delivery_date +
-      " " +
-      convertTimeTo12HourFormat(appointment.delivery_time),
+      appointment.delivery_date + " " + formatTime(appointment.delivery_time),
     orderAmount: formatWithCommas(appointment.order.total_budget),
     payment: getAppointPaymentStatus(appointment.paid_percentage),
     progressState: getAppointProgressStatus(appointment.progress_status),
@@ -253,7 +251,8 @@ export const convertSiteSurveyData = (site_survey) => {
       image: site_survey.order.verticle.image_path,
       name: site_survey.order.verticle.name,
     },
-    scheduleStartDateAndEndDate: site_survey.order.start_date + " / " + site_survey.order.end_date,
+    scheduleStartDateAndEndDate:
+      site_survey.order.start_date + "," + formatTime(site_survey.start_time),
     orderAmount: formatWithCommas(site_survey.order.total_budget),
     surveyStatus: getAppointProgressStatus(site_survey.progress_status),
   };
@@ -391,16 +390,16 @@ export function formatDateAtMidnight(isoString, adjustments = {}) {
 
 export const formatDateAtQuote = (dateString) => {
   const date = new Date(dateString);
-  
+
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
-  
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
+};
 
 export function formatDateOnly(date) {
   const pad = (num) => num.toString().padStart(2, "0");
@@ -436,4 +435,20 @@ export const formatTime = (timeString) => {
 
 export const formatWithCommas = (number) => {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+};
+
+export const formatCompactDateTime = (input) => {
+  const date = new Date(input);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const period = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+
+  const formattedTime = `${hours}:${minutes} ${period}`;
+  return `${year}-${month}-${day}, ${formattedTime}`;
+};

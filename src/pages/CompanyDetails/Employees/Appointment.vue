@@ -108,7 +108,7 @@
       </template>
 
       <template #delivery_date="{ data }">
-        <div class="bg-white font-semibold !text-rich-navy relative group">
+        <div class="bg-white text-dark-indigo-100 font-normal relative group">
           <span class="whitespace-nowrap overflow-hidden text-ellipsis block">
             {{ data.delivery_date }}
           </span>
@@ -117,7 +117,7 @@
       <template #status="{ data }">
         <div
           :style="getStatusClass(data.status)"
-          class="px-2 py-1 rounded-lg font-semibold whitespace-nowrap"
+          class="px-2 py-1 rounded-lg font-semibold whitespace-nowrap inline-block"
         >
           {{ data.status }}
         </div>
@@ -126,22 +126,34 @@
       <template #actions="{ data }">
         <div class="flex gap-2">
           <button
-            class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+            class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
             @click="handleClickToDetails(data?.id)"
           >
-            <i class="fa-regular fa-eye text-primary"></i>
+            <img
+              src="../../../assets/image/icons/eye-2.svg"
+              alt="eye-icon"
+              class="w-4 h-4"
+            />
           </button>
           <button
-            class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+            class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
             @click="handleDelete(data?.id)"
           >
-            <i class="fa-regular fa-trash-can text-primary"></i>
+            <img
+              src="../../../assets/image/icons/trash.svg"
+              alt="eye-icon"
+              class="w-4 h-4"
+            />
           </button>
           <button
-            class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+            class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
             @click="copyUrl(data?.id)"
           >
-            <i class="fa-regular fa-share-from-square text-primary"></i>
+            <img
+              src="../../../assets/image/icons/share.svg"
+              alt="eye-icon"
+              class="w-4 h-4"
+            />
           </button>
         </div>
       </template>

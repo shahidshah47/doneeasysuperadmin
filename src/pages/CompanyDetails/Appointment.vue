@@ -42,7 +42,9 @@
           </div>
         </template>
         <template #id="{ data }"
-          ><span>{{ data.id }}</span></template
+          ><span class="text-dm-blue font-semibold text-sm">{{
+            data.id
+          }}</span></template
         >
         <template #organizationName="{ data }">
           <div class="flex items-center gap-2">
@@ -51,19 +53,27 @@
               alt="Company Logo"
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
-            <span class="font-semibold text-dm-blue">{{
-              data.organizationName.name
-            }}</span>
+            <span
+              class="text-dm-blue font-semibold text-sm whitespace-nowrap"
+              >{{ data.organizationName.name }}</span
+            >
           </div>
         </template>
         <template #title="{ data }">
-          <div class="flex items-start gap-1 flex-col">
-            <span class="">{{ data.title.name }}</span>
-            <span class="text-sm font-bold text-dm-blue line-clamp-1">{{
-              data.title.description
-            }}</span>
+          <div class="group flex items-start gap-1 flex-col relative">
+            <span class="text-dm-blue font-semibold text-sm whitespace-nowrap">
+              {{ data.title.name }}
+            </span>
+
+            <div
+              class="absolute left-1/2 -top-20 transform -translate-x-1/2 w-max max-w-sm p-3 bg-white-100 !text-rich-navy border shadow-lavendar-card rounded hidden group-hover:block z-50"
+              style="white-space: normal; overflow: visible"
+            >
+              {{ data.title.description }}
+            </div>
           </div>
         </template>
+
         <template #verticle="{ data }">
           <div class="flex items-center gap-2">
             <img
@@ -71,22 +81,27 @@
               alt="Company Logo"
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
-            <span class="font-semibold text-dm-blue">{{
-              data.verticle.name
-            }}</span>
+            <span
+              class="text-dm-blue font-semibold text-sm whitespace-nowrap"
+              >{{ data.verticle.name }}</span
+            >
           </div>
         </template>
         <template #orderType="{ data }">
-          <div class="text-md text-dm-blue font-bold">{{ data.orderType }}</div>
+          <div class="text-dm-blue font-semibold text-sm whitespace-nowrap">
+            {{ data.orderType }}
+          </div>
         </template>
         <template #expectedDateAndTime="{ data }">
-          <div class="text-md text-dm-blue font-bold">
+          <div
+            class="text-dark-indigo-100 font-normal text-sm whitespace-nowrap"
+          >
             {{ data.expectedDateAndTime }}
           </div>
         </template>
         <template #payment="{ data }">
           <div
-            :class="`px-3 py-2 rounded-xl font-bold`"
+            :class="`px-3 py-2 rounded-xl  font-semibold text-sm whitespace-nowrap`"
             :style="{
               backgroundColor: data.payment.bgColor,
               color: data.payment.color,
@@ -98,12 +113,12 @@
         <template #orderAmount="{ data }">
           <div class="flex gap-2 items-center">
             <span class="text-primary font-semibold text-sm">AED</span>
-            <span class="text-2xl font-bold">{{ data.orderAmount ?? 0 }}</span>
+            <span class="text-xl font-bold">{{ data.orderAmount ?? 0 }}</span>
           </div>
         </template>
         <template #progressState="{ data }">
           <div
-            :class="`px-3 py-2 rounded-xl font-bold`"
+            :class="`px-3 py-2 rounded-xl  font-semibold text-sm`"
             :style="{
               backgroundColor: data.progressState.bgColor,
               color: data.progressState.color,
@@ -115,22 +130,34 @@
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data)"
             >
-              <i class="fa-regular fa-eye text-primary"></i>
+              <img
+                src="../../assets/image/icons/eye-2.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleDelete(data?.id)"
             >
-              <i class="fa-regular fa-trash-can text-primary"></i>
+              <img
+                src="../../assets/image/icons/trash.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="copyUrl(data?.id)"
             >
-              <i class="fa-regular fa-share-from-square text-primary"></i>
+              <img
+                src="../../assets/image/icons/share.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
           </div>
         </template>
@@ -334,10 +361,27 @@ const copyUrl = (id) => {
 const statusOptions = ["In Progress", "On Location", "Waiting", "Cancelled"];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "organizationName", header: "Organization Name", class: "w-48" },
+  {
+    field: "organizationName",
+    header: ["Organization ", "Name / ID"],
+    class: "w-48",
+  },
   { field: "title", header: "Title & Description", class: "w-48" },
-  { field: "verticle", header: "Vertical", class: "w-56" },
-  { field: "orderType", header: "Order Type" },
+  {
+    field: "verticle",
+    header: "Vertical",
+
+    icon: "chevron-down.svg",
+    iconWidth: 10,
+    iconHeight: 10,
+  },
+  {
+    field: "orderType",
+    header: "Order Type",
+    icon: "chevron-down.svg",
+    iconWidth: 10,
+    iconHeight: 10,
+  },
   {
     field: "expectedDateAndTime",
     header: "Expected Delivery Date & Time",
