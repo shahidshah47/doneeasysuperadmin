@@ -356,7 +356,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/verticals/details",
+        path: "/super-admin/company-details/:companyId/verticals/details",
         component: () =>
           import("../pages/CompanyDetails/Verticals/Details.vue"),
         meta: {
@@ -364,11 +364,11 @@ const routes = [
             { label: "Vendor", link: "/super-admin/vendor" },
             {
               label: "Verticals",
-              link: "/super-admin/company-details/verticals",
+              link: "/super-admin/company-details/:companyId/verticals",
             },
             {
               label: "Details",
-              link: "/super-admin/company-details/verticals/details",
+              link: "/super-admin/company-details/:companyId/verticals/details",
             },
           ],
         },
