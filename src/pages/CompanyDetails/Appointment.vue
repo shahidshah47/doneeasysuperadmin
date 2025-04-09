@@ -10,8 +10,6 @@
       <ThemeDatatable
         :value="appointmentsData"
         v-model:selection="selectedAppointment"
-        v-model:filters="filters"
-        :filterFields="filterFields"
         :columns="columns"
         :paginator="true"
         :rows="20"
@@ -35,7 +33,7 @@
             </div>
             <div class="flex gap-3 items-center w-full col-span-4">
               <SearchAndFilter
-                v-model="filters['global'].value"
+                v-model="searchTerm"
                 placeholder="Search"
               />
             </div>
@@ -173,16 +171,6 @@
             :perPage="pagination.perPage"
             :totalEntries="pagination.total"
           />
-          <!-- <div class="flex gap-4 justify-between items-center w-full">
-                  <Button icon="pi pi-chevron-left" rounded text @click="prevPageCallback" :disabled="page === 0" />
-                  <div class="text-color font-medium">
-                      <span class="hidden sm:block">Showing {{ first }} to {{ last }} of {{ totalRecords }} Entries</span>
-                  </div>
-                  <div class="">
-                      <button type="button"><i class="fa fa-chevron-right"></i>left</button>
-                  </div>
-                  <Button icon="pi pi-chevron-right" rounded text @click="nextPageCallback" :disabled="page === pageCount - 1" />
-              </div> -->
         </template>
       </Paginator>
     </div>
@@ -194,13 +182,11 @@ import { ref, onMounted, nextTick, watch, watchPostEffect } from "vue";
 import api from "../../api";
 import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useRoute, useRouter } from "vue-router";
-import { useAppointmentStore, useCompanyStore } from "../../store";
-import { IconField, InputIcon, InputText, Paginator, useToast } from "primevue";
-import { FilterMatchMode } from "@primevue/core/api";
+import { useCompanyStore } from "../../store";
+import { Paginator, useToast } from "primevue";
 import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
-import { convertAppointmentData } from "../../utils/helper";
+import { convertAppointmentData, debounce } from "../../utils/helper";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
-import { storeToRefs } from "pinia";
 import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
 import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
 
@@ -213,6 +199,7 @@ const statusBtn = ref(4);
 const route = useRoute();
 const router = useRouter();
 const toast = useToast();
+const searchTerm = ref("");
 const pagination = ref({
   currentPage: 0,
   lastPage: 0,
@@ -224,21 +211,6 @@ const pagination = ref({
   prevPageUrl: null,
   links: [],
 });
-
-const filterFields = ref([
-  "id",
-  "organizationName.name",
-  "verticle.name",
-  "title.name",
-  "orderType",
-  "orderAmount",
-  "payment.name",
-  "progressState.name",
-]);
-
-// const getImagePath = (imageName) => {
-//   return new URL(`../assets/images2/${imageName}`, import.meta.url).href;
-// };
 
 const handleClickToDetails = (data) => {
   let url =
@@ -258,11 +230,14 @@ const handleClickToDetails = (data) => {
   router.push(url);
 };
 
-const fetchData = async (id, page = 1, perPage = null) => {
+const fetchData = async (id, page = 1, perPage = null, search = '') => {
   try {
-    let url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}`;
+    let url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}&search=${search}`;
     if (perPage) {
       url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}`;
+    }
+    if (perPage && search !== "") {
+      url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}&search=${search}`;
     }
     const response = await api.get(url, {
       headers: {
@@ -298,6 +273,15 @@ const fetchData = async (id, page = 1, perPage = null) => {
   }
 };
 
+const debouncedFetch = debounce((val) => {
+  fetchData(statusBtn.value, 1, null, val)
+}, 500);
+
+watch(() => searchTerm.value, (newVal, oldValue) => {
+  console.log(newVal, oldValue, "newVal and oldValue");
+  debouncedFetch(newVal);
+});
+
 onMounted(() => {
   nextTick(() => {
     fetchData(statusBtn.value, 1);
@@ -305,10 +289,11 @@ onMounted(() => {
 });
 
 const handlePerPage = async (props) => {
-  fetchData(statusBtn.value, props[0], props[1]);
+  fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
 };
 
 const handleFetchAppointment = (id) => {
+  searchTerm.value = '';
   fetchData(id, 1);
   statusBtn.value = id;
 };
@@ -349,18 +334,6 @@ const columns = ref([
   { field: "actions", header: "Action" },
 ]);
 
-const filters = ref({
-  id: { value: null, matchMode: FilterMatchMode.EQUALS },
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "organizationName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "title.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "verticle.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  orderType: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "payment.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  orderAmount: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "progressState.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
 const handleDelete = async (id) => {
   try {
     const response = await api.post(
@@ -374,6 +347,7 @@ const handleDelete = async (id) => {
         detail: response?.data?.message,
         life: 3000,
       });
+      searchTerm.value = '';
       fetchData(statusBtn.value);
     }
   } catch (err) {

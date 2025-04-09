@@ -1,15 +1,17 @@
 <template>
-  <div class="row mt-5 mb-4">
-    <div class="col-md-3">
+  <div class="grid grid-cols-12 gap-4 mt-5 mb-4">
+    <div class="col-span-3">
       <div
-        class="bg-white rounded-3 d-flex flex-column justify-content-center py-4"
+        class="bg-white-100 rounded-2xl flex flex-col justify-between h-full py-4"
       >
         <div class="d-flex flex-column align-items-center">
           <div
             class="d-flex justify-content-center align-items-center text-white fw-bold"
             style="font-size: 10px"
           >
-            <span class="plan-label">Yearly Plan</span>
+            <span class="plan-label text-xs text-white-100 font-semibold"
+              >Yearly Plan</span
+            >
           </div>
           <div
             class="mt-3 d-flex flex-column justify-content-center align-items-center text-center"
@@ -23,12 +25,16 @@
                 class="plan-image"
                 alt="Event Management Plan Icon"
               />
-              <p class="my-3 text-secondary">ID OFC 903823</p>
-              <h4 class="mb-2">Event Management</h4>
+              <p class="my-3 text-grayish-purple font-normal">ID OFC 903823</p>
+              <h4 class="mb-2 text-[22px] !font-semibold text-dm-blue">
+                Event Management
+              </h4>
             </div>
             <p class="plan-date mb-2">Created At: 2020-05-17 | 10:00 AM</p>
             <div class="manager-section">
-              <p class="mb-2">Manager</p>
+              <p class="mb-2 text-sm font-normal text-dark-indigo-100">
+                Manager
+              </p>
               <div class="manager-info">
                 <div class="manager-details">
                   <div class="manager-profile">
@@ -38,245 +44,114 @@
                       class="manager-avatar"
                       alt="Floyd Miles profile picture"
                     />
-                    <span class="manager-name">Floyd Miles</span>
+                    <span class="manager-name text-xs font-semibold"
+                      >Floyd Miles</span
+                    >
                   </div>
                 </div>
                 <a
                   href="#"
-                  class="text-primary text-decoration-none text-uppercase"
+                  class="!text-vivid-purple font-bold text-xs text-decoration-none text-uppercase"
+                  >Change</a
                 >
-                  Change
-                </a>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-2">
-      <div
-        class="bg-white rounded-3 d-flex flex-column align-items-start p-4 mb-3"
-      >
-        <p class="mb-1 fw-bold">Appointment</p>
-        <h1 class="mt-2 fw-bolder">9,090</h1>
-        <a
-          href="#"
-          class="text-primary text-decoration-none text-uppercase mt-4"
-        >
-          View All
-        </a>
-      </div>
-      <div
-        class="bg-white rounded-3 d-flex flex-column align-items-start p-4 mb-3"
-      >
-        <p class="mb-1 fw-bold">Appointment</p>
-        <h1 class="mt-2 fw-bolder">9,090</h1>
-        <a
-          href="#"
-          class="text-primary text-decoration-none text-uppercase mt-4"
-        >
-          View All
-        </a>
+
+    <div class="col-span-2">
+      <div class="flex flex-col gap-3 h-full">
+        <VerticalStats title="Appointment" :number="9090" linkText="View All" />
+        <VerticalStats title="Offers" :number="9090" linkText="View All" />
       </div>
     </div>
-    <div class="col-md-2">
-      <div
-        class="bg-white rounded-3 d-flex flex-column align-items-start p-4 mb-3"
-      >
-        <p class="mb-1 fw-bold">Appointment</p>
-        <h1 class="mt-2 fw-bolder">9,090</h1>
-        <a
-          href="#"
-          class="text-primary text-decoration-none text-uppercase mt-4"
-        >
-          View All
-        </a>
-      </div>
-      <div
-        class="bg-white rounded-3 d-flex flex-column align-items-start p-4 mb-3"
-      >
-        <p class="mb-1 fw-bold">Appointment</p>
-        <h1 class="mt-2 fw-bolder">9,090</h1>
-        <a
-          href="#"
-          class="text-primary text-decoration-none text-uppercase mt-4"
-        >
-          View All
-        </a>
+
+    <div class="col-span-2">
+      <div class="flex flex-col gap-3 h-full">
+        <VerticalStats title="Completed" :number="9090" linkText="View All" />
+        <VerticalStats title="Cancelled" :number="9090" linkText="View All" />
       </div>
     </div>
-    <div class="col-md-5">
-      <img
-        src="../../../assets/images2/emp_graph.png"
-        alt="graph"
-        class="w-100"
-      />
+
+    <div class="col-span-5">
+      <div class="h-full">
+        <img
+          src="../../../assets/images2/emp_graph.png"
+          alt="graph"
+          class="w-full h-full"
+        />
+      </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-6">
+  <div class="grid grid-cols-12 gap-4">
+    <div class="col-span-6">
       <div class="bg-white rounded-3 p-4 h-100">
-        <h5 class="fw-bold mb-4">Information</h5>
+        <h5 class="!font-semibold text-base">Information</h5>
         <p class="text-primary mb-0 small-font">Description</p>
-        <p class="small-font">
+        <p class="text-xs font-normal text-dm-blue">
           At ABS Company, we craft unforgettable experiences tailored to your
           dreams. With over a decade of curating celebrations and flawless
           executions, our team ensures your moments shine brighter. Let our
           passion for perfection turn your event into a cherished memory.
         </p>
-
-        <h5 class="fw-bold mt-5 mb-3">Portfolios</h5>
+        <h5 class="!font-semibold text-base mb-4">Portfolios</h5>
         <img
           src="../../../assets/images2/portfolios.png"
           alt="portfolios"
-          class="w-100"
+          class="w-full"
         />
       </div>
     </div>
-    <div class="col-md-6">
+
+    <div class="col-span-6">
       <div class="bg-white rounded-3 p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h5 class="fw-bold">Customer Reviews</h5>
+          <h5 class="!font-semibold text-base">Customer Reviews</h5>
           <div class="d-flex gap-2">
             <div
               class="d-flex align-items-center text-center position-relative"
             >
               <input
+                v-model="searchQuery"
                 type="text"
                 class="form-control border-0 py-2 px-3"
                 style="background-color: #f2f4fb"
                 placeholder="Search"
               />
-              <i class="fas fa-search position-absolute end-0 me-3"></i>
+              <img
+                :src="searchIcon"
+                alt="Search"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
+              />
             </div>
-            <button class="btn btn-light bg-white border-0">
-              Filters by <i class="fas fa-filter"></i>
+            <button
+              class="flex flex-row items-center border-0 gap-3 text-ds-blue text-sm leading-5 font-semibold"
+            >
+              Filters by
+              <img :src="filterIcon" alt="Filter Icon" class="icon" />
             </button>
           </div>
         </div>
-        <div class="testimonial-card">
-          <div class="testimonial-content">
-            <div class="testimonial-header">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/66f4f7ad2a335555725f5018a220efddc1804ee02fd969249f19ecdf96bc2d81?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                alt="Wash and Fold Service Icon"
-                class="service-icon"
-              />
-              <div class="service-details">
-                <div class="service-info">
-                  <h2 class="service-title">Wash and Fold - Residential</h2>
-                  <time class="service-date" datetime="2023-11-19"
-                    >Saturday, 19 Nov 2023</time
-                  >
-                </div>
-                <div class="rating">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/5fbbd7291e8da6f62364489165a1c9cb03167b87667ddeab6e970ae07ea84220?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/1f7127f670800a97b3dbd37b1ec19a8082c795e2a959fd8c82851c5ea4d8365a?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/05fcf9381ba932df85e0fbcb79ca710aaefb964df4e74a8fcddbdb9f0d2bfb65?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/31fe1deeca7e55774a6a7d69ffcd5848ff453fd2aecc78f3ba7653f4629d3914?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/db2381880ccc6dfa4c3ea1f4581497a07411b5ab452aad4150dca9be86395643?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                </div>
-              </div>
-            </div>
-            <p class="testimonial-text">
-              John is fantastic! He always delivers clean and fresh laundry with
-              impressive efficiency. His attention to detail is remarkable, and
-              he's a pleasure to work with. Highly recommended!
-            </p>
-            <div class="client-info">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/3235fe7f6e44e4bd4d77f87b39a0930574bdaffb9bf11e55a94dfa9be1c3f090?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                alt="Sarah Johnson"
-                class="client-avatar"
-              />
-              <div class="client-details">
-                <span class="client-label">Client</span>
-                <span class="client-name">Sarah Johnson</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-content">
-            <div class="testimonial-header">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/66f4f7ad2a335555725f5018a220efddc1804ee02fd969249f19ecdf96bc2d81?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                alt="Wash and Fold Service Icon"
-                class="service-icon"
-              />
-              <div class="service-details">
-                <div class="service-info">
-                  <h2 class="service-title">Wash and Fold - Residential</h2>
-                  <time class="service-date" datetime="2023-11-19"
-                    >Saturday, 19 Nov 2023</time
-                  >
-                </div>
-                <div class="rating">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/5fbbd7291e8da6f62364489165a1c9cb03167b87667ddeab6e970ae07ea84220?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/1f7127f670800a97b3dbd37b1ec19a8082c795e2a959fd8c82851c5ea4d8365a?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/05fcf9381ba932df85e0fbcb79ca710aaefb964df4e74a8fcddbdb9f0d2bfb65?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/31fe1deeca7e55774a6a7d69ffcd5848ff453fd2aecc78f3ba7653f4629d3914?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/db2381880ccc6dfa4c3ea1f4581497a07411b5ab452aad4150dca9be86395643?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                    alt=""
-                    class="star-icon"
-                  />
-                </div>
-              </div>
-            </div>
-            <p class="testimonial-text">
-              John is fantastic! He always delivers clean and fresh laundry with
-              impressive efficiency. His attention to detail is remarkable, and
-              he's a pleasure to work with. Highly recommended!
-            </p>
-            <div class="client-info">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/3235fe7f6e44e4bd4d77f87b39a0930574bdaffb9bf11e55a94dfa9be1c3f090?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-                alt="Sarah Johnson"
-                class="client-avatar"
-              />
-              <div class="client-details">
-                <span class="client-label">Client</span>
-                <span class="client-name">Sarah Johnson</span>
-              </div>
-            </div>
+        <div
+          class="overflow-y-auto max-h-[400px] space-y-4 pr-2 vivid-gradient-scrollbar"
+        >
+          <div
+            v-for="(testimonial, index) in filteredTestimonials"
+            :key="index"
+            class="testimonial-card mb-3 border border-solid !border-light-lilac p-3 rounded-xl"
+          >
+            <TestimonialCard
+              :service-icon="testimonial.serviceIcon"
+              :service-title="testimonial.serviceTitle"
+              :service-date="testimonial.serviceDate"
+              :rating="testimonial.rating"
+              :testimonial-text="testimonial.testimonialText"
+              :client-avatar="testimonial.clientAvatar"
+              :client-name="testimonial.clientName"
+            />
           </div>
         </div>
       </div>
@@ -284,20 +159,58 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import { ref, computed } from "vue";
+import VerticalStats from "../../../components/common/VerticalStats/VerticalStats.vue";
+import TestimonialCard from "../../../components/common/TestimonialCard/TestimonialCard.vue";
+import searchIcon from "../../../assets/image/icons/search.svg";
+import filterIcon from "../../../assets/image/icons/candle.svg";
+
+const searchQuery = ref("");
+
+const testimonials = ref([
+  {
+    serviceIcon:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/66f4f7ad2a335555725f5018a220efddc1804ee02fd969249f19ecdf96bc2d81",
+    serviceTitle: "Wash and Fold - Residential",
+    serviceDate: "2023-11-19",
+    rating: 4,
+    testimonialText:
+      "John is fantastic! He always delivers clean and fresh laundry with impressive efficiency. His attention to detail is remarkable, and he's a pleasure to work with. Highly recommended!",
+    clientAvatar:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/3235fe7f6e44e4bd4d77f87b39a0930574bdaffb9bf11e55a94dfa9be1c3f090",
+    clientName: "Sarah Johnson",
+  },
+  {
+    serviceIcon:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/66f4f7ad2a335555725f5018a220efddc1804ee02fd969249f19ecdf96bc2d81",
+    serviceTitle: "Dry Cleaning - Commercial",
+    serviceDate: "2023-10-01",
+    rating: 5,
+    testimonialText:
+      "Excellent commercial service. Always on time and spotless results.",
+    clientAvatar:
+      "https://cdn.builder.io/api/v1/image/assets/TEMP/3235fe7f6e44e4bd4d77f87b39a0930574bdaffb9bf11e55a94dfa9be1c3f090",
+    clientName: "Michael Lee",
+  },
+]);
+
+const filteredTestimonials = computed(() => {
+  return testimonials.value.filter((item) =>
+    item.serviceTitle.toLowerCase().includes(searchQuery.value.toLowerCase())
+  );
+});
+</script>
 
 <style scoped>
 .plan-label {
   border-radius: 4px;
-  background: var(
-    --Gradient-Multi,
-    linear-gradient(
-      98deg,
-      #38e0b2 -18.55%,
-      #442ae8 28.45%,
-      #5925eb 64.63%,
-      #9e21ee 116.94%
-    )
+  background: linear-gradient(
+    98deg,
+    #38e0b2 -18.55%,
+    #442ae8 28.45%,
+    #5925eb 64.63%,
+    #9e21ee 116.94%
   );
   align-self: stretch;
   margin: auto 0;
@@ -315,10 +228,10 @@
 .plan-date {
   align-self: stretch;
   border-radius: 4px;
-  background: var(--Neutrals-Neutral_10, #e7e7eb);
+  background: #e7e7eb;
   margin-top: 10px;
   font-size: 12px;
-  color: var(--Neutrals-Neutral_80, #3e3d5d);
+  color: #3e3d5d;
   font-weight: 400;
   line-height: 1.2;
   padding: 4px 8px;
@@ -338,7 +251,7 @@
   margin-top: 4px;
   width: 100%;
   align-items: center;
-  gap: 4px;
+  gap: 16px;
   justify-content: center;
 }
 
@@ -348,11 +261,10 @@
   flex-direction: column;
   align-items: flex-start;
   font-size: 12px;
-  color: var(--Neutrals-Neutral_100, #0e0d35);
+  color: #0e0d35;
   font-weight: 600;
   line-height: 1.2;
   justify-content: center;
-  width: 128px;
   margin: auto 0;
   padding: 4px 0;
 }
@@ -377,141 +289,5 @@
 .manager-name {
   align-self: stretch;
   margin: auto 0;
-}
-
-.testimonial-card {
-  border-radius: 12px;
-  border: 1px solid var(--Bg, #f2f4fb);
-  display: flex;
-  margin-top: 24px;
-  flex-direction: column;
-  overflow: hidden;
-  justify-content: center;
-  padding: 12px 16px;
-}
-
-.testimonial-content {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  justify-content: start;
-}
-
-.testimonial-header {
-  display: flex;
-  width: 100%;
-  align-items: start;
-  gap: 16px;
-  justify-content: start;
-  flex-wrap: wrap;
-}
-
-.service-icon {
-  aspect-ratio: 1;
-  object-fit: contain;
-  object-position: center;
-  width: 56px;
-}
-
-.service-details {
-  display: flex;
-  min-width: 240px;
-  flex-direction: column;
-  justify-content: start;
-  flex: 1;
-  flex-basis: 0%;
-}
-
-.service-info {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  font-family: Averta, sans-serif;
-  line-height: 1.2;
-  justify-content: start;
-}
-
-.service-title {
-  color: var(--Neutrals-Neutral_100, #0e0d35);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.service-date {
-  color: var(--Primary-Purple, #5825eb);
-  font-size: 12px;
-  font-weight: 400;
-  margin-top: 4px;
-}
-
-.rating {
-  align-self: start;
-  display: flex;
-  margin-top: 8px;
-  align-items: start;
-  gap: 3px;
-  justify-content: start;
-}
-
-.star-icon {
-  aspect-ratio: 1;
-  object-fit: contain;
-  object-position: center;
-  width: 12px;
-}
-
-.testimonial-text {
-  color: var(--Neutrals-Neutral_50, #868599);
-  margin-top: 16px;
-  font: 400 12px/18px Averta, sans-serif;
-}
-
-.client-info {
-  align-self: start;
-  display: flex;
-  margin-top: 16px;
-  align-items: end;
-  gap: 8px;
-  font-family: Averta, sans-serif;
-  line-height: 1.2;
-  justify-content: start;
-}
-
-.client-avatar {
-  aspect-ratio: 1;
-  object-fit: contain;
-  object-position: center;
-  width: 32px;
-}
-
-.client-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-}
-
-.client-label {
-  color: var(--Neutrals-Neutral_50, #868599);
-  font-size: 10px;
-  font-weight: 400;
-}
-
-.client-name {
-  color: var(--Neutrals-Neutral_100, #0e0d35);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-@media (max-width: 991px) {
-  .testimonial-card,
-  .testimonial-content,
-  .testimonial-header,
-  .service-details,
-  .service-info,
-  .service-title,
-  .service-date,
-  .testimonial-text {
-    max-width: 100%;
-  }
 }
 </style>
