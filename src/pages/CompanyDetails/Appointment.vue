@@ -1,5 +1,7 @@
 <template>
-  <div class="container-fluid company-details">
+  <Loader v-if="loading" />
+
+  <div class="container-fluid company-details" v-else>
     <div class="row">
       <!-- Company Info and Stats -->
       <keep-alive>
@@ -32,10 +34,7 @@
               />
             </div>
             <div class="flex gap-3 items-center w-full col-span-4">
-              <SearchAndFilter
-                v-model="searchTerm"
-                placeholder="Search"
-              />
+              <SearchAndFilter v-model="searchTerm" placeholder="Search" />
             </div>
           </div>
         </template>
@@ -128,33 +127,33 @@
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data)"
             >
               <img
                 src="../../assets/image/icons/eye-2.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleDelete(data?.id)"
             >
               <img
                 src="../../assets/image/icons/trash.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="copyUrl(data?.id)"
             >
               <img
                 src="../../assets/image/icons/share.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
           </div>
@@ -216,6 +215,7 @@ import { convertAppointmentData, debounce } from "../../utils/helper";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
 import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
 import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
+import Loader from "../../components/common/Loader/Loader.vue";
 
 const store = useCompanyStore();
 const appointmentsData = ref([]);
@@ -257,7 +257,8 @@ const handleClickToDetails = (data) => {
   router.push(url);
 };
 
-const fetchData = async (id, page = 1, perPage = null, search = '') => {
+const fetchData = async (id, page = 1, perPage = null, search = "") => {
+  loading.value = true;
   try {
     let url = `/superadmin/user/appointments?all=1&user_id=${route.params.companyId}&status=${id}&page=${page}&search=${search}`;
     if (perPage) {
@@ -297,17 +298,22 @@ const fetchData = async (id, page = 1, perPage = null, search = '') => {
   } catch (err) {
     error.value = "Error fetching data";
     console.error("Error in fetchData:", err);
+  } finally {
+    loading.value = false;
   }
 };
 
 const debouncedFetch = debounce((val) => {
-  fetchData(statusBtn.value, 1, null, val)
+  fetchData(statusBtn.value, 1, null, val);
 }, 500);
 
-watch(() => searchTerm.value, (newVal, oldValue) => {
-  console.log(newVal, oldValue, "newVal and oldValue");
-  debouncedFetch(newVal);
-});
+watch(
+  () => searchTerm.value,
+  (newVal, oldValue) => {
+    console.log(newVal, oldValue, "newVal and oldValue");
+    debouncedFetch(newVal);
+  }
+);
 
 onMounted(() => {
   nextTick(() => {
@@ -320,7 +326,7 @@ const handlePerPage = async (props) => {
 };
 
 const handleFetchAppointment = (id) => {
-  searchTerm.value = '';
+  searchTerm.value = "";
   fetchData(id, 1);
   statusBtn.value = id;
 };
@@ -391,7 +397,7 @@ const handleDelete = async (id) => {
         detail: response?.data?.message,
         life: 3000,
       });
-      searchTerm.value = '';
+      searchTerm.value = "";
       fetchData(statusBtn.value);
     }
   } catch (err) {

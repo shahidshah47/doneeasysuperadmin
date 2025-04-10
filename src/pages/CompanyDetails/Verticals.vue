@@ -1,5 +1,6 @@
 <template>
-  <div class="container-fluid company-details">
+  <Loader v-if="loading" />
+  <div class="container-fluid company-details" v-else>
     <div class="row">
       <CompanyHeader />
     </div>
@@ -53,7 +54,9 @@
               @click="toggleMonthDropdown"
               class="flex items-center focus:outline-none gap-2.5"
             >
-              <span class="text-base font-semibold text-dm-blue">{{ selectedMonth }}</span>
+              <span class="text-base font-semibold text-dm-blue">{{
+                selectedMonth
+              }}</span>
               <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
             </button>
           </div>
@@ -125,7 +128,14 @@
 
 <script setup>
 import { InputText, useToast } from "primevue";
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "../../api";
 import filterIcon from "../../assets/image/icons/candle.svg";
@@ -135,6 +145,7 @@ import CompanyHeader from "../../components/CompanyHeader.vue";
 import ChangeManagerModal from "../../components/common/ChangeManagerModal/ChangeManagerModal.vue";
 import ThemeCheckbox from "../../components/common/ThemeCheckbox/ThemeCheckbox.vue";
 import VerticalCard from "../../components/common/VerticalCard/VerticalCard.vue";
+import Loader from "../../components/common/Loader/Loader.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -146,10 +157,13 @@ const toast = useToast();
 const cardList = ref([]);
 
 const goToVerticalDetails = () => {
-  router.push(`/super-admin/company-details/${route.params.companyId}/verticals/details`);
+  router.push(
+    `/super-admin/company-details/${route.params.companyId}/verticals/details`
+  );
 };
 
 const fetchData = async () => {
+  loading.value = true;
   try {
     let url = `/superadmin/user/verticals?user_id=${route.params.companyId}`;
     const response = await api.get(url, {
@@ -176,9 +190,12 @@ const fetchData = async () => {
   }
 };
 
-watch(() => searchTerm.value, (newVal, oldValue) => {
-  console.log(newVal, "newVal");
-});
+watch(
+  () => searchTerm.value,
+  (newVal, oldValue) => {
+    console.log(newVal, "newVal");
+  }
+);
 
 onMounted(() => {
   nextTick(() => {

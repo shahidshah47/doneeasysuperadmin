@@ -319,6 +319,9 @@ select {
   padding-right: 16px !important;
   border-radius: 10px !important;
 }
+.p-datatable-header {
+  padding: 0 !important;
+}
 
 .custom-datatable .p-datatable-table .p-datatable-thead tr {
   background-color: var(--color-light-lilac) !important;
@@ -614,4 +617,13 @@ select {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+}
+
+.bg-gradient-aqua-lavender {
+  background: linear-gradient(
+    148.03deg,
+    #d6f1f5 -18.12%,
+    #ebe4fd 84.98%
+  ) !important;
+  border-radius: 12px;
 }

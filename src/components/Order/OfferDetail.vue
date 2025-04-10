@@ -18,6 +18,7 @@ import {
 import { FilterMatchMode } from "@primevue/core/api";
 import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
+import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
 import { toRaw } from "vue";
 import { watch } from "vue";
 const offersData = ref([]);
@@ -152,11 +153,7 @@ watch(offersData, (newData) => {
 
 <template>
   <div>
-    <div class="flex justify-between items-center mb-4">
-      <div class="fs-4 fw-bold">Order</div>
-    </div>
-
-    <div class="p-4 bg-white rounded-3 shadow relative">
+    <div class="p-4 bg-white rounded-3 shadow relative mt-4">
       <ThemeDatatable
         :value="offersData"
         v-model:filters="filters"
@@ -170,29 +167,12 @@ watch(offersData, (newData) => {
         :currentPage="pagination.currentPage"
       >
         <template #header>
-          <div class="flex justify-end items-center mb-2">
-            <div class="flex gap-3">
-              <div class="flex justify-end">
-                <IconField>
-                  <InputText
-                    v-model="filters['global'].value"
-                    placeholder="Search"
-                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
-                  />
-                  <InputIcon>
-                    <i class="fas fa-search"></i>
-                  </InputIcon>
-                </IconField>
-              </div>
-              <div class="flex items-center">
-                <button class="btn btn-light bg-white border-0">
-                  Filters by <i class="fas fa-filter"></i>
-                </button>
-                <span class="border-start mx-2" style="height: 24px"></span>
-                <button class="btn btn-light bg-white border-0">
-                  Columns <i class="fas fa-columns"></i>
-                </button>
-              </div>
+          <div class="grid grid-cols-10 items-center gap-4 mb-6">
+            <div class="flex gap-3 items-center w-full col-span-4 col-start-7">
+              <SearchAndFilter
+                v-model="filters['global'].value"
+                placeholder="Search"
+              />
             </div>
           </div>
         </template>
@@ -247,33 +227,33 @@ watch(offersData, (newData) => {
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
               <img
                 src="../../assets/image/icons/eye-2.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
               <img
                 src="../../assets/image/icons/trash.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
               <img
                 src="../../assets/image/icons/share.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
           </div>

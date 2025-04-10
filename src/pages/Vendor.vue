@@ -2,7 +2,12 @@
 import { ref, onMounted, nextTick, onUnmounted, computed, watch } from "vue";
 import api from "../api";
 // import DataTable from "datatables.net-bs5";
-import { convertUserData, debounce, getStatusId, transformData } from "../utils/helper";
+import {
+  convertUserData,
+  debounce,
+  getStatusId,
+  transformData,
+} from "../utils/helper";
 import { useRoute, useRouter } from "vue-router";
 import { useCompanyStore } from "../store";
 import {
@@ -19,6 +24,7 @@ import ThemeDatatable from "../components/common/ThemeDatatable/ThemeDatatable.v
 import Pagination from "../components/common/Pagination/Pagination.vue";
 import SearchAndFilter from "../components/common/SearchAndFilter/SearchAndFilter.vue";
 import StatusButtons from "../components/common/StatusButtons/StatusButtons.vue";
+import Loader from "../components/common/Loader/Loader.vue";
 
 const store = useCompanyStore();
 const companiesData = ref([]);
@@ -85,15 +91,15 @@ const dashboardStats = ref([
   },
 ]);
 
-const fetchData = async (id, page, perPage = null, search = '') => {
-  console.log(id, page, "id and page");
+const fetchData = async (id, page, perPage = null, search = "") => {
+  loading.value = true;
   try {
     let url = `/superadmin/dashboard?status=${id}&page=${page}&search=${search}`;
     if (perPage) {
       url = `/superadmin/dashboard?status=${id}&page=${page}&per_page=${perPage}`;
     }
     if (perPage && search !== "") {
-      url = `/superadmin/dashboard?status=${id}&page=${page}&per_page=${perPage}&search=${search}`
+      url = `/superadmin/dashboard?status=${id}&page=${page}&per_page=${perPage}&search=${search}`;
     }
     const response = await api.get(url, {
       headers: {
@@ -131,6 +137,8 @@ const fetchData = async (id, page, perPage = null, search = '') => {
   } catch (err) {
     error.value = "Error fetching data";
     console.error("Error in fetchData:", err);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -139,16 +147,19 @@ const handleClickToDetails = (id) => {
 };
 
 const debouncedFetch = debounce((val) => {
-  fetchData(statusBtn.value, 1, null, val)
+  fetchData(statusBtn.value, 1, null, val);
 }, 500);
 
-watch(() => searchTerm.value, (newVal, oldValue) => {
-  console.log(newVal, oldValue, "newVal and oldValue");
-  debouncedFetch(newVal);
-});
+watch(
+  () => searchTerm.value,
+  (newVal, oldValue) => {
+    console.log(newVal, oldValue, "newVal and oldValue");
+    debouncedFetch(newVal);
+  }
+);
 
 const handleFetchVendor = (id, page) => {
-  searchTerm.value = '';
+  searchTerm.value = "";
   fetchData(id, 1);
   statusBtn.value = id;
 };
@@ -217,7 +228,7 @@ const handleDelete = async (id) => {
         detail: response?.data?.message,
         life: 3000,
       });
-      searchTerm.value = '';
+      searchTerm.value = "";
       fetchData(statusBtn.value);
     }
   } catch (err) {
@@ -253,11 +264,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <Loader v-if="loading" />
+  <div v-else>
     <div class="flex justify-between items-center mb-4">
-      <div class="fs-4 fw-bold">Vendor</div>
+      <div class="text-xl font-semibold text-rich-navy m-0">Vendor</div>
       <div class="fs-4">
-        <button class="btn btn-primary py-2 px-4 !font-semibold">
+        <button
+          class="theme-button-primary bg-mix-gradient !border-none !py-3 !px-9 !font-bold !text-base !rounded-lg"
+        >
           Add Vendor
         </button>
       </div>
@@ -270,7 +284,7 @@ onMounted(() => {
         class="col-md-3"
       >
         <div class="bg-white border-0 px-4 py-6 rounded-xl">
-          <div class="font-bold border-bottom-0 mt-1 text-base">
+          <div class="font-semibold border-bottom-0 mt-1 text-lg">
             {{ stat.title }}
             <img class="float-end" :src="getImagePath('Frame 48096300.png')" />
           </div>
@@ -291,7 +305,7 @@ onMounted(() => {
                   {{ stat.percentage }}
                 </div>
               </div>
-              <p class="text-grayColor text-sm font-normal">
+              <p class="text-grayColor text-base font-normal m-0">
                 {{ stat.timePeriod }}
               </p>
             </div>
@@ -324,12 +338,36 @@ onMounted(() => {
                 ]"
                 @update:statusBtn="handleFetchVendor"
               />
+              <button
+                class="primary-btn px-4 py-3 bg-gradient-aqua-lavender relative"
+              >
+                <img
+                  src="../assets/image/icons/star-1.svg"
+                  alt="star icon"
+                  class="w-4 h-4 absolute -top-2 z-10 left-1"
+                />
+                <img
+                  src="../assets/image/icons/star-2.svg"
+                  alt="star icon"
+                  class="w-5 h-5 absolute top-1 -left-1"
+                />
+                <span class="font-semibold text-base text-dm-blue"
+                  >Newbies</span
+                >
+                <img
+                  src="../assets/image/icons/star-1.svg "
+                  alt="star icon"
+                  class="w-4 h-4 absolute -top-2 right-1"
+                />
+                <img
+                  src="../assets/image/icons/star-2.svg"
+                  alt="star icon"
+                  class="w-4 h-4 absolute -right-1 top-1 rotate-[62deg]"
+                />
+              </button>
             </div>
             <div class="flex gap-3 items-center w-full col-span-4">
-              <SearchAndFilter
-                v-model="searchTerm"
-                placeholder="Search"
-              />
+              <SearchAndFilter v-model="searchTerm" placeholder="Search" />
             </div>
           </div>
         </template>
@@ -375,7 +413,7 @@ onMounted(() => {
             <span class="font-semibold text-dm-blue">{{
               data.contact.mobile
             }}</span>
-            <span class="text-primary font-semibold md:w-20 md:truncate">{{
+            <span class="text-primary font-semibold">{{
               data.contact.email
             }}</span>
           </div>
@@ -422,17 +460,17 @@ onMounted(() => {
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
               <img
                 src="../assets/image/icons/eye-2.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleDelete(data?.id)"
             >
               <img
@@ -442,13 +480,13 @@ onMounted(() => {
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="copyUrl(data?.id)"
             >
               <img
                 src="../assets/image/icons/share.svg"
                 alt="share-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
           </div>
