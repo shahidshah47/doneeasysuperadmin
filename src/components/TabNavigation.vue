@@ -1,12 +1,7 @@
 <template>
   <div class="tabs-section mt-5">
     <ul class="nav nav-tabs flex justify-around border-0">
-      <li
-        v-for="(tab, index) in tabs"
-        :key="index"
-        class="nav-item"
-        :class="{ 'active-tab': isActiveTab(tab.path) }"
-      >
+      <li v-for="(tab, index) in tabs" :key="index" class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}${tab.path}`"
           class="nav-link !text-sm !font-semibold"
@@ -24,7 +19,7 @@ import { computed, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import { useCompanyStore } from "../store";
 
-const route = useRoute(); // Use useRoute() to get the current route
+const route = useRoute();
 const companyStore = useCompanyStore();
 
 const tabs = [
@@ -37,10 +32,6 @@ const tabs = [
   { label: "Chats History", path: "/chat-history" },
   { label: "Finance", path: "/finance" },
 ];
-
-const isActiveTab = (tabPath) => {
-  return route.path.includes(tabPath); // Use route instead of $route
-};
 
 watch(
   () => route.params.companyId,
@@ -59,36 +50,38 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.active-tab {
-  background-color: #fff !important;
-  border: none !important;
-  position: relative;
-  color: #5825eb !important;
-}
-
-.active-tab::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -22.5px;
-  height: 3px;
-  background-color: #5825eb;
-  width: 100%;
-  transform: translateX(-50%) scaleX(2);
-  transform-origin: center center;
-}
-
 .nav-link {
   color: #868599;
   border: none !important;
-  padding-bottom: 0 !important;
+  padding-bottom: 10px;
+  position: relative;
+  transition: color 0.3s ease;
 }
 
 .nav-link:hover {
   color: #5825eb;
 }
 
-.active-tab .nav-link {
+.nav-link.active-tab {
   color: #5825eb !important;
+  font-weight: bold;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 3px;
+  background-color: #5825eb;
+  transition: width 0.3s ease;
+  transform: scaleX(1.6);
+}
+
+.nav-link:hover::after,
+.nav-link.active-tab::after {
+  width: 100%;
+  transform: scaleX(1.6);
 }
 </style>

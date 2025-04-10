@@ -170,17 +170,17 @@ const statusOptions = [
 ];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "companyName", header: "Organization Name" },
+  { field: "companyName", header: "Organization Name", class: "w-48" },
   { field: "fullName", header: "Full Name" },
   { field: "role", header: "Role" },
-  { field: "contact", header: ["Contact /", "Email"] },
+  { field: "contact", header: ["Contact /", "Email"], class: "w-52" },
   { field: "totalRevenue", header: ["Total Revenue ", "Generated"] },
   { field: "totalSpending", header: ["Total ", "Spending"] },
   { field: "status", header: "Status" },
   {
     field: "verticalsSubscribed",
     header: ["List of Verticals ", "Subscribed"],
-    class: "w-40",
+    class: "w-32",
   },
   {
     field: "registeredOn",
@@ -375,7 +375,7 @@ onMounted(() => {
             <span class="font-semibold text-dm-blue">{{
               data.contact.mobile
             }}</span>
-            <span class="text-primary font-semibold md:w-20 md:truncate">{{
+            <span class="text-primary font-semibold line-clamp-1">{{
               data.contact.email
             }}</span>
           </div>
@@ -422,24 +422,34 @@ onMounted(() => {
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
-              <i class="fa-regular fa-eye text-primary text-sm"></i>
+              <img
+                src="../assets/image/icons/eye-2.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
             <button
-              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleDelete(data?.id)"
             >
-              <i class="fa-regular fa-trash-can text-primary text-sm"></i>
+              <img
+                src="../assets/image/icons/trash.svg"
+                alt="trash-icon"
+                class="w-4 h-4"
+              />
             </button>
             <button
-              class="border border-primary p-2 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="copyUrl(data?.id)"
             >
-              <i
-                class="fa-regular fa-share-from-square text-primary text-sm"
-              ></i>
+              <img
+                src="../assets/image/icons/share.svg"
+                alt="share-icon"
+                class="w-4 h-4"
+              />
             </button>
           </div>
         </template>

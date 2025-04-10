@@ -50,7 +50,7 @@ const emit = defineEmits(["update:selection", "update:filters"]);
     <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
 
     <!-- Dynamic Columns -->
-    <Column v-for="col in columns" :key="col.field" :field="col.field">
+    <Column v-for="col in columns" :key="col.field" :field="col.field" :class="col.class">
       <template #header>
         <div class="header-container">
           <div class="header-text text-sm !text-grayish-purple !font-semibold">
