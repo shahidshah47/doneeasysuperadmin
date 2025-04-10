@@ -1,12 +1,11 @@
 <template>
-  <Loader v-if="loading" />
-  <div class="container-fluid company-details" v-else>
+  <div class="container-fluid company-details">
     <div class="row">
       <CompanyHeader />
     </div>
     <div class="grid grid-cols-12 gap-3">
       <div class="col-span-6 col-start-8 flex items-center gap-6">
-        <div class="relative flex-1 min-w-0">
+        <div class="relative flex-1 min-w-0 max-w-80 ml-auto">
           <InputText
             :modelValue="searchQuery"
             @update:modelValue="updateSearchQuery"
@@ -98,16 +97,16 @@
               :options="sortOptions"
               v-model="selectedSort"
               name="sort-options"
+              @update:selected-value="handleSelectSort"
             />
           </div>
         </div>
       </div>
-      <div
-        class="col-span-4"
-        v-for="(card, index) in filteredCardList"
-        :key="index"
-      >
+      <div class="col-span-4" v-for="(card, index) in cardList" :key="index">
         <VerticalCard :cardData="card" :onClick="goToVerticalDetails" />
+      </div>
+      <div class="col-span-12" v-if="cardList.length === 0">
+        Verticals not found.
       </div>
     </div>
 
@@ -121,8 +120,8 @@
         { name: 'Jacob Jones', image: 'profile-pic.png' },
         { name: 'Jenny Wilson', image: 'profile-pic.png' },
       ]"
-      @change-manager="handleManagerChange"
     />
+    <!--      @change-manager="handleManagerChange"-->
   </div>
 </template>
 
@@ -145,16 +144,48 @@ import CompanyHeader from "../../components/CompanyHeader.vue";
 import ChangeManagerModal from "../../components/common/ChangeManagerModal/ChangeManagerModal.vue";
 import ThemeCheckbox from "../../components/common/ThemeCheckbox/ThemeCheckbox.vue";
 import VerticalCard from "../../components/common/VerticalCard/VerticalCard.vue";
-import Loader from "../../components/common/Loader/Loader.vue";
 
 const route = useRoute();
 const router = useRouter();
 const loading = ref(true);
 const error = ref(null);
 const showFilters = ref(false);
-const searchTerm = ref("");
 const toast = useToast();
 const cardList = ref([]);
+const searchQuery = ref("");
+const selectedSort = ref(null);
+const sortOptions = [
+  {
+    id: "sort1",
+    value: { param: "revenue", val: "desc" },
+    label: "Higher To Lower Total Revenue.",
+  },
+  {
+    id: "sort2",
+    value: { param: "revenue", val: "asc" },
+    label: "Lower To Higher Total Revenue.",
+  },
+  {
+    id: "sort3",
+    value: { param: "orders", val: "desc" },
+    label: "Higher To Lower Active Orders.",
+  },
+  {
+    id: "sort4",
+    value: { param: "orders", val: "asc" },
+    label: "Lower To Higher Active Orders.",
+  },
+  {
+    id: "sort5",
+    value: { param: "name", val: "asc" },
+    label: "Vertical Name A - Z",
+  },
+  {
+    id: "sort6",
+    value: { param: "name", val: "desc" },
+    label: "Vertical Name Z - A",
+  },
+];
 
 const goToVerticalDetails = () => {
   router.push(
@@ -163,9 +194,11 @@ const goToVerticalDetails = () => {
 };
 
 const fetchData = async () => {
-  loading.value = true;
   try {
-    let url = `/superadmin/user/verticals?user_id=${route.params.companyId}`;
+    let url = `/superadmin/user/verticals?user_id=${route.params.companyId}&search=${search}`;
+    if (sorting) {
+      url = `/superadmin/user/verticals?user_id=${route.params.companyId}&search=${search}&${sorting.param}=${sorting.val}`;
+    }
     const response = await api.get(url, {
       headers: {
         Authorization: `Bearer ${localStorage?.getItem("token")}`,
@@ -173,7 +206,6 @@ const fetchData = async () => {
     });
     if (response?.status === 200) {
       const { data, message } = response.data;
-      console.log(data, "response");
       cardList.value = data;
       toast.add({
         severity: "success",
@@ -203,17 +235,27 @@ onMounted(() => {
   });
 });
 
-const searchQuery = ref("");
 const updateSearchQuery = (value) => {
   searchQuery.value = value;
 };
 
-// Computed property for filtered cards based on search query
-const filteredCardList = computed(() => {
-  return cardList.value.filter((card) =>
-    card.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
-});
+const debouncedFetch = debounce((val) => {
+  fetchData(val);
+}, 500);
+
+watch(
+  () => searchQuery.value,
+  (newVal, oldValue) => {
+    debouncedFetch(newVal);
+  }
+);
+
+watch(
+  () => selectedSort.value,
+  (val) => {
+    fetchData(searchQuery.value, val);
+  }
+);
 
 // Year dropdown
 const years = [2021, 2022, 2023, 2024, 2025];
@@ -292,41 +334,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener("click", handleClickOutside);
-});
-
-const selectedSort = ref("highToLowRevenue");
-
-const sortOptions = [
-  {
-    id: "sort1",
-    value: "highToLowRevenue",
-    label: "Higher To Lower Total Revenue.",
-  },
-  {
-    id: "sort2",
-    value: "lowToHighRevenue",
-    label: "Lower To Higher Total Revenue.",
-  },
-  {
-    id: "sort3",
-    value: "highToLowOrders",
-    label: "Higher To Lower Active Orders.",
-  },
-  {
-    id: "sort4",
-    value: "lowToHighOrders",
-    label: "Lower To Higher Active Orders.",
-  },
-  { id: "sort5", value: "nameAZ", label: "Vertical Name A - Z" },
-  { id: "sort6", value: "nameZA", label: "Vertical Name Z - A" },
-];
-
-// Emits the selected sort value when it changes
-const emit = defineEmits(["update:sort"]);
-
-// Watch for changes to apply sorting
-watch(selectedSort, (newValue) => {
-  emit("update:sort", newValue);
 });
 </script>
 <style scoped>

@@ -19,7 +19,7 @@
       <p class="text-vivid-purple mb-0 text-xs font-normal">{{ fileSize }}</p>
     </div>
 
-    <div class="d-flex align-items-center cursor-pointer gap-3 me-3 ms-auto">
+    <div class="d-flex align-items-center cursor-pointer gap-2 me-2.5 ms-auto">
       <div v-if="isEyeIcon" class="bg-light-lilac p-1 rounded">
         <img
           :src="getImageUrl('../../../assets/image/icons/eye.svg')"

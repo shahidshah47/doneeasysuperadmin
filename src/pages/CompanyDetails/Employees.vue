@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, onMounted, ref } from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
 
 import { useRoute, useRouter } from "vue-router";
 
@@ -11,15 +11,20 @@ import Pagination from "../../components/common/Pagination/Pagination.vue";
 import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
 import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useCompanyStore } from "../../store";
+import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
+import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
+import {convertEmployeeUsersData, debounce} from "../../utils/helper.js";
 
 const store = useCompanyStore();
 // const companiesData = ref([]);
+const selectedCompany = ref();
 const loading = ref(true);
 const error = ref(null);
-const statusBtn = ref(1);
+const statusBtn = ref('');
 const router = useRouter();
 const route = useRoute();
 const toast = useToast();
+const searchTerm = ref("");
 const vendorRes = ref(null);
 const rowsPerPageDropdown = ref([]);
 const pagination = ref({
@@ -38,11 +43,11 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
   console.log(id, page, "id and page");
   try {
     let url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&search=${search}`;
+    if (id !== "") {
+      url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&user_type=${id}&search=${search}`;
+    }
     if (perPage) {
       url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&per_page=${perPage}`;
-    }
-    if (perPage && search !== "") {
-      url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&per_page=${perPage}&search=${search}`;
     }
     const response = await api.get(url, {
       headers: {
@@ -69,6 +74,7 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
         life: 3000,
       });
       console.log(data, "Data from users");
+      companiesData.value = data.map(item => convertEmployeeUsersData(item));
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -88,16 +94,20 @@ const handleClickToDetails = () => {
 };
 
 const handleFetchUsers = (id, page) => {
+  searchTerm.value = '';
   fetchData(id, 1);
   statusBtn.value = id;
 };
 
-const selectedCompany = ref();
+const handlePerPage = async (props) => {
+  await fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
+};
+
 
 const statusOptions = ["All", "Active", "Pending", "Cancelled"];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "employeeName", header: "Employee Name" },
+  { field: "employeeName", header: "Employee Name", class: "w-32" },
   { field: "role", header: "Role" },
   {
     field: "vertical",
@@ -105,6 +115,7 @@ const columns = ref([
     icon: "chevron-down.svg",
     iconWidth: 10,
     iconHeight: 10,
+    class: "w-40"
   },
   { field: "status", header: "Status" },
   { field: "contact", header: ["Contact/ ", "Email"] },
@@ -112,12 +123,6 @@ const columns = ref([
   { field: "projectDetail", header: "Project Details" },
   { field: "actions", header: "Action" },
 ]);
-
-const filters = ref({
-  id: { value: null, matchMode: FilterMatchMode.EQUALS },
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 
 const getStatusClass = (status) => {
   switch (status) {
@@ -167,42 +172,44 @@ const companiesData = ref([
       image: "Avatar.png",
     },
   },
-  {
-    id: 2,
-    employeeName: { name: "Jane Smith", image: "Avatar.png" },
-    role: "Product Manager",
-    vertical: 23,
-    status: "Active",
-    contact: { phone: "+9876543210", email: "jane.smith@example.com" },
-    currentWork: "Site Survey",
-    projectDetail: {
-      name: "Business Setup",
-      client: "Client Name",
-      end_date: "11/02.2023",
-      image: "Avatar.png",
-    },
-  },
-  {
-    id: 3,
-    employeeName: { name: "Alice Johnson", image: "Avatar.png" },
-    role: "Data Scientist",
-    vertical: 33,
-    status: "Active",
-    contact: { phone: "+1928374650", email: "alice.johnson@example.com" },
-    currentWork: "Occupied",
-    projectDetail: {
-      name: "Business Setup",
-      client: "Client Name",
-      end_date: "11/02.2023",
-      image: "Avatar.png",
-    },
-  },
+  // {
+  //   id: 2,
+  //   employeeName: { name: "Jane Smith", image: "Avatar.png" },
+  //   role: "Product Manager",
+  //   vertical: 23,
+  //   status: "Active",
+  //   contact: { phone: "+9876543210", email: "jane.smith@example.com" },
+  //   currentWork: "Site Survey",
+  //   projectDetail: {
+  //     name: "Business Setup",
+  //     client: "Client Name",
+  //     end_date: "11/02.2023",
+  //     image: "Avatar.png",
+  //   },
+  // },
+  // {
+  //   id: 3,
+  //   employeeName: { name: "Alice Johnson", image: "Avatar.png" },
+  //   role: "Data Scientist",
+  //   vertical: 33,
+  //   status: "Active",
+  //   contact: { phone: "+1928374650", email: "alice.johnson@example.com" },
+  //   currentWork: "Occupied",
+  //   projectDetail: {
+  //     name: "Business Setup",
+  //     client: "Client Name",
+  //     end_date: "11/02.2023",
+  //     image: "Avatar.png",
+  //   },
+  // },
 ]);
 
-onMounted(() => {
-  nextTick(() => {
-    console.log("Hardcoded data loaded:", companiesData.value);
-  });
+const debouncedFetch = debounce((val) => {
+  fetchData(statusBtn.value, 1, null, val)
+}, 500);
+
+watch(() => searchTerm.value, (newVal, oldValue) => {
+  debouncedFetch(newVal);
 });
 
 onMounted(() => {
@@ -219,10 +226,6 @@ const getImageIcon = (imagePath) => {
   return new URL(`../../assets/image/icons/${imagePath}`, import.meta.url).href;
 };
 
-const handleNextPage = (page) => {
-  console.log(page, "page");
-};
-
 const typeClasses = {
   "One-time": "!text-accent-green !bg-green-200",
   Reoccurring: "!text-accent-green bg-green-200",
@@ -236,12 +239,10 @@ const typeClasses = {
       <CompanyHeader />
     </div>
 
-    <div class="p-4 bg-white rounded-3 shadow relative">
+    <div class="p-4 bg-white rounded-3 relative">
       <ThemeDatatable
         :value="companiesData"
         v-model:selection="selectedCompany"
-        v-model:filters="filters"
-        :filterFields="['id', 'companyName.name', 'description', 'verticals']"
         :columns="columns"
         :paginator="true"
         :rows="pagination.perPage"
@@ -256,6 +257,7 @@ const typeClasses = {
               <StatusButtons
                 :statusBtn="statusBtn"
                 :buttons="[
+                  { label: 'All', value: '' },
                   { label: 'Admin', value: 6 },
                   { label: 'Manager', value: 3 },
                   { label: 'Associates', value: 5 },
@@ -276,7 +278,7 @@ const typeClasses = {
         <template v-slot:employeeName="{ data }">
           <div class="flex items-center gap-2">
             <img
-              :src="getImageUrl(data.employeeName.image)"
+              :src="data.employeeName.image"
               alt="Employee Image"
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
@@ -432,6 +434,7 @@ const typeClasses = {
             :lastPageCallback="lastPageCallback"
             :rowChangeCallback="rowChangeCallback"
             :prevPageCallback="prevPageCallback"
+            @perPageClick="(cPage, perPage) => handlePerPage(cPage, perPage)"
             @nextPageClick="(page) => fetchData(statusBtn, page)"
             :nextPageCallback="nextPageCallback"
             :totalRecords="totalRecords"

@@ -211,6 +211,7 @@ const loading = ref(true);
 const error = ref(null);
 const statusBtn = ref(4);
 const toast = useToast();
+const searchTerm = ref("");
 
 const filterFields = ref([
   "id",
@@ -220,18 +221,6 @@ const filterFields = ref([
   "orderAmount",
   "surveyStatus.name",
 ]);
-
-const handleClickToDetails = (id) => {
-  router.push(
-    "/super-admin/company-details/" +
-      route.params.companyId +
-      "/site-survey/" +
-      id +
-      "/details"
-  );
-};
-
-const searchTerm = ref("");
 
 const pagination = ref({
   currentPage: 0,
@@ -308,7 +297,7 @@ onMounted(() => {
 });
 
 const handlePerPage = async (props) => {
-  fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
+  await fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
 };
 
 const handleFetchSiteSurvey = (id) => {

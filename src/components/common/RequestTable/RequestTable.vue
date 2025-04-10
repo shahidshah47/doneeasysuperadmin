@@ -1,6 +1,6 @@
 <template>
-  <div class="p-4 bg-white-100 rounded-xl min-h-[500px]">
-    <div class="max-h-[400px] overflow-y-auto">
+  <div class="p-4 bg-white-100 rounded-xl min-h-[300px]">
+    <div class="max-h-[300px] overflow-y-auto">
       <table class="w-full text-left border-collapse">
         <thead>
           <tr
@@ -15,6 +15,7 @@
         <tbody>
           <tr
             v-for="(request, index) in requests"
+            v-if="requests.length > 0"
             :key="index"
             class="border-b"
           >
@@ -50,6 +51,9 @@
               </button>
             </td>
           </tr>
+          <tr v-if="requests.length === 0">
+            <td class="px-4 py-3">Records not found.</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -76,7 +80,7 @@ export default {
   methods: {
     navigateToDetails() {
       this.$router.push(
-        `/super-admin/company-details/appointment/details?companyId=${this.companyId}`
+        `/super-admin/company-details/${this.companyId}/appointment`
       );
     },
   },

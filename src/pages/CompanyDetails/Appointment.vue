@@ -322,7 +322,7 @@ onMounted(() => {
 });
 
 const handlePerPage = async (props) => {
-  fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
+  await fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
 };
 
 const handleFetchAppointment = (id) => {
@@ -398,7 +398,7 @@ const handleDelete = async (id) => {
         life: 3000,
       });
       searchTerm.value = "";
-      fetchData(statusBtn.value);
+      await fetchData(statusBtn.value);
     }
   } catch (err) {
     error.value = "Error fetching data";

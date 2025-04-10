@@ -1,5 +1,5 @@
 <template>
-  <div class="col-md-12 company-header mb-5 rounded-2xl">
+  <div class="company-header mb-5 rounded-2xl">
     <div class="flex justify-between items-center" v-if="store.companyData">
       <div class="company-info">
         <div class="flex items-center gap-6">
