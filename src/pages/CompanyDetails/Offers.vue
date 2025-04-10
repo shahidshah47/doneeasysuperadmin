@@ -37,7 +37,7 @@
           </div>
         </template>
         <template #id="{ data }">
-          <span>{{ data.id }}</span>
+          <span class="text-dm-blue font-semibold text-sm">{{ data.id }}</span>
         </template>
 
         <template #organizationName="{ data }">
@@ -48,65 +48,108 @@
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
 
-            <span class="font-semibold text-dm-blue">{{
+            <span class="text-dm-blue font-semibold text-sm">{{
               data.companyName
             }}</span>
           </div>
         </template>
 
-        <template #title="{ data }">
-          <div class="flex items-start gap-1 flex-col">
-            <span>{{ data.ceoManager }}</span>
-            <span class="text-sm font-bold text-dm-blue">{{
-              data.contactEmail
+        <template #description="{ data }">
+          <div class="bg-white font-semibold !text-rich-navy relative group">
+            <span
+              class="whitespace-nowrap overflow-hidden text-ellipsis block w-40 text-dm-blue font-semibold text-sm"
+            >
+              {{
+                data.description.length > 30
+                  ? data.description.slice(0, 30) + "..."
+                  : data.description
+              }}
+            </span>
+            <div
+              class="absolute left-1/2 -top-20 transform -translate-x-1/2 w-max max-w-sm p-3 bg-white-100 !text-rich-navy border shadow-lavendar-card rounded hidden group-hover:block z-50"
+              style="white-space: normal; overflow: visible"
+            >
+              {{ data.description }}
+            </div>
+          </div>
+        </template>
+
+        <template v-slot:vertical="{ data }">
+          <div class="flex items-center gap-2">
+            <img
+              :src="getImagePath(data.vertical.image)"
+              alt="Vertical Image"
+              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+            />
+            <span class="text-dm-blue font-semibold text-sm">
+              {{ data.vertical.name }}
+            </span>
+          </div>
+        </template>
+
+        <template #orderType="{ data }">
+          <p class="text-dm-blue font-semibold text-sm whitespace-nowrap">
+            {{ data.orderType }}
+          </p>
+        </template>
+
+        <template #status="{ data }">
+          <div
+            :style="getStatusClass(data.status)"
+            class="px-2 py-1 rounded-lg font-semibold text-sm whitespace-nowrap inline-block"
+          >
+            {{ data.status }}
+          </div>
+        </template>
+
+        <template #date="{ data }">
+          <div class="bg-white font-semibold !text-rich-navy relative group">
+            <span
+              class="whitespace-nowrap overflow-hidden text-ellipsis block text-dark-indigo-100 font-normal text-sm"
+            >
+              {{ formatCompactDateTime(data.date) }}
+            </span>
+          </div>
+        </template>
+
+        <template #offerValue="{ data }">
+          <div class="flex gap-2 items-center">
+            <span class="text-primary font-semibold text-sm">AED</span>
+            <span class="text-dm-blue font-semibold text-xl">{{
+              data.offerValue ?? 0
             }}</span>
           </div>
         </template>
 
-        <template #verticle="{ data }">
-          <p class="text-md text-dm-blue font-bold">
-            {{ data.verticalSubscribed }}
-          </p>
-        </template>
-
-        <template #orderType="{ data }">
-          <p class="text-md text-dm-blue font-bold">{{ data.status }}</p>
-        </template>
-
-        <template #expectedDateAndTime="{ data }">
-          <p class="text-md text-dm-blue font-bold">
-            {{ data.registeredDate }}
-          </p>
-        </template>
-
-        <template #orderAmount="{ data }">
-          <div class="flex flex-col">
-            <p class="text-md text-dm-blue font-bold">
-              {{ data.totalRevenue }}
-            </p>
-            <p class="text-md text-dm-blue font-bold">
-              {{ data.totalSpending }}
-            </p>
-          </div>
-        </template>
-
-        <template>
+        <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
-              @click="handleClickToDetails()"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              @click="handleClickToDetails(data?.id)"
             >
-              <i class="fa-regular fa-eye text-primary"></i>
+              <img
+                src="../../assets/image/icons/eye-2.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
             >
-              <i class="fa-regular fa-trash-can text-primary"></i>
+              <img
+                src="../../assets/image/icons/trash.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
             <button
-              class="border border-primary p-2 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
             >
-              <i class="fa-regular fa-share-from-square text-primary"></i>
+              <img
+                src="../../assets/image/icons/share.svg"
+                alt="eye-icon"
+                class="w-4 h-4"
+              />
             </button>
           </div>
         </template>
@@ -159,6 +202,7 @@ import { FilterMatchMode } from "@primevue/core/api";
 import { useRoute, useRouter } from "vue-router";
 import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
 import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
+import { formatCompactDateTime, formatDate } from "../../utils/helper";
 const selectedSurvey = ref();
 const router = useRouter();
 const route = useRoute();
@@ -167,7 +211,7 @@ const getImagePath = (imageName) => {
   return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
 };
 
-const handleClickToDetails = () => {
+const handleClickToDetails = (id, type) => {
   const companyId = route.params.companyId;
   if (companyId) {
     router.push({
@@ -206,16 +250,43 @@ const handleDelete = async (id) => {};
 
 const fetchData = async (_id, page = 1) => {};
 
+const getStatusClass = (status) => {
+  switch (status) {
+    case "On-Location":
+      return { backgroundColor: "#D6FFEF", color: "#00995C" }; // Green
+    case "":
+      return { backgroundColor: "#E7E7EB", color: "#0E0D35" }; // Yellow
+    case "Waiting":
+      return { backgroundColor: "#E7E7EB", color: "#575672" }; // Red
+    case "Cancelled":
+      return { backgroundColor: "#FCEED9", color: "#DC8B13" }; // Red
+
+    default:
+      return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
+  }
+};
+
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "organizationName", header: "Organization Name" },
-  { field: "title", header: "Title & Description" },
-  { field: "verticle", header: "Vertical" },
-  { field: "orderType", header: "Order Type" },
-  { field: "expectedDateAndTime", header: "Expected Delivery Date & Time" },
-  { field: "payment", header: "Payment" },
-  { field: "orderAmount", header: "Order Amount" },
-  { field: "progressState", header: "Progress State" },
+  { field: "organizationName", header: ["Organization ", "Name / ID"] },
+  { field: "description", header: "Title & Description" },
+  {
+    field: "orderType",
+    header: "Order Type",
+    icon: "chevron-down.svg",
+    iconWidth: 10,
+    iconHeight: 10,
+  },
+  {
+    field: "vertical",
+    header: "Vertical",
+    icon: "chevron-down.svg",
+    iconWidth: 10,
+    iconHeight: 10,
+  },
+  { field: "date", header: "Offer Sent Date" },
+  { field: "status", header: "Offer status" },
+  { field: "offerValue", header: "Offer Value" },
   { field: "actions", header: "Action" },
 ]);
 
@@ -225,68 +296,61 @@ const filters = ref({
   "organizationName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
   "title.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
   "verticle.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  orderType: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  payment: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  orderAmount: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  progressState: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
 const vendorData = ref([
   {
-    id: "OFC 001",
+    id: "98374861",
     companyName: "ABS Company Pvt.",
     companyImage: "Avatar.png",
     ceoManager: "Floyd Miles",
     managerImage: "Avatar (5).png",
-    contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-    totalRevenue: "AED 32,100",
-    totalSpending: "AED 32,100",
-    status: "Active",
-    verticalSubscribed: 16,
-    registeredDate: "2020-05-17<br>10:00 AM",
-    statusColor: "lightgreen",
+    vertical: { name: "Event Management", image: "Avatar.png" },
+    description: "Need business consultant for my startup",
+    orderType: "One-Time",
+    status: "On-Location",
+    date: "2025-03-28T11:42:02.000000Z",
+    offerValue: "4000",
   },
   {
-    id: "OFC 002",
+    id: "98374861",
     companyName: "Big Kahuna Ltd.",
     companyImage: "Avatar.png",
     ceoManager: "Kristin Watson",
     managerImage: "Avatar (4).png",
     contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-    totalRevenue: "AED 32,100",
-    totalSpending: "AED 32,100",
-    status: "Banned",
-    verticalSubscribed: 23,
-    registeredDate: "2020-05-17<br>10:00 AM",
-    statusColor: "#ffb09c",
+    vertical: { name: "Event Management", image: "Avatar.png" },
+    description: "Need business consultant for my startup",
+    orderType: "One-Time",
+    status: "On-Location",
+    date: "2025-03-28T11:42:02.000000Z",
+    offerValue: "4000",
   },
   {
-    id: "OFC 003",
+    id: "98374861",
     companyName: "Barone LLC.",
     companyImage: "Avatar (5).png",
     ceoManager: "Albert Flores",
     managerImage: "Avatar (4).png",
-    contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-    totalRevenue: "AED 32,100",
-    totalSpending: "AED 32,100",
-    status: "Inactive",
-    verticalSubscribed: 23,
-    registeredDate: "2020-05-17<br>10:00 AM",
-    statusColor: "lightgrey",
+    vertical: { name: "Event Management", image: "Avatar.png" },
+    description: "Need business consultant for my startup",
+    orderType: "One-Time",
+    status: "On-Location",
+    date: "2025-03-28T11:42:02.000000Z",
+    offerValue: "4000",
   },
   {
-    id: "OFC 004",
+    id: "98374861",
     companyName: "Biffco Enterprises Ltd.",
     companyImage: "Avatar.png",
     ceoManager: "Dianne Russell",
     managerImage: "Avatar (4).png",
-    contactEmail: "(239) 555-0108<br>xyz@gmail.com",
-    totalRevenue: "AED 32,100",
-    totalSpending: "AED 32,100",
-    status: "Monitory",
-    verticalSubscribed: 23,
-    registeredDate: "2020-05-17<br>10:00 AM",
-    statusColor: "lightyellow",
+    vertical: { name: "Event Management", image: "Avatar.png" },
+    description: "Need business consultant for my startup",
+    orderType: "One-Time",
+    status: "On-Location",
+    date: "2025-03-28T11:42:02.000000Z",
+    offerValue: "4000",
   },
 ]);
 </script>

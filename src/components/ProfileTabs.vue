@@ -4,7 +4,7 @@
       <li v-for="tab in tabs" :key="tab.path" class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyId}/employees/${tab.path}`"
-          class="nav-link"
+          class="nav-link font-semibold"
           active-class="active-tab"
         >
           {{ tab.label }}
@@ -15,12 +15,10 @@
 </template>
 
 <script setup>
-import { defineProps } from "vue";
-import { useRoute } from "vue-router"; // Import useRoute hook
+import { useRoute } from "vue-router";
 
-// Get the companyId from the route parameters
 const route = useRoute();
-const companyId = route.params.companyId; // Access companyId from the route params
+const companyId = route.params.companyId;
 
 const tabs = [
   { label: "Info", path: "details" },
@@ -32,32 +30,37 @@ const tabs = [
 </script>
 
 <style scoped>
-.active-tab {
-  background-color: #fff !important;
-  border: none !important;
-  position: relative;
-  color: #495057;
-}
-.active-tab::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  height: 4px;
-  background-color: #5825eb;
-  width: 100%;
-  transform: translateX(-50%) scaleX(2); /* Center and scale the underline */
-  transform-origin: center center; /* Ensure scaling is applied from the center */
-}
-
 .nav-link {
   color: #868599;
   border: none !important;
-  font-weight: 600;
-  font-size: 14px;
+  padding-bottom: 10px;
+  position: relative;
+  transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-  color: #495057;
+  color: #5825eb;
+}
+
+.nav-link.active-tab {
+  color: #5825eb !important;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 3px;
+  background-color: #5825eb;
+  transition: width 0.3s ease;
+  transform: scaleX(1.6);
+}
+
+.nav-link:hover::after,
+.nav-link.active-tab::after {
+  width: 100%;
+  transform: scaleX(1.6);
 }
 </style>
