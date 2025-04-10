@@ -1,33 +1,33 @@
 <script setup>
-import { ref, onMounted, nextTick, onUnmounted, computed } from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
 
 import { useRoute, useRouter } from "vue-router";
 
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import {
-  Button,
-  IconField,
-  InputIcon,
-  InputText,
-  Paginator,
-  useToast,
-} from "primevue";
 import { FilterMatchMode } from "@primevue/core/api";
+import {
+  Paginator,
+  useToast
+} from "primevue";
 import Dropdown from "primevue/dropdown";
-import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
+import api from "../../api";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
-import { useCompanyStore } from "../../store";
+import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
 import CompanyHeader from "../../components/CompanyHeader.vue";
+import { useCompanyStore } from "../../store";
+import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
+import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
+import {convertEmployeeUsersData, debounce} from "../../utils/helper.js";
 
 const store = useCompanyStore();
 // const companiesData = ref([]);
+const selectedCompany = ref();
 const loading = ref(true);
 const error = ref(null);
-const statusBtn = ref(1);
+const statusBtn = ref('');
 const router = useRouter();
 const route = useRoute();
 const toast = useToast();
+const searchTerm = ref("");
 const vendorRes = ref(null);
 const rowsPerPageDropdown = ref([]);
 const pagination = ref({
@@ -42,8 +42,49 @@ const pagination = ref({
   links: [],
 });
 
-const fetchData = async (id, page) => {
+const fetchData = async (id, page = 1, perPage = null, search = '') => {
   console.log(id, page, "id and page");
+  try {
+    let url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&search=${search}`;
+    if (id !== "") {
+      url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&user_type=${id}&search=${search}`;
+    }
+    if (perPage) {
+      url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&per_page=${perPage}`;
+    }
+    const response = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
+    });
+    if (response?.status === 200) {
+      const { data } = response.data;
+      pagination.value = {
+        currentPage: response.data.current_page,
+        lastPage: response.data.last_page,
+        perPage: response.data.per_page,
+        total: response.data.total,
+        firstPageUrl: response.data.first_page_url,
+        lastPageUrl: response.data.last_page_url,
+        nextPageUrl: response.data.next_page_url,
+        prevPageUrl: response.data.prev_page_url,
+        links: response.data.links,
+      };
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message,
+        life: 3000,
+      });
+      console.log(data, "Data from users");
+      companiesData.value = data.map(item => convertEmployeeUsersData(item));
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error("Error in fetchData:", err);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const handleClickToDetails = () => {
@@ -55,17 +96,21 @@ const handleClickToDetails = () => {
   }
 };
 
-const handleFetchOrder = (id, page) => {
+const handleFetchUsers = (id, page) => {
+  searchTerm.value = '';
   fetchData(id, 1);
   statusBtn.value = id;
 };
 
-const selectedCompany = ref();
+const handlePerPage = async (props) => {
+  await fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
+};
+
 
 const statusOptions = ["All", "Active", "Pending", "Cancelled"];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "employeeName", header: "Employee Name" },
+  { field: "employeeName", header: "Employee Name", class: "w-32" },
   { field: "role", header: "Role" },
   {
     field: "vertical",
@@ -80,12 +125,6 @@ const columns = ref([
   { field: "projectDetail", header: "Project Details" },
   { field: "actions", header: "Action" },
 ]);
-
-const filters = ref({
-  id: { value: null, matchMode: FilterMatchMode.EQUALS },
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "companyName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 
 const getStatusClass = (status) => {
   switch (status) {
@@ -135,42 +174,44 @@ const companiesData = ref([
       image: "Avatar.png",
     },
   },
-  {
-    id: 2,
-    employeeName: { name: "Jane Smith", image: "Avatar.png" },
-    role: "Product Manager",
-    vertical: 23,
-    status: "Active",
-    contact: { phone: "+9876543210", email: "jane.smith@example.com" },
-    currentWork: "Site Survey",
-    projectDetail: {
-      name: "Business Setup",
-      client: "Client Name",
-      end_date: "11/02.2023",
-      image: "Avatar.png",
-    },
-  },
-  {
-    id: 3,
-    employeeName: { name: "Alice Johnson", image: "Avatar.png" },
-    role: "Data Scientist",
-    vertical: 33,
-    status: "Active",
-    contact: { phone: "+1928374650", email: "alice.johnson@example.com" },
-    currentWork: "Occupied",
-    projectDetail: {
-      name: "Business Setup",
-      client: "Client Name",
-      end_date: "11/02.2023",
-      image: "Avatar.png",
-    },
-  },
+  // {
+  //   id: 2,
+  //   employeeName: { name: "Jane Smith", image: "Avatar.png" },
+  //   role: "Product Manager",
+  //   vertical: 23,
+  //   status: "Active",
+  //   contact: { phone: "+9876543210", email: "jane.smith@example.com" },
+  //   currentWork: "Site Survey",
+  //   projectDetail: {
+  //     name: "Business Setup",
+  //     client: "Client Name",
+  //     end_date: "11/02.2023",
+  //     image: "Avatar.png",
+  //   },
+  // },
+  // {
+  //   id: 3,
+  //   employeeName: { name: "Alice Johnson", image: "Avatar.png" },
+  //   role: "Data Scientist",
+  //   vertical: 33,
+  //   status: "Active",
+  //   contact: { phone: "+1928374650", email: "alice.johnson@example.com" },
+  //   currentWork: "Occupied",
+  //   projectDetail: {
+  //     name: "Business Setup",
+  //     client: "Client Name",
+  //     end_date: "11/02.2023",
+  //     image: "Avatar.png",
+  //   },
+  // },
 ]);
 
-onMounted(() => {
-  nextTick(() => {
-    console.log("Hardcoded data loaded:", companiesData.value);
-  });
+const debouncedFetch = debounce((val) => {
+  fetchData(statusBtn.value, 1, null, val)
+}, 500);
+
+watch(() => searchTerm.value, (newVal, oldValue) => {
+  debouncedFetch(newVal);
 });
 
 onMounted(() => {
@@ -187,10 +228,6 @@ const getImageIcon = (imagePath) => {
   return new URL(`../../assets/image/icons/${imagePath}`, import.meta.url).href;
 };
 
-const handleNextPage = (page) => {
-  console.log(page, "page");
-};
-
 const typeClasses = {
   "One-time": "!text-accent-green !bg-green-200",
   Reoccurring: "!text-accent-green bg-green-200",
@@ -204,12 +241,10 @@ const typeClasses = {
       <CompanyHeader />
     </div>
 
-    <div class="p-4 bg-white rounded-3 shadow relative">
+    <div class="p-4 bg-white rounded-3 relative">
       <ThemeDatatable
         :value="companiesData"
         v-model:selection="selectedCompany"
-        v-model:filters="filters"
-        :filterFields="['id', 'companyName.name', 'description', 'verticals']"
         :columns="columns"
         :paginator="true"
         :rows="pagination.perPage"
@@ -219,68 +254,24 @@ const typeClasses = {
         :currentPage="pagination.currentPage"
       >
         <template #header>
-          <div class="flex justify-between items-center mb-2">
-            <div class="flex gap-3">
-              <button
-                @click="handleFetchOrder('All')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'All' ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                All
-              </button>
-              <button
-                @click="handleFetchOrder('Support')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Active' ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                Support
-              </button>
-              <button
-                @click="handleFetchOrder('Admin')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Inactive'
-                    ? 'bg-primary text-white'
-                    : 'btn-light'
-                }`"
-              >
-                Admin
-              </button>
-              <button
-                @click="handleFetchOrder('Manager')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Monitory'
-                    ? 'bg-primary text-white'
-                    : 'btn-light'
-                }`"
-              >
-                Manager
-              </button>
-              <button
-                @click="handleFetchOrder('Associates')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Monitory'
-                    ? 'bg-primary text-white'
-                    : 'btn-light'
-                }`"
-              >
-                Associates
-              </button>
+          <div class="grid grid-cols-10 items-center gap-4 mb-6">
+            <div class="flex gap-3 col-span-6">
+              <StatusButtons
+                :statusBtn="statusBtn"
+                :buttons="[
+                  { label: 'All', value: '' },
+                  { label: 'Admin', value: 6 },
+                  { label: 'Manager', value: 3 },
+                  { label: 'Associates', value: 5 },
+                ]"
+                @update:statusBtn="handleFetchUsers"
+              />
             </div>
-            <div class="flex gap-3">
-              <div class="flex justify-end">
-                <IconField>
-                  <InputText
-                    v-model="filters['global'].value"
-                    placeholder="Search"
-                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
-                  />
-                  <InputIcon>
-                    <i class="fas fa-search"></i>
-                  </InputIcon>
-                </IconField>
-              </div>
+            <div class="flex gap-3 items-center w-full col-span-4">
+              <SearchAndFilter
+                v-model="searchTerm"
+                placeholder="Search"
+              />
             </div>
           </div>
         </template>
@@ -292,7 +283,7 @@ const typeClasses = {
         <template v-slot:employeeName="{ data }">
           <div class="flex items-center gap-2">
             <img
-              :src="getImageUrl(data.employeeName.image)"
+              :src="data.employeeName.image"
               alt="Employee Image"
               class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
             />
@@ -436,6 +427,7 @@ const typeClasses = {
             :lastPageCallback="lastPageCallback"
             :rowChangeCallback="rowChangeCallback"
             :prevPageCallback="prevPageCallback"
+            @perPageClick="(cPage, perPage) => handlePerPage(cPage, perPage)"
             @nextPageClick="(page) => fetchData(statusBtn, page)"
             :nextPageCallback="nextPageCallback"
             :totalRecords="totalRecords"

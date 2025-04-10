@@ -1,9 +1,7 @@
 <template>
-  <div class="container-fluid company-details">
-    <div class="row">
-      <!-- Company Info and Stats -->
-      <CompanyHeader />
-    </div>
+  <div class="company-details">
+    <!-- Company Info and Stats -->
+    <CompanyHeader />
     <div class="p-3 mb-1 bg-white rounded-3">
       <ThemeDatatable
         :value="siteSurveysData"
@@ -206,12 +204,12 @@ const handleClickToDetails = (id) => {
 
 const fetchData = async (id, page = 1, perPage = null, search = '') => {
   try {
-    let url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&search=${search}`;
+    let url = `/superadmin/user/site-surveys?user_id=${route.params.companyId}&status=${id}&page=${page}&search=${search}`;
     if (perPage) {
-      url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}`;
+      url = `/superadmin/user/site-surveys?user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}`;
     }
     if (perPage && search !== "") {
-      url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}&search=${search}`;
+      url = `/superadmin/user/site-surveys?user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}&search=${search}`;
     }
     const response = await api.get(url, {
       headers: {

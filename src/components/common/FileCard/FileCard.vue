@@ -11,11 +11,11 @@
       />
     </div>
     <div>
-      <p class="fs-6 mb-0 ms-3">{{ fileName }}</p>
+      <p class="text-xs mb-0 ms-3">{{ fileName }}</p>
       <p class="text-secondary mb-0 ms-3">{{ fileSize }}</p>
     </div>
 
-    <div class="d-flex align-items-center cursor-pointer gap-3 me-3 ms-auto">
+    <div class="d-flex align-items-center cursor-pointer gap-2 me-2.5 ms-auto">
       <div v-if="isEyeIcon" class="bg-light-lilac p-1 rounded">
         <img
           :src="getImageUrl('../../../assets/image/icons/eye.svg')"

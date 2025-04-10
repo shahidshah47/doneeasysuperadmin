@@ -17,11 +17,11 @@
       >
         <InfoDisplay label="Unit Price" :value="`AED ${data.unit_price}`" />
         <InfoDisplay label="Quantity" :value="data.quantity" />
-        <InfoDisplay label="Total" :value="`AED ${data.total}`" />
+        <InfoDisplay label="Total" :value="`AED ${formatWithCommas(data.total)}`" />
       </div>
   
       <InfoDisplay label="Delivery Time" 
-        :value="convertTimeTo12HourFormat(data.delivery_time.search('hour') > -1 ? data.delivery_time : data.delivery_time.split(' ')[1])" />
+        :value="getLeadTime(data.delivery_time)?.formattedDate + ' ' + getLeadTime(data.delivery_time)?.formattedTime" />
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@
 <script setup>
 import { defineProps, defineEmits } from "vue";
 import InfoDisplay from "../InfoDisplay/InfoDisplay.vue";
-import { convertTimeTo12HourFormat } from "../../../utils/helper";
+import {convertTimeTo12HourFormat, formatWithCommas, getLeadTime} from "../../../utils/helper";
 
 const props = defineProps({
   data: Object,
