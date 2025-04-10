@@ -106,18 +106,18 @@ const fetchData = async (id, page, perPage = null, search = '') => {
       vendorRes.value = data;
       dashboardStats.value = dashboardStats.value.map((item) => ({
         ...item,
-        number: data.stats[item.key],
+        number: response.data.stats[item.key],
       }));
       pagination.value = {
-        currentPage: data.current_page,
-        lastPage: data.last_page,
-        perPage: data.per_page,
-        total: data.total,
-        firstPageUrl: data.first_page_url,
-        lastPageUrl: data.last_page_url,
-        nextPageUrl: data.next_page_url,
-        prevPageUrl: data.prev_page_url,
-        links: data.links,
+        currentPage: response.data.current_page,
+        lastPage: response.data.last_page,
+        perPage: response.data.per_page,
+        total: response.data.total,
+        firstPageUrl: response.data.first_page_url,
+        lastPageUrl: response.data.last_page_url,
+        nextPageUrl: response.data.next_page_url,
+        prevPageUrl: response.data.prev_page_url,
+        links: response.data.links,
       };
       toast.add({
         severity: "success",
@@ -125,7 +125,7 @@ const fetchData = async (id, page, perPage = null, search = '') => {
         detail: response?.data?.message,
         life: 3000,
       });
-      companiesData.value = data?.data?.map((item) => convertUserData(item));
+      companiesData.value = data?.map((item) => convertUserData(item));
       store.setCompanies(transformData(data.data));
     }
   } catch (err) {

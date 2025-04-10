@@ -244,12 +244,12 @@ const pagination = ref({
 
 const fetchData = async (id, page = 1, perPage = null, search = "") => {
   try {
-    let url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&search=${search}`;
+    let url = `/superadmin/user/site-surveys?user_id=${route.params.companyId}&status=${id}&page=${page}&search=${search}`;
     if (perPage) {
-      url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}`;
+      url = `/superadmin/user/site-surveys?user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}`;
     }
     if (perPage && search !== "") {
-      url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}&search=${search}`;
+      url = `/superadmin/user/site-surveys?user_id=${route.params.companyId}&status=${id}&page=${page}&per_page=${perPage}&search=${search}`;
     }
     const response = await api.get(url, {
       headers: {

@@ -1,24 +1,19 @@
 <script setup>
-import { ref, onMounted, nextTick, onUnmounted, computed } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 
 import { useRoute, useRouter } from "vue-router";
 
-import DataTable from "primevue/datatable";
-import Column from "primevue/column";
-import {
-  Button,
-  IconField,
-  InputIcon,
-  InputText,
-  Paginator,
-  useToast,
-} from "primevue";
 import { FilterMatchMode } from "@primevue/core/api";
+import {
+  Paginator,
+  useToast
+} from "primevue";
 import Dropdown from "primevue/dropdown";
-import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
+import api from "../../api";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
-import { useCompanyStore } from "../../store";
+import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
 import CompanyHeader from "../../components/CompanyHeader.vue";
+import { useCompanyStore } from "../../store";
 
 const store = useCompanyStore();
 // const companiesData = ref([]);
@@ -42,8 +37,48 @@ const pagination = ref({
   links: [],
 });
 
-const fetchData = async (id, page) => {
+const fetchData = async (id, page = 1, perPage = null, search = '') => {
   console.log(id, page, "id and page");
+  try {
+    let url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&search=${search}`;
+    if (perPage) {
+      url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&per_page=${perPage}`;
+    }
+    if (perPage && search !== "") {
+      url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&per_page=${perPage}&search=${search}`;
+    }
+    const response = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
+    });
+    if (response?.status === 200) {
+      const { data } = response.data;
+      pagination.value = {
+        currentPage: response.data.current_page,
+        lastPage: response.data.last_page,
+        perPage: response.data.per_page,
+        total: response.data.total,
+        firstPageUrl: response.data.first_page_url,
+        lastPageUrl: response.data.last_page_url,
+        nextPageUrl: response.data.next_page_url,
+        prevPageUrl: response.data.prev_page_url,
+        links: response.data.links,
+      };
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message,
+        life: 3000,
+      });
+      console.log(data, "Data from users");
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error("Error in fetchData:", err);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const handleClickToDetails = () => {
@@ -55,7 +90,7 @@ const handleClickToDetails = () => {
   }
 };
 
-const handleFetchOrder = (id, page) => {
+const handleFetchUsers = (id, page) => {
   fetchData(id, 1);
   statusBtn.value = id;
 };
@@ -219,68 +254,23 @@ const typeClasses = {
         :currentPage="pagination.currentPage"
       >
         <template #header>
-          <div class="flex justify-between items-center mb-2">
-            <div class="flex gap-3">
-              <button
-                @click="handleFetchOrder('All')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'All' ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                All
-              </button>
-              <button
-                @click="handleFetchOrder('Support')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Active' ? 'bg-primary text-white' : 'btn-light'
-                }`"
-              >
-                Support
-              </button>
-              <button
-                @click="handleFetchOrder('Admin')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Inactive'
-                    ? 'bg-primary text-white'
-                    : 'btn-light'
-                }`"
-              >
-                Admin
-              </button>
-              <button
-                @click="handleFetchOrder('Manager')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Monitory'
-                    ? 'bg-primary text-white'
-                    : 'btn-light'
-                }`"
-              >
-                Manager
-              </button>
-              <button
-                @click="handleFetchOrder('Associates')"
-                :class="`btn rounded-3 px-3 py-2 active:bg-primary !font-semibold ${
-                  statusBtn === 'Monitory'
-                    ? 'bg-primary text-white'
-                    : 'btn-light'
-                }`"
-              >
-                Associates
-              </button>
+          <div class="grid grid-cols-10 items-center gap-4 mb-6">
+            <div class="flex gap-3 col-span-6">
+              <StatusButtons
+                :statusBtn="statusBtn"
+                :buttons="[
+                  { label: 'Admin', value: 6 },
+                  { label: 'Manager', value: 3 },
+                  { label: 'Associates', value: 5 },
+                ]"
+                @update:statusBtn="handleFetchUsers"
+              />
             </div>
-            <div class="flex gap-3">
-              <div class="flex justify-end">
-                <IconField>
-                  <InputText
-                    v-model="filters['global'].value"
-                    placeholder="Search"
-                    class="!bg-[#F2F4FB] border-0 min-w-[20rem] px-3 py-2.5"
-                  />
-                  <InputIcon>
-                    <i class="fas fa-search"></i>
-                  </InputIcon>
-                </IconField>
-              </div>
+            <div class="flex gap-3 items-center w-full col-span-4">
+              <SearchAndFilter
+                v-model="searchTerm"
+                placeholder="Search"
+              />
             </div>
           </div>
         </template>

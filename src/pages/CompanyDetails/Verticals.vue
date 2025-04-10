@@ -3,112 +3,104 @@
     <div class="row">
       <CompanyHeader />
     </div>
-    <div class="row row-gap-4">
-      <div class="col-md-12">
-        <div class="grid grid-cols-12 gap-3">
-          <div class="col-span-6 col-start-8 flex items-center gap-6">
-            <div class="relative flex-1 min-w-0">
-              <InputText
-                :modelValue="searchQuery"
-                @update:modelValue="updateSearchQuery"
-                :placeholder="'Search'"
-                class="w-full !bg-white-100 !px-4 !py-2.5 pl-10 placeholder-grayColor !rounded-lg focus:outline-none !border-[0.5px] !border-solid !border-silver-lining"
-              />
-              <img
-                :src="searchIcon"
-                alt="Search"
-                class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
-              />
-            </div>
-            <div class="relative mr-4">
-              <div class="flex items-center gap-2.5">
-                <span class="text-grayColor text-base font-semibold">Year</span>
-                <button
-                  @click="toggleYearDropdown"
-                  class="flex items-center focus:outline-none gap-2.5"
-                >
-                  <span class="text-base font-semibold text-dm-blue">{{
-                    selectedYear
-                  }}</span>
-                  <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
-                </button>
-              </div>
+    <div class="grid grid-cols-12 gap-3">
+      <div class="col-span-6 col-start-8 flex items-center gap-6">
+        <div class="relative flex-1 min-w-0">
+          <InputText
+            :modelValue="searchQuery"
+            @update:modelValue="updateSearchQuery"
+            :placeholder="'Search'"
+            class="w-full !bg-white-100 !px-4 !py-2.5 pl-10 placeholder-grayColor !rounded-lg focus:outline-none !border-[0.5px] !border-solid !border-silver-lining"
+          />
+          <img
+            :src="searchIcon"
+            alt="Search"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
+          />
+        </div>
+        <div class="relative mr-4">
+          <div class="flex items-center gap-2.5">
+            <span class="text-grayColor text-base font-semibold">Year</span>
+            <button
+              @click="toggleYearDropdown"
+              class="flex items-center focus:outline-none gap-2.5"
+            >
+              <span class="text-base font-semibold text-dm-blue">{{
+                selectedYear
+              }}</span>
+              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
+            </button>
+          </div>
 
-              <div
-                v-if="yearDropdownOpen"
-                class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
-              >
-                <div
-                  v-for="year in years"
-                  :key="year"
-                  @click="selectYear(year)"
-                  class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  {{ year }}
-                </div>
-              </div>
+          <div
+            v-if="yearDropdownOpen"
+            class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
+          >
+            <div
+              v-for="year in years"
+              :key="year"
+              @click="selectYear(year)"
+              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+            >
+              {{ year }}
             </div>
-            <div class="relative mr-4">
-              <div class="flex items-center gap-2.5">
-                <span class="text-grayColor text-base font-semibold"
-                  >Month</span
-                >
-                <button
-                  @click="toggleMonthDropdown"
-                  class="flex items-center focus:outline-none gap-2.5"
-                >
-                  <span class="text-base font-semibold text-dm-blue">{{
-                    selectedMonth
-                  }}</span>
-                  <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
-                </button>
-              </div>
+          </div>
+        </div>
+        <div class="relative mr-4">
+          <div class="flex items-center gap-2.5">
+            <span class="text-grayColor text-base font-semibold">Month</span>
+            <button
+              @click="toggleMonthDropdown"
+              class="flex items-center focus:outline-none gap-2.5"
+            >
+              <span class="text-base font-semibold text-dm-blue">{{ selectedMonth }}</span>
+              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
+            </button>
+          </div>
 
-              <div
-                v-if="monthDropdownOpen"
-                class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
-              >
-                <div
-                  v-for="month in months"
-                  :key="month"
-                  @click="selectMonth(month)"
-                  class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                >
-                  {{ month }}
-                </div>
-              </div>
+          <div
+            v-if="monthDropdownOpen"
+            class="static bottom-0 top-0 left-0 right-0 z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
+          >
+            <div
+              v-for="month in months"
+              :key="month"
+              @click="selectMonth(month)"
+              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+            >
+              {{ month }}
             </div>
-            <div class="relative">
-              <button
-                @click="toggleFilter"
-                class="flex flex-row items-center border-0 gap-3 text-sm leading-5 font-semibold"
-                :class="showFilters ? 'text-vivid-purple' : 'text-gray-600'"
-              >
-                Filters by
-                <img
-                  :src="filterIcon"
-                  alt="Filter Icon"
-                  class="icon"
-                  :class="showFilters ? 'filter-icon-active' : ''"
-                />
-              </button>
-              <div
-                v-if="showFilters"
-                ref="dropdownRef"
-                class="modal-content shadow-soft-blue !bg-white-100 flex-row items-center absolute min-w-64"
-              >
-                <ThemeCheckbox
-                  :options="sortOptions"
-                  v-model="selectedSort"
-                  name="sort-options"
-                />
-              </div>
-            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <button
+            @click="toggleFilter"
+            class="flex flex-row items-center border-0 gap-3 text-sm leading-5 font-semibold"
+            :class="showFilters ? 'text-vivid-purple' : 'text-gray-600'"
+          >
+            Filters by
+            <img
+              :src="filterIcon"
+              alt="Filter Icon"
+              class="icon"
+              :class="showFilters ? 'filter-icon-active' : ''"
+            />
+          </button>
+          <div
+            v-if="showFilters"
+            ref="dropdownRef"
+            class="modal-content shadow-soft-blue !bg-white-100 flex-row items-center absolute min-w-64"
+          >
+            <ThemeCheckbox
+              :options="sortOptions"
+              v-model="selectedSort"
+              name="sort-options"
+            />
           </div>
         </div>
       </div>
       <div
-        class="col-md-4"
+        class="col-span-4"
         v-for="(card, index) in filteredCardList"
         :key="index"
       >
@@ -132,50 +124,67 @@
 </template>
 
 <script setup>
-import CompanyHeader from "../../components/CompanyHeader.vue";
-import VerticalCard from "../../components/common/VerticalCard/VerticalCard.vue";
-import ThemeCheckbox from "../../components/common/ThemeCheckbox/ThemeCheckbox.vue";
-import ChangeManagerModal from "../../components/common/ChangeManagerModal/ChangeManagerModal.vue";
+import { InputText, useToast } from "primevue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
-import { InputText } from "primevue";
-import RadioButton from "primevue/radiobutton";
-import searchIcon from "../../assets/image/icons/search.svg";
-import chevronDown from "../../assets/image/icons/chevron-down-2.svg";
+import api from "../../api";
 import filterIcon from "../../assets/image/icons/candle.svg";
+import chevronDown from "../../assets/image/icons/chevron-down-2.svg";
+import searchIcon from "../../assets/image/icons/search.svg";
+import CompanyHeader from "../../components/CompanyHeader.vue";
+import ChangeManagerModal from "../../components/common/ChangeManagerModal/ChangeManagerModal.vue";
+import ThemeCheckbox from "../../components/common/ThemeCheckbox/ThemeCheckbox.vue";
+import VerticalCard from "../../components/common/VerticalCard/VerticalCard.vue";
 
 const route = useRoute();
 const router = useRouter();
+const loading = ref(true);
+const error = ref(null);
 const showFilters = ref(false);
+const searchTerm = ref("");
+const toast = useToast();
+const cardList = ref([]);
 
 const goToVerticalDetails = () => {
-  const companyId = route.params.companyId;
-  router.push(`/super-admin/company-details/${companyId}/verticals/details`);
+  router.push(`/super-admin/company-details/${route.params.companyId}/verticals/details`);
 };
 
-const cardList = [
-  {
-    icon: "electronics-icon.png",
-    planType: "Yearly Plan",
-    title: "Electronics & home appliances",
-    totalRevenue: 23190,
-    activeOrders: 1298,
-    offersSubmitted: 410,
-    managerImage: "profile-pic.png",
-    managerName: "Jane Cooper",
-  },
-  {
-    icon: "electronics-icon.png",
-    planType: null,
-    title: "Home & Kitchen",
-    totalRevenue: 18250,
-    activeOrders: 1500,
-    offersSubmitted: 375,
-    managerImage: "profile-pic.png",
-    managerName: "Jane Cooper",
-  },
-  // Add more cards here if needed
-];
+const fetchData = async () => {
+  try {
+    let url = `/superadmin/user/verticals?user_id=${route.params.companyId}`;
+    const response = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${localStorage?.getItem("token")}`,
+      },
+    });
+    if (response?.status === 200) {
+      const { data, message } = response.data;
+      console.log(data, "response");
+      cardList.value = data;
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: message,
+        life: 3000,
+      });
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error("Error in fetchData:", err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+watch(() => searchTerm.value, (newVal, oldValue) => {
+  console.log(newVal, "newVal");
+});
+
+onMounted(() => {
+  nextTick(() => {
+    fetchData();
+  });
+});
 
 const searchQuery = ref("");
 const updateSearchQuery = (value) => {
@@ -184,8 +193,8 @@ const updateSearchQuery = (value) => {
 
 // Computed property for filtered cards based on search query
 const filteredCardList = computed(() => {
-  return cardList.filter((card) =>
-    card.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+  return cardList.value.filter((card) =>
+    card.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
@@ -221,6 +230,7 @@ const months = [
   "November",
   "December",
 ];
+
 const selectedMonth = ref("March");
 const monthDropdownOpen = ref(false);
 
