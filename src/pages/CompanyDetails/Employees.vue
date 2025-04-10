@@ -118,6 +118,7 @@ const columns = ref([
     icon: "chevron-down.svg",
     iconWidth: 10,
     iconHeight: 10,
+    class: "w-40"
   },
   { field: "status", header: "Status" },
   { field: "contact", header: ["Contact/ ", "Email"] },

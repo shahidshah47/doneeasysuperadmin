@@ -170,17 +170,17 @@ const statusOptions = [
 ];
 const columns = ref([
   { field: "id", header: "ID" },
-  { field: "companyName", header: "Organization Name" },
+  { field: "companyName", header: "Organization Name", class: "w-48" },
   { field: "fullName", header: "Full Name" },
   { field: "role", header: "Role" },
-  { field: "contact", header: ["Contact /", "Email"] },
+  { field: "contact", header: ["Contact /", "Email"], class: "w-52" },
   { field: "totalRevenue", header: ["Total Revenue ", "Generated"] },
   { field: "totalSpending", header: ["Total ", "Spending"] },
   { field: "status", header: "Status" },
   {
     field: "verticalsSubscribed",
     header: ["List of Verticals ", "Subscribed"],
-    class: "w-40",
+    class: "w-32",
   },
   {
     field: "registeredOn",
@@ -375,7 +375,7 @@ onMounted(() => {
             <span class="font-semibold text-dm-blue">{{
               data.contact.mobile
             }}</span>
-            <span class="text-primary font-semibold md:w-20 md:truncate">{{
+            <span class="text-primary font-semibold line-clamp-1">{{
               data.contact.email
             }}</span>
           </div>
