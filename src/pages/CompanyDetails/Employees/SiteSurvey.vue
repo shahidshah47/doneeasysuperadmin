@@ -158,33 +158,33 @@
       <template #actions="{ data }">
         <div class="flex gap-2">
           <button
-            class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+            class="border border-primary w-8 h-8 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
             @click="handleClickToDetails(data?.id)"
           >
             <img
               src="../../../assets/image/icons/eye-2.svg"
               alt="eye-icon"
-              class="w-4 h-4"
+              class="w-4.5 h-4.5"
             />
           </button>
           <button
-            class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+            class="border border-primary w-8 h-8 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
             @click="handleDelete(data?.id)"
           >
             <img
               src="../../../assets/image/icons/trash.svg"
               alt="eye-icon"
-              class="w-4 h-4"
+              class="w-4.5 h-4.5"
             />
           </button>
           <button
-            class="border border-primary w-7 h-7 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+            class="border border-primary w-8 h-8 rounded-3 bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
             @click="copyUrl(data?.id)"
           >
             <img
               src="../../../assets/image/icons/share.svg"
               alt="eye-icon"
-              class="w-4 h-4"
+              class="w-4.5 h-4.5"
             />
           </button>
         </div>

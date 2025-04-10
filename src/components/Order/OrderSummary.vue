@@ -9,7 +9,7 @@
       <div class="card border-0 rounded-3 flex-grow">
         <div class="card-body position-relative">
           <div
-            class="flex items-center gap-3 bg-blue-200 py-1 px-2 rounded-md w-[20%] mb-1"
+            class="flex items-center gap-3 bg-blue-200 py-1 px-2 rounded-md min-w-28 w-38 mb-1"
           >
             <p class="!text-sm !text-dm-blue font-semibold leading-5 mb-0">
               ID: {{ orderData.id }}
@@ -142,9 +142,9 @@
           </p>
         </div>
         <div class="flex space-x-3">
-          <div class="image-gallery">
+          <div class="image-gallery flex gap-2 flex-wrap">
             <img
-              v-for="(image, index) in orderData?.images"
+              v-for="(image, index) in orderData?.images.slice(0, 4)"
               :key="index"
               :src="image.file_path"
               alt="Order Image"
@@ -153,6 +153,7 @@
           </div>
         </div>
       </div>
+
       <div class="flex flex-1 flex-col">
         <h5 class="fw-semibold mt-3 !text-base !text-dm-blue">
           Order Location
@@ -165,7 +166,7 @@
               lng: Number(orderData?.address?.lng || 0),
             }"
             :address="orderData?.address?.address || 'No Address Available'"
-            buttonText="Open Map"
+            buttonText="View map"
           />
         </div>
       </div>
@@ -183,7 +184,10 @@
         </div>
 
         <div class="overflow-y-auto max-h-48 space-y-2">
-          <div v-for="(doc, index) in orderData.documents" :key="index">
+          <div
+            v-for="(doc, index) in orderData.documents.slice(0, 4)"
+            :key="index"
+          >
             <FileCard
               fileIcon="../../../assets/images2/file-icon.png"
               :fileName="doc.file_name"
@@ -192,13 +196,6 @@
           </div>
         </div>
       </div>
-
-      <DescriptionCard
-        title="Additional terms"
-        content="Custom content goes here..."
-        linkText="read more"
-        :lineClamp="3"
-      />
     </div>
   </div>
 </template>
@@ -211,6 +208,7 @@ import InfoDisplay from "../common/InfoDisplay/InfoDisplay.vue";
 import LocationCard from "../common/LocationCard/LocationCard.vue";
 import ProfileCard from "../common/ProfileCard/ProfileCard.vue";
 import SummaryCard from "../common/SummaryCard/SummaryCard.vue";
+import SectionHeading from "../common/SectionHeading/SectionHeading.vue";
 import { defineProps } from "vue";
 
 const getImageUrl = (path) => {

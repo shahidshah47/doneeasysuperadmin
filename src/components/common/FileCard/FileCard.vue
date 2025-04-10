@@ -1,7 +1,9 @@
 <template>
-  <div class="d-flex align-items-center bg-white border-0 rounded-4 mb-3">
+  <div
+    class="flex items-center bg-white border-0 rounded-4 mb-3 overflow-hidden"
+  >
     <div
-      class="d-flex bg-success-subtle justify-content-center p-3 rounded-start-4"
+      class="d-flex bg-success-subtle justify-content-center p-3 rounded-start-4 min-w-16"
     >
       <img
         :src="getImageUrl(fileIcon)"
@@ -10,9 +12,11 @@
         style="width: 30px"
       />
     </div>
-    <div>
-      <p class="text-xs mb-0 ms-3">{{ fileName }}</p>
-      <p class="text-secondary mb-0 ms-3">{{ fileSize }}</p>
+    <div class="ml-3">
+      <p class="text-sm font-semibold text-dm-blue mb-0 truncate">
+        {{ fileName }}
+      </p>
+      <p class="text-vivid-purple mb-0 text-xs font-normal">{{ fileSize }}</p>
     </div>
 
     <div class="d-flex align-items-center cursor-pointer gap-2 me-2.5 ms-auto">

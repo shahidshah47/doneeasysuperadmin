@@ -1,6 +1,8 @@
 <template>
-  <div class="company-details">
-    <CompanyHeader />
+  <div class="container-fluid company-details">
+    <div class="row">
+      <CompanyHeader />
+    </div>
     <div class="grid grid-cols-12 gap-3">
       <div class="col-span-6 col-start-8 flex items-center gap-6">
         <div class="relative flex-1 min-w-0 max-w-80 ml-auto">
@@ -16,60 +18,62 @@
             class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
         </div>
-<!--        <div class="relative mr-4">-->
-<!--          <div class="flex items-center gap-2.5">-->
-<!--            <span class="text-grayColor text-base font-semibold">Year</span>-->
-<!--            <button-->
-<!--              @click="toggleYearDropdown"-->
-<!--              class="flex items-center focus:outline-none gap-2.5"-->
-<!--            >-->
-<!--              <span class="text-base font-semibold text-dm-blue">{{-->
-<!--                selectedYear-->
-<!--              }}</span>-->
-<!--              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />-->
-<!--            </button>-->
-<!--          </div>-->
+        <div class="relative mr-4">
+          <div class="flex items-center gap-2.5">
+            <span class="text-grayColor text-base font-semibold">Year</span>
+            <button
+              @click="toggleYearDropdown"
+              class="flex items-center focus:outline-none gap-2.5"
+            >
+              <span class="text-base font-semibold text-dm-blue">{{
+                selectedYear
+              }}</span>
+              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
+            </button>
+          </div>
 
-<!--          <div-->
-<!--            v-if="yearDropdownOpen"-->
-<!--            class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"-->
-<!--          >-->
-<!--            <div-->
-<!--              v-for="year in years"-->
-<!--              :key="year"-->
-<!--              @click="selectYear(year)"-->
-<!--              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"-->
-<!--            >-->
-<!--              {{ year }}-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="relative mr-4">-->
-<!--          <div class="flex items-center gap-2.5">-->
-<!--            <span class="text-grayColor text-base font-semibold">Month</span>-->
-<!--            <button-->
-<!--              @click="toggleMonthDropdown"-->
-<!--              class="flex items-center focus:outline-none gap-2.5"-->
-<!--            >-->
-<!--              <span class="text-base font-semibold text-dm-blue">{{ selectedMonth }}</span>-->
-<!--              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />-->
-<!--            </button>-->
-<!--          </div>-->
+          <div
+            v-if="yearDropdownOpen"
+            class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
+          >
+            <div
+              v-for="year in years"
+              :key="year"
+              @click="selectYear(year)"
+              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+            >
+              {{ year }}
+            </div>
+          </div>
+        </div>
+        <div class="relative mr-4">
+          <div class="flex items-center gap-2.5">
+            <span class="text-grayColor text-base font-semibold">Month</span>
+            <button
+              @click="toggleMonthDropdown"
+              class="flex items-center focus:outline-none gap-2.5"
+            >
+              <span class="text-base font-semibold text-dm-blue">{{
+                selectedMonth
+              }}</span>
+              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
+            </button>
+          </div>
 
-<!--          <div-->
-<!--            v-if="monthDropdownOpen"-->
-<!--            class="static bottom-0 top-0 left-0 right-0 z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"-->
-<!--          >-->
-<!--            <div-->
-<!--              v-for="month in months"-->
-<!--              :key="month"-->
-<!--              @click="selectMonth(month)"-->
-<!--              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"-->
-<!--            >-->
-<!--              {{ month }}-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+          <div
+            v-if="monthDropdownOpen"
+            class="static bottom-0 top-0 left-0 right-0 z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
+          >
+            <div
+              v-for="month in months"
+              :key="month"
+              @click="selectMonth(month)"
+              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+            >
+              {{ month }}
+            </div>
+          </div>
+        </div>
         <div class="relative">
           <button
             @click="toggleFilter"
@@ -98,11 +102,7 @@
           </div>
         </div>
       </div>
-      <div
-        class="col-span-4"
-        v-for="(card, index) in cardList"
-        :key="index"
-      >
+      <div class="col-span-4" v-for="(card, index) in cardList" :key="index">
         <VerticalCard :cardData="card" :onClick="goToVerticalDetails" />
       </div>
       <div class="col-span-12" v-if="cardList.length === 0">
@@ -121,13 +121,20 @@
         { name: 'Jenny Wilson', image: 'profile-pic.png' },
       ]"
     />
-<!--      @change-manager="handleManagerChange"-->
+    <!--      @change-manager="handleManagerChange"-->
   </div>
 </template>
 
 <script setup>
 import { InputText, useToast } from "primevue";
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "../../api";
 import filterIcon from "../../assets/image/icons/candle.svg";
@@ -137,7 +144,6 @@ import CompanyHeader from "../../components/CompanyHeader.vue";
 import ChangeManagerModal from "../../components/common/ChangeManagerModal/ChangeManagerModal.vue";
 import ThemeCheckbox from "../../components/common/ThemeCheckbox/ThemeCheckbox.vue";
 import VerticalCard from "../../components/common/VerticalCard/VerticalCard.vue";
-import {debounce} from "../../utils/helper.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -169,15 +175,25 @@ const sortOptions = [
     value: { param: "orders", val: "asc" },
     label: "Lower To Higher Active Orders.",
   },
-  { id: "sort5", value: { param: "name", val: "asc" }, label: "Vertical Name A - Z" },
-  { id: "sort6", value: { param: "name", val: "desc" }, label: "Vertical Name Z - A" },
+  {
+    id: "sort5",
+    value: { param: "name", val: "asc" },
+    label: "Vertical Name A - Z",
+  },
+  {
+    id: "sort6",
+    value: { param: "name", val: "desc" },
+    label: "Vertical Name Z - A",
+  },
 ];
 
 const goToVerticalDetails = () => {
-  router.push(`/super-admin/company-details/${route.params.companyId}/verticals/details`);
+  router.push(
+    `/super-admin/company-details/${route.params.companyId}/verticals/details`
+  );
 };
 
-const fetchData = async (search = '', sorting = null) => {
+const fetchData = async () => {
   try {
     let url = `/superadmin/user/verticals?user_id=${route.params.companyId}&search=${search}`;
     if (sorting) {
@@ -206,9 +222,12 @@ const fetchData = async (search = '', sorting = null) => {
   }
 };
 
-const handleSelectSort = (value) => {
-  selectedSort.value = value;
-}
+watch(
+  () => searchTerm.value,
+  (newVal, oldValue) => {
+    console.log(newVal, "newVal");
+  }
+);
 
 onMounted(() => {
   nextTick(() => {
@@ -221,16 +240,22 @@ const updateSearchQuery = (value) => {
 };
 
 const debouncedFetch = debounce((val) => {
-  fetchData(val)
+  fetchData(val);
 }, 500);
 
-watch(() => searchQuery.value, (newVal, oldValue) => {
-  debouncedFetch(newVal);
-});
+watch(
+  () => searchQuery.value,
+  (newVal, oldValue) => {
+    debouncedFetch(newVal);
+  }
+);
 
-watch(() => selectedSort.value, (val) => {
-  fetchData(searchQuery.value, val);
-});
+watch(
+  () => selectedSort.value,
+  (val) => {
+    fetchData(searchQuery.value, val);
+  }
+);
 
 // Year dropdown
 const years = [2021, 2022, 2023, 2024, 2025];

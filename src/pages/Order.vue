@@ -23,6 +23,8 @@ import { toRaw } from "vue";
 import { watch } from "vue";
 import StatusButtons from "../components/common/StatusButtons/StatusButtons.vue";
 import SearchAndFilter from "../components/common/SearchAndFilter/SearchAndFilter.vue";
+import Loader from "../components/common/Loader/Loader.vue";
+
 const store = useCompanyStore();
 const ordersData = ref([]);
 const loading = ref(true);
@@ -55,7 +57,7 @@ const ORDER_TYPES = {
 };
 
 const fetchData = async (id, page, perPage = 20) => {
-  console.log(id, page, "id and page");
+  loading.value = true;
   try {
     let url = `/superadmin/orders?status=${id}&page=${page}&per_page=${perPage}`;
 
@@ -112,6 +114,8 @@ const fetchData = async (id, page, perPage = 20) => {
   } catch (err) {
     error.value = "Error fetching data";
     console.error("Error in fetchData:", err);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -200,7 +204,8 @@ const typeClasses = {
 </script>
 
 <template>
-  <div>
+  <Loader v-if="loading" />
+  <div v-else>
     <div class="flex justify-between items-center mb-4">
       <div class="fs-4 fw-bold">Order</div>
     </div>
@@ -297,11 +302,11 @@ const typeClasses = {
         </template>
 
         <template #expectedStartDate="{ data }">
-          <span>{{ data.expectedStartDate }}</span>
+          <span class="whitespace-nowrap">{{ data.expectedStartDate }}</span>
         </template>
 
         <template #expectedEndDate="{ data }">
-          <span>{{ data.expectedEndDate }}</span>
+          <span class="whitespace-nowrap">{{ data.expectedEndDate }}</span>
         </template>
 
         <template #noOfDays="{ data }">
@@ -321,7 +326,9 @@ const typeClasses = {
         </template>
 
         <template #chats="{ data }">
-          <span class="!font-semibold !text-rich-navy">{{ data.chats }}</span>
+          <span class="!font-semibold !text-rich-navy whitespace-nowrap">{{
+            data.chats
+          }}</span>
         </template>
 
         <template #surveyRequest="{ data }">
@@ -343,13 +350,13 @@ const typeClasses = {
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary w-7 h-7 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-xl bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id, data?.type)"
             >
               <img
                 src="../assets/image/icons/eye-2.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
           </div>

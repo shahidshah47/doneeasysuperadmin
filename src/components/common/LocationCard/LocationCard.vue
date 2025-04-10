@@ -4,12 +4,12 @@
       <div class="flex justify-between items-center">
         <p class="text-primary mb-0 flex flex-row items-center gap-2">
           <i class="fa-location-dot fa-solid"></i>
-          <span class="!text-dm-blue font-normal text-base font-theme">
+          <span class="!text-dm-blue font-normal text-sm font-theme">
             {{ address }}
           </span>
         </p>
         <p
-          class="!text-vivid-purple text-uppercase fw-bold !text-sm mb-0 ms-auto cursor-pointer"
+          class="!text-vivid-purple uppercase whitespace-nowrap !font-bold !text-xs mb-0 ms-auto cursor-pointer"
           @click="viewMap"
         >
           {{ buttonText }}
@@ -23,7 +23,12 @@
         />
       </div>
       <div v-if="props.location">
-        <GoogleMapComponent :mapCustomStyles="true" :height="180" :location="props.location" :iconUrl="'/location-marker.svg'" />
+        <GoogleMapComponent
+          :mapCustomStyles="true"
+          :height="180"
+          :location="props.location"
+          :iconUrl="'/location-marker.svg'"
+        />
       </div>
     </div>
   </div>
@@ -52,7 +57,7 @@ const props = defineProps({
   },
   location: {
     type: Object,
-  }
+  },
 });
 
 const imageUrl = computed(() => new URL(props.imageSrc, import.meta.url).href);

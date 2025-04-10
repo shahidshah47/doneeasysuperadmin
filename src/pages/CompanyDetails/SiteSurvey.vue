@@ -1,7 +1,11 @@
 <template>
-  <div class="company-details">
-    <!-- Company Info and Stats -->
-    <CompanyHeader />
+  <Loader v-if="loading" />
+
+  <div class="container-fluid company-details" v-else>
+    <div class="row">
+      <!-- Company Info and Stats -->
+      <CompanyHeader />
+    </div>
     <div class="p-3 mb-1 bg-white rounded-3">
       <ThemeDatatable
         :value="siteSurveysData"
@@ -28,10 +32,7 @@
               />
             </div>
             <div class="flex gap-3 items-center w-full col-span-4">
-              <SearchAndFilter
-                v-model="searchTerm"
-                placeholder="Search"
-              />
+              <SearchAndFilter v-model="searchTerm" placeholder="Search" />
             </div>
           </div>
         </template>
@@ -113,33 +114,33 @@
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent flex justify-center items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent flex justify-center items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
               <img
                 src="../../assets/image/icons/eye-2.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent flex justify-center items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent flex justify-center items-center cursor-pointer"
               @click="handleDelete(data?.id)"
             >
               <img
                 src="../../assets/image/icons/trash.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent flex justify-center items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent flex justify-center items-center cursor-pointer"
               @click="copyUrl(data?.id)"
             >
               <img
                 src="../../assets/image/icons/share.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
           </div>
@@ -200,6 +201,7 @@ import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFi
 import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
 import api from "../../api";
 import { convertSiteSurveyData, debounce } from "../../utils/helper";
+import Loader from "../../components/common/Loader/Loader.vue";
 
 const selectedSurvey = ref();
 const router = useRouter();
@@ -232,11 +234,8 @@ const pagination = ref({
   links: [],
 });
 
-const handleClickToDetails = (id) => {
-  router.push("/super-admin/company-details/" + route.params.companyId + "/site-survey/" + id + "/details");
-};
-
-const fetchData = async (id, page = 1, perPage = null, search = '') => {
+const fetchData = async (id, page = 1, perPage = null, search = "") => {
+  loading.value = true;
   try {
     let url = `/superadmin/user/site-surveys?user_id=${route.params.companyId}&status=${id}&page=${page}&search=${search}`;
     if (perPage) {
@@ -274,17 +273,22 @@ const fetchData = async (id, page = 1, perPage = null, search = '') => {
   } catch (err) {
     error.value = "Error fetching data";
     console.error("Error in fetchData:", err);
+  } finally {
+    loading.value = false;
   }
 };
 
 const debouncedFetch = debounce((val) => {
-  fetchData(statusBtn.value, 1, null, val)
+  fetchData(statusBtn.value, 1, null, val);
 }, 500);
 
-watch(() => searchTerm.value, (newVal, oldValue) => {
-  console.log(newVal, oldValue, "newVal and oldValue");
-  debouncedFetch(newVal);
-});
+watch(
+  () => searchTerm.value,
+  (newVal, oldValue) => {
+    console.log(newVal, oldValue, "newVal and oldValue");
+    debouncedFetch(newVal);
+  }
+);
 
 onMounted(() => {
   nextTick(() => {
@@ -341,7 +345,6 @@ const columns = ref([
 ]);
 
 const handleDelete = async (id) => {
-  searchTerm.value = '';
+  searchTerm.value = "";
 };
-
 </script>

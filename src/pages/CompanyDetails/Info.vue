@@ -1,5 +1,7 @@
 <template>
-  <div class="company-details">
+  <Loader v-if="loading" />
+
+  <div class="company-details" v-else>
     <!-- Company Info and Stats -->
     <CompanyHeader />
 
@@ -113,10 +115,10 @@
             >+ Add New</a
           >
         </div>
-        <div
-          class="bg-white py-4 pl-4 pr-2 rounded-xl flex-1"
-        >
-          <div class="max-h-[45rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3">
+        <div class="bg-white py-4 pl-4 pr-2 rounded-xl flex-1">
+          <div
+            class="max-h-[45rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3"
+          >
             <div
               v-for="(user, index) in infoDetails?.company?.users"
               class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start"
@@ -179,13 +181,17 @@
                 :buttonType="'primary'"
               />
             </div>
-            <div class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start" 
-              v-if="infoDetails?.company?.addresses?.length === 0">
+            <div
+              class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start"
+              v-if="infoDetails?.company?.addresses?.length === 0"
+            >
               <div class="inline-flex flex-col">
                 <p class="text-xs font-normal text-vivid-purple mb-1">
                   Main Office
                 </p>
-                <p class="!font-bold !text-base m-0">{{ infoDetails?.company.address }}</p>
+                <p class="!font-bold !text-base m-0">
+                  {{ infoDetails?.company.address }}
+                </p>
               </div>
               <StyledButton
                 :text="' View Details'"
@@ -309,33 +315,38 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content border-0 rounded-4">
         <div
-          class="modal-header border-0 rounded-top-4"
+          class="modal-header border-0 rounded-top-4 flex items-center justify-between"
           style="background-color: #f2f4fb"
         >
-          <h5 class="modal-title" id="addAdminModalLabel">Add Admin/Manager</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <h5 class="!text-lg !font-bold mb-0" id="addAdminModalLabel">
+            Add Admin/Manager
+          </h5>
+          <button type="button" data-bs-dismiss="modal" aria-label="Close">
+            <i class="fa-solid fa-xmark text-dm-blue"></i>
+          </button>
         </div>
 
         <div class="modal-body">
           <div class="row">
             <!-- Profile Picture -->
             <div class="col-12 text-center">
-              <div class="profile-picture mb-3">
+              <div
+                class="mb-3 w-[88px] h-[88px] shadow-lavendar-card border-4 border-solid border-white-100 rounded-3xl relative"
+              >
                 <img
                   :src="getImagePath('profile-pic.webp')"
-                  class="img-fluid rounded-circle"
+                  class="w-full h-full object-cover rounded-3xl"
                   alt="Profile Picture"
                 />
                 <button
-                  class="btn btn-light btn-sm mt-2"
+                  class="w-8 h-8 bg-white-100 !rounded-lg flex items-center justify-center absolute z-20 -bottom-2 -right-3"
                   @click="uploadPicture"
                 >
-                  <i class="fa fa-camera"></i> Change Photo
+                  <img
+                    src="../../assets/image/icons/camera-2.svg "
+                    alt="camera-icon"
+                    class="w-5 h-5"
+                  />
                 </button>
               </div>
             </div>
@@ -427,7 +438,11 @@
                   style="margin-top: 3%"
                   @click="togglePasswordVisibility('password')"
                 >
-                  <i class="fa fa-eye text-primary"></i>
+                  <img
+                    src="../../assets/image/icons/eye-2.svg"
+                    alt="eye-icon"
+                    class="w-4.5 h-4.5"
+                  />
                 </span>
               </div>
             </div>
@@ -448,7 +463,11 @@
                   style="margin-top: 3%"
                   @click="togglePasswordVisibility('confirmPassword')"
                 >
-                  <i class="fa fa-eye text-primary"></i>
+                  <img
+                    src="../../assets/image/icons/eye-2.svg"
+                    alt="eye-icon"
+                    class="w-4.5 h-4.5"
+                  />
                 </span>
               </div>
             </div>
@@ -458,21 +477,26 @@
           <div class="upload-section mt-4">
             <div class="d-flex align-items-center justify-content-center my-4">
               <div class="flex-grow-1 border-bottom"></div>
-              <span class="mx-2 text-muted fw-bold">Upload Documents</span>
+              <span class="mx-2 text-dm-blue fw-semibold"
+                >Upload Documents</span
+              >
               <div class="flex-grow-1 border-bottom"></div>
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Upload Emirates ID (Optional)</label>
+              <label class="form-label"
+                >Upload Emirates ID
+                <span class="text-grayColor text-xs font-semibold"
+                  >(Optional)</span
+                ></label
+              >
               <div class="row">
                 <div
                   class="col-md-6"
                   v-for="file in admin.emiratesId"
                   :key="file.name"
                 >
-                  <div
-                    class="d-flex align-items-center border border-1 rounded-4"
-                  >
+                  <div class="d-flex align-items-center border rounded-4">
                     <!-- Icon and File Name Section -->
                     <div
                       class="bg-success-subtle p-2 rounded-start-4 d-flex justify-content-center"
@@ -484,14 +508,31 @@
                         style="width: 30px"
                       />
                     </div>
-                    <span class="ms-3">{{ file.name }}</span>
+                    <div class="ml-3">
+                      <p
+                        class="text-sm font-semibold text-dm-blue mb-0 truncate"
+                      >
+                        {{ file.name }}
+                      </p>
+                      <p class="text-vivid-purple mb-0 text-xs font-normal">
+                        {{ file.size }}
+                      </p>
+                    </div>
 
                     <!-- Icons Section -->
                     <div
                       class="ms-auto me-3 d-flex align-items-center gap-2 cursor-pointer"
                     >
-                      <i class="fa fa-eye"></i>
-                      <i class="fa fa-trash"></i>
+                      <img
+                        src="../../assets/image/icons/eye.svg"
+                        alt="eye-icon"
+                        class="w-4.5 h-4.5"
+                      />
+                      <img
+                        src="../../assets/image/icons/Delete.png"
+                        alt="eye-icon"
+                        class="w-4.5 h-4.5"
+                      />
                     </div>
                   </div>
                 </div>
@@ -499,16 +540,19 @@
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Upload Visa (Optional)</label>
+              <label class="form-label"
+                >Upload Visa
+                <span class="text-grayColor text-xs font-semibold"
+                  >(Optional)</span
+                ></label
+              >
               <div class="row">
                 <div
                   class="col-md-6"
                   v-for="file in admin.visa"
                   :key="file.name"
                 >
-                  <div
-                    class="d-flex align-items-center border border-1 rounded-4"
-                  >
+                  <div class="d-flex align-items-center border rounded-4">
                     <!-- Icon and File Name Section -->
                     <div
                       class="bg-success-subtle p-2 rounded-start-4 d-flex justify-content-center"
@@ -520,14 +564,31 @@
                         style="width: 30px"
                       />
                     </div>
-                    <span class="ms-3">{{ file.name }}</span>
+                    <div class="ml-3">
+                      <p
+                        class="text-sm font-semibold text-dm-blue mb-0 truncate"
+                      >
+                        {{ file.name }}
+                      </p>
+                      <p class="text-vivid-purple mb-0 text-xs font-normal">
+                        {{ file.size }}
+                      </p>
+                    </div>
 
                     <!-- Icons Section -->
                     <div
                       class="ms-auto me-3 d-flex align-items-center gap-2 cursor-pointer"
                     >
-                      <i class="fa fa-eye"></i>
-                      <i class="fa fa-trash"></i>
+                      <img
+                        src="../../assets/image/icons/eye.svg"
+                        alt="eye-icon"
+                        class="w-4.5 h-4.5"
+                      />
+                      <img
+                        src="../../assets/image/icons/Delete.png"
+                        alt="eye-icon"
+                        class="w-4.5 h-4.5"
+                      />
                     </div>
                   </div>
                 </div>
@@ -583,6 +644,7 @@ import GoogleMapComponent from "../../components/common/GoogleMapComponent.vue";
 import { GoogleMap, Marker } from "vue3-google-map";
 import { useToast } from "primevue";
 import StyledButton from "../../components/common/StyledButton/StyledButton.vue";
+import Loader from "../../components/common/Loader/Loader.vue";
 
 const route = useRoute();
 const loading = ref(true);

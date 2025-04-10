@@ -4,10 +4,7 @@ import {nextTick, onMounted, ref, watch} from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { FilterMatchMode } from "@primevue/core/api";
-import {
-  Paginator,
-  useToast
-} from "primevue";
+import { Paginator, useToast } from "primevue";
 import Dropdown from "primevue/dropdown";
 import api from "../../api";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
@@ -42,7 +39,7 @@ const pagination = ref({
   links: [],
 });
 
-const fetchData = async (id, page = 1, perPage = null, search = '') => {
+const fetchData = async (id, page = 1, perPage = null, search = "") => {
   console.log(id, page, "id and page");
   try {
     let url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&search=${search}`;
@@ -269,10 +266,7 @@ const typeClasses = {
               />
             </div>
             <div class="flex gap-3 items-center w-full col-span-4">
-              <SearchAndFilter
-                v-model="searchTerm"
-                placeholder="Search"
-              />
+              <SearchAndFilter v-model="searchTerm" placeholder="Search" />
             </div>
           </div>
         </template>
@@ -381,33 +375,33 @@ const typeClasses = {
         <template #actions="{ data }">
           <div class="flex gap-2">
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleClickToDetails(data?.id)"
             >
               <img
                 src="../../assets/image/icons/eye-2.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="handleDelete(data?.id)"
             >
               <img
                 src="../../assets/image/icons/trash.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
             <button
-              class="border border-primary w-7 h-7 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
+              class="border border-primary w-8 h-8 !rounded-[10px] bg-transparent d-flex justify-content-center align-items-center cursor-pointer"
               @click="copyUrl(data?.id)"
             >
               <img
                 src="../../assets/image/icons/share.svg"
                 alt="eye-icon"
-                class="w-4 h-4"
+                class="w-4.5 h-4.5"
               />
             </button>
           </div>

@@ -261,7 +261,10 @@ export const convertSiteSurveyData = (site_survey) => {
 export const convertEmployeeUsersData = (empUser) => {
   return {
     id: empUser.id,
-    employeeName: { name: empUser.name, image: empUser.profile_picture.file_path },
+    employeeName: {
+      name: empUser.name,
+      image: empUser.profile_picture.file_path,
+    },
     role: empUser.designation,
     vertical: empUser.vertical_count ?? 0,
     status: "Active",
@@ -274,7 +277,7 @@ export const convertEmployeeUsersData = (empUser) => {
       image: "Avatar.png",
     },
   };
-}
+};
 
 export const getSiteSurveyStatus = (status) => {
   switch (status) {
@@ -329,7 +332,11 @@ export const getAppointProgressStatus = (status) => {
   }
 };
 
-export const getLeadTime = (time) => formatDateAndTime(time.split(' ')[0], time.search('hour') > -1 ? time : time.split(' ')[1]);
+export const getLeadTime = (time) =>
+  formatDateAndTime(
+    time.split(" ")[0],
+    time.search("hour") > -1 ? time : time.split(" ")[1]
+  );
 export const formatDateAndTime = (inputDate, inputTime = null) => {
   // Part 1: Convert date to "Sat, 19 Nov 2023" format
   const date = new Date(inputDate);
@@ -473,11 +480,11 @@ export const formatCompactDateTime = (input) => {
 };
 
 export const debounce = (func, delay) => {
-  let timer
+  let timer;
   return function (...args) {
-    clearTimeout(timer)
+    clearTimeout(timer);
     timer = setTimeout(() => {
-      func.apply(this, args)
-    }, delay)
-  }
-}
+      func.apply(this, args);
+    }, delay);
+  };
+};

@@ -6,20 +6,20 @@
     </div>
     <div class="d-flex gap-3">
       <button
-        class="bg-vivid-purple text-white-100 align-items-center !rounded-lg px-3 py-0 !uppercase font-semibold"
+        class="bg-vivid-purple text-white-100 align-items-center !rounded-lg px-3 py-0 !uppercase !font-bold"
       >
         <span class="leading-0 me-2 text-sm"
           ><i class="fa-solid fa-plus"></i
         ></span>
         Add
       </button>
-      <button class="btn btn-light">
+      <button class="hover:bg-white-100 p-2.5 !rounded-full">
         <img :src="getImagePath('Messages.png')" />
       </button>
-      <button class="btn btn-light">
+      <button class="hover:bg-white-100 p-2.5 !rounded-full">
         <img :src="getImagePath('Messages (2).png')" />
       </button>
-      <button class="btn btn-light">
+      <button class="hover:bg-white-100 p-2.5 !rounded-full">
         <img :src="getImagePath('notification.png')" />
       </button>
     </div>

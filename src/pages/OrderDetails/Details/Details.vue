@@ -19,27 +19,32 @@
       >
     </button>
   </div>
-  <OrderSummary
-    v-if="orderData && activeTab === 'Summary'"
-    :orderData="orderData"
-  />
-  <OfferDetail v-if="orderData && activeTab === 'Offers'" />
+  <Loader v-if="loading" />
+  <div v-else>
+    <OrderSummary
+      v-if="orderData && activeTab === 'Summary'"
+      :orderData="orderData"
+    />
+    <OfferDetail v-if="offersData && activeTab === 'Offers'" />
+  </div>
 </template>
 
 <script setup>
 import { useToast } from "primevue/usetoast";
-import { ref, onMounted, watch, toRaw } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import api from "../../../api";
 import OrderSummary from "../../../components/Order/OrderSummary.vue";
 import OfferDetail from "../../../components/Order/OfferDetail.vue";
+import Loader from "../../../components/common/Loader/Loader.vue";
 
 const route = useRoute();
+const loading = ref(false);
 const orderId = ref(null);
 const toast = useToast();
 const activeTab = ref("Summary");
-
 const orderData = ref(null);
+const offersData = ref(null);
 
 const siteSurveyData = ref(null);
 
@@ -58,6 +63,7 @@ onMounted(() => {
 });
 
 const fetchOrderData = async () => {
+  loading.value = true;
   if (!orderId.value) return;
 
   let endpoint = "";
@@ -68,6 +74,9 @@ const fetchOrderData = async () => {
     endpoint = `/superadmin/order/${orderId.value}`;
     stateVar = orderData;
     useNestedData = true;
+  } else if (activeTab.value === "Offers") {
+    endpoint = `/superadmin/order/offers/list?order_id=${orderId.value}`;
+    stateVar = offersData;
   } else if (activeTab.value === "Site Survey") {
     endpoint = `/superadmin/order/site-surveys/list?order_id=${orderId.value}`;
     stateVar = siteSurveyData;
@@ -83,13 +92,17 @@ const fetchOrderData = async () => {
     });
 
     if (response?.status === 200) {
-      stateVar.value = useNestedData ? response.data.data : response.data;
+      stateVar.value = useNestedData ? response.data.data : response.data.data;
 
       const dataLength = Array.isArray(stateVar.value)
         ? stateVar.value.length
-        : null;
+        : 0;
+
+      // Find the correct tab and update its count
       const tab = tabs.value.find((t) => t.name === activeTab.value);
-      if (tab) tab.count = dataLength;
+      if (tab) {
+        tab.count = dataLength;
+      }
 
       toast.add({
         severity: "success",
@@ -106,6 +119,8 @@ const fetchOrderData = async () => {
       detail: error.response?.data?.message || "Failed to retrieve data",
       life: 3000,
     });
+  } finally {
+    loading.value = false;
   }
 };
 
