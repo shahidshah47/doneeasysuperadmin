@@ -13,7 +13,7 @@
         :paymentDescription="paymentTerm.description"
         :paymentDate="formatDateAndTime(paymentTerm.created_at)?.formattedDate"
         currency="AED"
-        :amount="paymentTerm.amount"
+        :amount="formatWithCommas(paymentTerm.amount)"
         :statusClass="paymentTermsStatus(paymentTerm.status)?.gradient"
         :status="paymentTermsStatus(paymentTerm.status)?.statusText"
       />
@@ -80,7 +80,7 @@ import api from "../../../api";
 import { useToast } from "primevue";
 import {
   convertTimeTo12HourFormat,
-  formatDateAndTime,
+  formatDateAndTime, formatWithCommas,
   getOrdinalNumber,
 } from "../../../utils/helper";
 import { paymentTermsStatus } from "../../../utils/constants";

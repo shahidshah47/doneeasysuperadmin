@@ -1,12 +1,10 @@
 <template>
-  <div class="container-fluid company-details">
-    <div class="row">
-      <!-- Company Info and Stats -->
-      <keep-alive>
-        <CompanyHeader />
-      </keep-alive>
-    </div>
-    <div class="p-4 bg-white rounded-3 shadow relative">
+  <div class="company-details">
+    <!-- Company Info and Stats -->
+    <keep-alive>
+      <CompanyHeader />
+    </keep-alive>
+    <div class="p-4 bg-white rounded-3 relative">
       <ThemeDatatable
         :value="appointmentsData"
         v-model:selection="selectedAppointment"
@@ -289,7 +287,7 @@ onMounted(() => {
 });
 
 const handlePerPage = async (props) => {
-  fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
+  await fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
 };
 
 const handleFetchAppointment = (id) => {
@@ -348,7 +346,7 @@ const handleDelete = async (id) => {
         life: 3000,
       });
       searchTerm.value = '';
-      fetchData(statusBtn.value);
+      await fetchData(statusBtn.value);
     }
   } catch (err) {
     error.value = "Error fetching data";

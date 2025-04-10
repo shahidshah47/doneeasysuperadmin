@@ -1,9 +1,7 @@
 <template>
-  <div class="container-fluid company-details">
-    <div class="row">
-      <!-- Company Info and Stats -->
-      <CompanyHeader />
-    </div>
+  <div class="company-details">
+    <!-- Company Info and Stats -->
+    <CompanyHeader />
     <div class="p-3 mb-1 bg-white rounded-3">
       <ThemeDatatable
         :value="vendorData"

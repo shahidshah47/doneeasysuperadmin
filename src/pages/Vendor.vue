@@ -126,7 +126,7 @@ const fetchData = async (id, page, perPage = null, search = '') => {
         life: 3000,
       });
       companiesData.value = data?.map((item) => convertUserData(item));
-      store.setCompanies(transformData(data.data));
+      store.setCompanies(transformData(data));
     }
   } catch (err) {
     error.value = "Error fetching data";
