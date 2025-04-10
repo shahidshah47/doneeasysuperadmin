@@ -8,8 +8,6 @@
       <ThemeDatatable
         :value="siteSurveysData"
         v-model:selection="selectedSurvey"
-        v-model:filters="filters"
-        :filterFields="filterFields"
         :columns="columns"
         :paginator="true"
         :rows="20"
@@ -32,10 +30,7 @@
               />
             </div>
             <div class="flex gap-3 items-center w-full col-span-4">
-              <SearchAndFilter
-                v-model="filters['global'].value"
-                placeholder="Search"
-              />
+              <SearchAndFilter v-model="searchTerm" placeholder="Search" />
             </div>
           </div>
         </template>
@@ -193,7 +188,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import CompanyHeader from "../../components/CompanyHeader.vue";
 import ThemeDatatable from "../../components/common/ThemeDatatable/ThemeDatatable.vue";
 import Pagination from "../../components/common/Pagination/Pagination.vue";
@@ -203,7 +198,7 @@ import { useRoute, useRouter } from "vue-router";
 import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
 import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
 import api from "../../api";
-import { convertSiteSurveyData } from "../../utils/helper";
+import { convertSiteSurveyData, debounce } from "../../utils/helper";
 
 const selectedSurvey = ref();
 const router = useRouter();
@@ -233,6 +228,8 @@ const handleClickToDetails = (id) => {
   );
 };
 
+const searchTerm = ref("");
+
 const pagination = ref({
   currentPage: 0,
   lastPage: 0,
@@ -245,11 +242,14 @@ const pagination = ref({
   links: [],
 });
 
-const fetchData = async (id, page = 1, perPage = null) => {
+const fetchData = async (id, page = 1, perPage = null, search = "") => {
   try {
-    let url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}`;
+    let url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&search=${search}`;
     if (perPage) {
       url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}`;
+    }
+    if (perPage && search !== "") {
+      url = `/superadmin/user/site-surveys?user_id=${308}&status=${id}&page=${page}&per_page=${perPage}&search=${search}`;
     }
     const response = await api.get(url, {
       headers: {
@@ -283,6 +283,18 @@ const fetchData = async (id, page = 1, perPage = null) => {
   }
 };
 
+const debouncedFetch = debounce((val) => {
+  fetchData(statusBtn.value, 1, null, val);
+}, 500);
+
+watch(
+  () => searchTerm.value,
+  (newVal, oldValue) => {
+    console.log(newVal, oldValue, "newVal and oldValue");
+    debouncedFetch(newVal);
+  }
+);
+
 onMounted(() => {
   nextTick(() => {
     fetchData(statusBtn.value, 1);
@@ -290,10 +302,11 @@ onMounted(() => {
 });
 
 const handlePerPage = async (props) => {
-  fetchData(statusBtn.value, props[0], props[1]);
+  fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
 };
 
 const handleFetchSiteSurvey = (id) => {
+  searchTerm.value = "";
   fetchData(id, 1);
   statusBtn.value = id;
 };
@@ -336,19 +349,7 @@ const columns = ref([
   { field: "actions", header: "Action" },
 ]);
 
-const filters = ref({
-  id: { value: null, matchMode: FilterMatchMode.EQUALS },
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "organizationName.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "title.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  "verticle.name": { value: null, matchMode: FilterMatchMode.CONTAINS },
-  orderAmount: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  surveyStatus: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
-const getImagePath = (imageName) => {
-  return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
+const handleDelete = async (id) => {
+  searchTerm.value = "";
 };
-
-const handleDelete = async (id) => {};
 </script>
