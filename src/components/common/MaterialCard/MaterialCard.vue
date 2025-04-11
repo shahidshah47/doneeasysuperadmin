@@ -16,9 +16,14 @@
                 <InfoDisplay label="Total" :value="`AED ${formatWithCommas(data.total)}`" />
             </div>
 
-            <InfoDisplay label="Procurement/lead time"
-                :value="getLeadTime(data.delivery_time)?.formattedDate + ' ' + getLeadTime(data.delivery_time)?.formattedTime"
-            />
+            <InfoDisplay
+                label="Procurement/lead time"
+                v-if="data?.delivery_time"
+                :value="getLeadTime(data.delivery_time)?.formattedDate + ' ' + getLeadTime(data.delivery_time)?.formattedTime" />
+            <InfoDisplay
+                label="Procurement/lead time"
+                v-if="data?.procurement_time"
+                :value="getLeadTime(data.procurement_time)?.formattedDate" />
         </div>
     </div>
 </template>

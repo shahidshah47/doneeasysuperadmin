@@ -81,7 +81,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, defineProps, defineEmits, watch } from "vue";
+import {ref, computed, onMounted, onBeforeUnmount, defineProps, defineEmits, watch, getCurrentInstance} from "vue";
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import TextareaField from "../Inputs/TextareaField/TextareaField.vue";
@@ -106,7 +106,8 @@ const props = defineProps({
   itemNumber: String
 });
 
-const emit = defineEmits(["close"]);
+const instance = getCurrentInstance();
+const emit = defineEmits(["close", "submit"]);
 
 const schema = yup.object({
   unit_price: yup
@@ -145,11 +146,11 @@ watch(
   (newData) => {
     if (newData) {
       setFieldValue("id", newData.id);
-      setFieldValue("item_title", newData.item_title);
+      setFieldValue("item_title", newData.item_title || newData.item_no);
       setFieldValue("description", newData.description);
       setFieldValue("unit_price", newData.unit_price);
       setFieldValue("quantity", newData.quantity);
-      setFieldValue("delivery_time", newData.delivery_time);
+      setFieldValue("delivery_time", newData.delivery_time || newData.procurement_time);
       setFieldValue("total", Number(newData.quantity) * Number(newData.unit_price))
     } else {
       setFieldValue("item_title", props.itemNumber);
@@ -188,41 +189,46 @@ const closeModal = () => {
 };
 
 const onSubmit = handleSubmit(async (values) => {
-  // console.log("Form submitted successfully:", values);
-  let response;
-  if (id.value) {
-    response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/materials/add-update", {
-      ...values,
-      quantity: Number(values.quantity),
-      unit_price: Number(values.unit_price),
-      sub_total: values.total,
-      delivery_time: formatDateAtQuote(values.delivery_time)
-    });
+  console.log("Form submitted successfully:", values);
+  const hasSubmitListener = !!instance?.vnode.props?.onSubmit;
+  if (hasSubmitListener) {
+    emit('submit', values);
   } else {
-    response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/materials/add-update", {
-      item_title: values.item_title,
-      description: values.description,
-      quantity: Number(values.quantity),
-      unit_price: Number(values.unit_price),
-      sub_total: values.total,
-      delivery_time: formatDateAtQuote(values.delivery_time),
-      total: values.total
-    });
-  }
-  if (response && response?.status === 200) {
-    closeModal();
-    toast.add({
-      severity: "success",
-      summary: "Success",
-      detail: response?.data?.message,
-      life: 3000,
-    });
-  } else {
-    toast.error({
-      severity: "error",
-      summary: "Error",
-      detail: "Something went wrong!"
-    });
+    let response;
+    if (id.value) {
+      response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/materials/add-update", {
+        ...values,
+        quantity: Number(values.quantity),
+        unit_price: Number(values.unit_price),
+        sub_total: values.total,
+        delivery_time: formatDateAtQuote(values.delivery_time)
+      });
+    } else {
+      response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/materials/add-update", {
+        item_title: values.item_title,
+        description: values.description,
+        quantity: Number(values.quantity),
+        unit_price: Number(values.unit_price),
+        sub_total: values.total,
+        delivery_time: formatDateAtQuote(values.delivery_time),
+        total: values.total
+      });
+    }
+    if (response && response?.status === 200) {
+      closeModal();
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message,
+        life: 3000,
+      });
+    } else {
+      toast.error({
+        severity: "error",
+        summary: "Error",
+        detail: "Something went wrong!"
+      });
+    }
   }
 });
 
