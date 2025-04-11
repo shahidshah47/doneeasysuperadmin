@@ -264,8 +264,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Loader v-if="loading" />
-  <div v-else>
+  <div>
     <div class="flex justify-between items-center mb-4">
       <div class="text-xl font-semibold text-rich-navy m-0">Vendor</div>
       <div class="fs-4">

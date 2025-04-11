@@ -1,7 +1,5 @@
 <template>
-  <Loader v-if="loading" />
-
-  <div class="container-fluid company-details" v-else>
+  <div class="container-fluid company-details">
     <div class="row">
       <!-- Company Info and Stats -->
       <keep-alive>

@@ -19,8 +19,7 @@
       >
     </button>
   </div>
-  <Loader v-if="loading" />
-  <div v-else>
+  <div>
     <OrderSummary
       v-if="orderData && activeTab === 'Summary'"
       :orderData="orderData"
