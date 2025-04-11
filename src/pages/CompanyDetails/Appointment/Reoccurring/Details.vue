@@ -310,7 +310,7 @@
     <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails"
       :itemNumber="`Item No ` + (requestDetails?.materials.length + 1)"
       :appointOfferId="requestDetails?.id"
-      @close="handleCloseModal" />
+      @close="handleCloseModal" @submit="handleSubmit" />
   </div>
 
 </template>
@@ -323,7 +323,7 @@ import { useRoute } from "vue-router";
 import { useToast } from "primevue";
 import api from "../../../../api";
 import AppointmentDetailCards from "../../../../components/Appointment/AppointmentDetailCards.vue";
-import {formatDateAndTime, getOrderType} from "../../../../utils/helper.js";
+import {formatDateAndTime, formatDateAtQuote, getOrderType} from "../../../../utils/helper.js";
 import ProfileCard from "../../../../components/common/ProfileCard/ProfileCard.vue";
 import LocationCard from "../../../../components/common/LocationCard/LocationCard.vue";
 import SummaryCard from "../../../../components/common/SummaryCard/SummaryCard.vue";
@@ -380,6 +380,47 @@ const handleEditMaterial = (data) => {
 const toggleMaterialModal = () => {
   isMaterialDetails.value = true;
   document.body.classList.add("overflow-hidden");
+}
+
+const handleSubmit = async (values) => {
+  console.log(values, "values");
+  let response;
+  if (values?.id) {
+    const data = { ...values, item_no: values.item_title, procurement_time: formatDateAtQuote(values.delivery_time) };
+    delete data.item_title;
+    console.log(data, "data updated");
+    response = await api.post("/superadmin/user/appointment/request/" + requestDetails?.value.id + "/materials/add-update", {
+      ...data,
+      quantity: Number(values.quantity),
+      unit_price: Number(values.unit_price),
+      sub_total: values.total,
+    });
+  } else {
+    const data = { ...values, item_no: values.item_title, procurement_time: formatDateAtQuote(values.delivery_time) };
+    response = await api.post("/superadmin/user/appointment/request/" + requestDetails?.value.id + "/materials/add-update", {
+      ...data,
+      quantity: Number(values.quantity),
+      unit_price: Number(values.unit_price),
+      sub_total: values.total,
+      total: values.total
+    });
+  }
+  if (response && response?.status === 200) {
+    isMaterialDetails.value = false;
+    toast.add({
+      severity: "success",
+      summary: "Success",
+      detail: response?.data?.message,
+      life: 3000,
+    });
+  } else {
+    toast.error({
+      severity: "error",
+      summary: "Error",
+      detail: "Something went wrong!"
+    });
+  }
+  await fetchRequestDetails(requestDetails?.value?.id);
 }
 const fetchRequestDetails = async (id) => {
   try {
