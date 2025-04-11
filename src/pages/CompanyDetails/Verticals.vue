@@ -5,15 +5,15 @@
       <div class="col-span-6 col-start-8 flex items-center gap-6">
         <div class="relative flex-1 min-w-0 max-w-80 ml-auto">
           <InputText
-            :modelValue="searchQuery"
-            @update:modelValue="updateSearchQuery"
-            :placeholder="'Search'"
-            class="w-full !bg-white-100 !px-4 !py-2.5 pl-10 placeholder-grayColor !rounded-lg focus:outline-none !border-[0.5px] !border-solid !border-silver-lining"
+              :modelValue="searchQuery"
+              @update:modelValue="updateSearchQuery"
+              :placeholder="'Search'"
+              class="w-full !bg-white-100 !px-4 !py-2.5 pl-10 placeholder-grayColor !rounded-lg focus:outline-none !border-[0.5px] !border-solid !border-silver-lining"
           />
           <img
-            :src="searchIcon"
-            alt="Search"
-            class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
+              :src="searchIcon"
+              alt="Search"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
         </div>
         <!--        <div class="relative mr-4">-->
@@ -72,33 +72,37 @@
         <!--        </div>-->
         <div class="relative">
           <button
-            @click="toggleFilter"
-            class="flex flex-row items-center border-0 gap-3 text-sm leading-5 font-semibold"
-            :class="showFilters ? 'text-vivid-purple' : 'text-gray-600'"
+              @click="toggleFilter"
+              class="flex flex-row items-center border-0 gap-3 text-sm leading-5 font-semibold"
+              :class="showFilters ? 'text-vivid-purple' : 'text-gray-600'"
           >
             Filters by
             <img
-              :src="filterIcon"
-              alt="Filter Icon"
-              class="icon"
-              :class="showFilters ? 'filter-icon-active' : ''"
+                :src="filterIcon"
+                alt="Filter Icon"
+                class="icon"
+                :class="showFilters ? 'filter-icon-active' : ''"
             />
           </button>
           <div
-            v-if="showFilters"
-            ref="dropdownRef"
-            class="modal-content shadow-soft-blue !bg-white-100 flex-row items-center absolute min-w-64"
+              v-if="showFilters"
+              ref="dropdownRef"
+              class="modal-content shadow-soft-blue !bg-white-100 flex-row items-center absolute min-w-64"
           >
             <ThemeCheckbox
-              :options="sortOptions"
-              v-model="selectedSort"
-              name="sort-options"
-              @update:selected-value="handleSelectSort"
+                :options="sortOptions"
+                v-model="selectedSort"
+                name="sort-options"
+                @update:selected-value="handleSelectSort"
             />
           </div>
         </div>
       </div>
-      <div class="col-span-4" v-for="(card, index) in cardList" :key="index">
+      <div
+          class="col-span-4"
+          v-for="(card, index) in cardList"
+          :key="index"
+      >
         <VerticalCard :cardData="card" :onClick="goToVerticalDetails" />
       </div>
       <div class="col-span-12" v-if="cardList.length === 0">
@@ -107,11 +111,11 @@
     </div>
 
     <ChangeManagerModal
-      :currentManager="{
+        :currentManager="{
         name: 'Jane Cooper',
         image: 'profile-pic.png',
       }"
-      :managersList="[
+        :managersList="[
         { name: 'Jerome Bell', image: 'profile-pic.png' },
         { name: 'Jacob Jones', image: 'profile-pic.png' },
         { name: 'Jenny Wilson', image: 'profile-pic.png' },
@@ -123,14 +127,7 @@
 
 <script setup>
 import { InputText, useToast } from "primevue";
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import api from "../../api";
 import filterIcon from "../../assets/image/icons/candle.svg";
@@ -172,22 +169,12 @@ const sortOptions = [
     value: { param: "orders", val: "asc" },
     label: "Lower To Higher Active Orders.",
   },
-  {
-    id: "sort5",
-    value: { param: "name", val: "asc" },
-    label: "Vertical Name A - Z",
-  },
-  {
-    id: "sort6",
-    value: { param: "name", val: "desc" },
-    label: "Vertical Name Z - A",
-  },
+  { id: "sort5", value: { param: "name", val: "asc" }, label: "Vertical Name A - Z" },
+  { id: "sort6", value: { param: "name", val: "desc" }, label: "Vertical Name Z - A" },
 ];
 
 const goToVerticalDetails = () => {
-  router.push(
-    `/super-admin/company-details/${route.params.companyId}/verticals/details`
-  );
+  router.push(`/super-admin/company-details/${route.params.companyId}/verticals/details`);
 };
 
 const fetchData = async (search = "", sorting = null) => {
@@ -221,7 +208,7 @@ const fetchData = async (search = "", sorting = null) => {
 
 const handleSelectSort = (value) => {
   selectedSort.value = value;
-};
+}
 
 onMounted(() => {
   nextTick(() => {
@@ -234,22 +221,16 @@ const updateSearchQuery = (value) => {
 };
 
 const debouncedFetch = debounce((val) => {
-  fetchData(val);
+  fetchData(val)
 }, 500);
 
-watch(
-  () => searchQuery.value,
-  (newVal, oldValue) => {
-    debouncedFetch(newVal);
-  }
-);
+watch(() => searchQuery.value, (newVal, oldValue) => {
+  debouncedFetch(newVal);
+});
 
-watch(
-  () => selectedSort.value,
-  (val) => {
-    fetchData(searchQuery.value, val);
-  }
-);
+watch(() => selectedSort.value, (val) => {
+  fetchData(searchQuery.value, val);
+});
 
 // Year dropdown
 const years = [2021, 2022, 2023, 2024, 2025];
@@ -355,10 +336,10 @@ onBeforeUnmount(() => {
 
 .custom-radio:checked {
   background: linear-gradient(
-    98.24deg,
-    #9e21ee -10%,
-    #5925eb 64.63%,
-    #442ae8 116.94%
+      98.24deg,
+      #9e21ee -10%,
+      #5925eb 64.63%,
+      #442ae8 116.94%
   );
   border: none;
 }

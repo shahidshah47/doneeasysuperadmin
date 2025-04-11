@@ -119,7 +119,7 @@
             lng: Number(appointmentDetails?.offer?.order?.address?.lng),
           }"
           :address="appointmentDetails.offer.order.address.address"
-          buttonText="Open Map"
+          buttonText="View Map"
         />
       </div>
     </div>

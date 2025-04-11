@@ -21,7 +21,7 @@
     </div>
     <form @submit.prevent="onSubmit">
       <div
-        class="flex flex-col !bg-white-100 rounded-bl-2xl rounded-br-2xl py-3 shadow-soft-blue space-y-4"
+        class="flex flex-col !bg-white-100 rounded-bl-2xl rounded-br-2xl py-3 shadow-soft-blue space-y-4 overflow-y-auto vivid-scrollbar max-h-screen"
       >
         <div class="px-6 flex flex-col gap-3">
           <InputField
@@ -78,7 +78,11 @@
           class="flex justify-end gap-3 border-t-[1.5px] py-6 border-solid border-soft-pastel-blue px-6"
         >
           <ThemeButton label="Cancel" @click="closeModal" />
-          <ThemeButton :label="serviceDetails ? 'Update' : 'Save'" variant="primary" type="submit" />
+          <ThemeButton
+            :label="serviceDetails ? 'Update' : 'Save'"
+            variant="primary"
+            type="submit"
+          />
         </div>
       </div>
     </form>
@@ -118,7 +122,7 @@ const toast = useToast();
 const props = defineProps({
   serviceDetails: Object,
   appointOfferId: Number,
-  itemNumber: String
+  itemNumber: String,
 });
 
 const emit = defineEmits(["close"]);
@@ -172,7 +176,10 @@ watch(
       setFieldValue("unit_price", newData.unit_price);
       setFieldValue("quantity", newData.quantity);
       setFieldValue("delivery_time", newData.delivery_time);
-      setFieldValue("total", Number(newData.quantity) * Number(newData.unit_price))
+      setFieldValue(
+        "total",
+        Number(newData.quantity) * Number(newData.unit_price)
+      );
     } else {
       setFieldValue("item_number", props.itemNumber);
     }
@@ -213,24 +220,34 @@ const onSubmit = handleSubmit(async (values) => {
   // console.log(values, formatDateAtQuote(values.delivery_time), "values");
   let response;
   if (id.value) {
-    response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/services/add-update", {
-      ...values,
-      quantity: Number(values.quantity),
-      unit_price: Number(values.unit_price),
-      sub_total: values.total,
-      delivery_time: formatDateAtQuote(values.delivery_time)
-    });
+    response = await api.post(
+      "/superadmin/user/appointment/offer/" +
+        props.appointOfferId +
+        "/services/add-update",
+      {
+        ...values,
+        quantity: Number(values.quantity),
+        unit_price: Number(values.unit_price),
+        sub_total: values.total,
+        delivery_time: formatDateAtQuote(values.delivery_time),
+      }
+    );
   } else {
-    response = await api.post("/superadmin/user/appointment/offer/" + props.appointOfferId + "/services/add-update", {
-      title: values.title,
-      description: values.description,
-      quantity: Number(values.quantity),
-      unit_price: Number(values.unit_price),
-      sub_total: values.total,
-      item_number: values.item_number,
-      delivery_time: formatDateAtQuote(values.delivery_time),
-      total: values.total
-    });
+    response = await api.post(
+      "/superadmin/user/appointment/offer/" +
+        props.appointOfferId +
+        "/services/add-update",
+      {
+        title: values.title,
+        description: values.description,
+        quantity: Number(values.quantity),
+        unit_price: Number(values.unit_price),
+        sub_total: values.total,
+        item_number: values.item_number,
+        delivery_time: formatDateAtQuote(values.delivery_time),
+        total: values.total,
+      }
+    );
   }
   if (response && response?.status === 200) {
     closeModal();
@@ -244,7 +261,7 @@ const onSubmit = handleSubmit(async (values) => {
     toast.error({
       severity: "error",
       summary: "Error",
-      detail: "Something went wrong!"
+      detail: "Something went wrong!",
     });
   }
 });

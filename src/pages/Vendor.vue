@@ -354,7 +354,7 @@ onMounted(() => {
                   >Newbies</span
                 >
                 <img
-                  src="../assets/image/icons/Star-1.svg"
+                  src="../assets/image/icons/Star-1.svg "
                   alt="star icon"
                   class="w-4 h-4 absolute -top-2 right-1"
                 />

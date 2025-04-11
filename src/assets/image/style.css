@@ -731,22 +731,22 @@ img {
       font-size: 0.9em;
   }
 }
-.call-to-action {
-  background-color: #333;
-  color: #fff;
-  padding: 40px 20px;
-  text-align: center;
-}
+/*.call-to-action {*/
+/*  background-color: #333;*/
+/*  color: #fff;*/
+/*  padding: 40px 20px;*/
+/*  text-align: center;*/
+/*}*/
 
-.call-to-action h2 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-}
+/*.call-to-action h2 {*/
+/*  font-size: 2.5em;*/
+/*  margin-bottom: 20px;*/
+/*}*/
 
-.call-to-action p {
-  font-size: 1.2em;
-  margin-bottom: 30px;
-}
+/*.call-to-action p {*/
+/*  font-size: 1.2em;*/
+/*  margin-bottom: 30px;*/
+/*}*/
 
 .cta-button {
   display: inline-block;
@@ -766,13 +766,13 @@ img {
 
 /* Media Queries */
 @media (max-width: 768px) {
-  .call-to-action h2 {
-      font-size: 2em;
-  }
+  /*.call-to-action h2 {*/
+  /*    font-size: 2em;*/
+  /*}*/
 
-  .call-to-action p {
-      font-size: 1em;
-  }
+  /*.call-to-action p {*/
+  /*    font-size: 1em;*/
+  /*}*/
 
   .cta-button {
       font-size: 1em;
@@ -781,35 +781,35 @@ img {
 }
 
 @media (max-width: 480px) {
-  .call-to-action h2 {
-      font-size: 1.5em;
-  }
+  /*.call-to-action h2 {*/
+  /*    font-size: 1.5em;*/
+  /*}*/
 
-  .call-to-action p {
-      font-size: 0.9em;
-  }
+  /*.call-to-action p {*/
+  /*    font-size: 0.9em;*/
+  /*}*/
 
   .cta-button {
       font-size: 0.9em;
       padding: 10px 20px;
   }
 }
-.call-to-action {
-  background-image: url(images/shutterstock_261128594\ \(1\).webp);
-  color: #fff;
-  padding: 40px 20px;
-  text-align: center;
-}
+/*.call-to-action {*/
+/*  background-image: url(images/shutterstock_261128594\ \(1\).webp);*/
+/*  color: #fff;*/
+/*  padding: 40px 20px;*/
+/*  text-align: center;*/
+/*}*/
 
-.call-to-action h2 {
-  font-size: 2.5em;
-  margin-bottom: 20px;
-}
+/*.call-to-action h2 {*/
+/*  font-size: 2.5em;*/
+/*  margin-bottom: 20px;*/
+/*}*/
 
-.call-to-action p {
-  font-size: 1.2em;
-  margin-bottom: 30px;
-}
+/*.call-to-action p {*/
+/*  font-size: 1.2em;*/
+/*  margin-bottom: 30px;*/
+/*}*/
 
 .cta-button {
   display: inline-block;
@@ -829,13 +829,13 @@ img {
 
 /* Media Queries */
 @media (max-width: 768px) {
-  .call-to-action h2 {
-      font-size: 2em;
-  }
+  /*.call-to-action h2 {*/
+  /*    font-size: 2em;*/
+  /*}*/
 
-  .call-to-action p {
-      font-size: 1em;
-  }
+  /*.call-to-action p {*/
+  /*    font-size: 1em;*/
+  /*}*/
 
   .cta-button {
       font-size: 1em;
@@ -844,13 +844,13 @@ img {
 }
 
 @media (max-width: 480px) {
-  .call-to-action h2 {
-      font-size: 1.5em;
-  }
+  /*.call-to-action h2 {*/
+  /*    font-size: 1.5em;*/
+  /*}*/
 
-  .call-to-action p {
-      font-size: 0.9em;
-  }
+  /*.call-to-action p {*/
+  /*    font-size: 0.9em;*/
+  /*}*/
 
   .cta-button {
       font-size: 0.9em;

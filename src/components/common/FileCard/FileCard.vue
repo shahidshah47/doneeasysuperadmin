@@ -12,14 +12,14 @@
         style="width: 30px"
       />
     </div>
-    <div class="ml-3">
+    <div class="ml-3 max-w-60">
       <p class="text-sm font-semibold text-dm-blue mb-0 truncate">
         {{ fileName }}
       </p>
       <p class="text-vivid-purple mb-0 text-xs font-normal">{{ fileSize }}</p>
     </div>
 
-    <div class="d-flex align-items-center cursor-pointer gap-2 me-2.5 ms-auto">
+    <div class="d-flex align-items-center cursor-pointer gap-2 ml-auto mr-3">
       <div v-if="isEyeIcon" class="bg-light-lilac p-1 rounded">
         <img
           :src="getImageUrl('../../../assets/image/icons/eye.svg')"
