@@ -36,7 +36,9 @@
         <RevenueStats :companyData="store.companyData" />
 
         <div class="inline-flex flex-col gap-2">
-          <p class="text-sm font-semibold leading-3.5 text-vivid-purple m-0">
+          <p
+            class="text-[15px] font-semibold leading-3.5 text-vivid-purple m-0"
+          >
             Rating
           </p>
           <div class="flex flex-row items-center gap-3">

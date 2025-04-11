@@ -106,7 +106,7 @@ const handleCompSizeSelect = (heading) => {
         <div class="p-6 flex flex-wrap flex-col gap-2">
           <div class="flex-1 inline-flex flex-row gap-4">
             <div class="w-full">
-              <label class="block text-sm !font-bold mb-1">Company ID</label>
+              <label class="block text-base !font-bold mb-1">Company ID</label>
               <input
                 type="text"
                 disabled
@@ -115,7 +115,9 @@ const handleCompSizeSelect = (heading) => {
               />
             </div>
             <div class="w-full">
-              <label class="block text-sm !font-bold mb-1">Company Name</label>
+              <label class="block text-base !font-bold mb-1"
+                >Company Name</label
+              >
               <input
                 type="text"
                 v-model="name"
@@ -128,7 +130,7 @@ const handleCompSizeSelect = (heading) => {
           </div>
 
           <div class="flex-1">
-            <label class="block text-sm !font-bold mb-1" for="company_size"
+            <label class="block text-base !font-bold mb-1" for="company_size"
               >Company Size</label
             >
             <div class="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-3">
@@ -146,7 +148,9 @@ const handleCompSizeSelect = (heading) => {
 
           <div class="flex-1 inline-flex flex-row gap-4">
             <div class="flex-1">
-              <label class="block text-sm !font-bold mb-1">HQ Phone No.</label>
+              <label class="block text-base !font-bold mb-1"
+                >HQ Phone No.</label
+              >
               <input
                 type="text"
                 v-model="phone"
@@ -158,7 +162,7 @@ const handleCompSizeSelect = (heading) => {
             </div>
 
             <div class="flex-1">
-              <label class="block text-sm !font-bold mb-1">HQ Email</label>
+              <label class="block text-base !font-bold mb-1">HQ Email</label>
               <input
                 type="email"
                 v-model="email"
@@ -172,7 +176,7 @@ const handleCompSizeSelect = (heading) => {
 
           <div class="flex-1 inline-flex flex-row gap-4">
             <div class="flex-1">
-              <label class="block text-sm !font-bold mb-1">Added By</label>
+              <label class="block text-base !font-bold mb-1">Added By</label>
               <input
                 type="text"
                 disabled
@@ -182,7 +186,7 @@ const handleCompSizeSelect = (heading) => {
             </div>
 
             <div class="flex-1">
-              <label class="block text-sm !font-bold mb-1">Joined Date</label>
+              <label class="block text-base !font-bold mb-1">Joined Date</label>
               <input
                 type="text"
                 disabled

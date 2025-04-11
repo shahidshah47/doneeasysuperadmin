@@ -92,7 +92,7 @@ const dashboardStats = ref([
 ]);
 
 const fetchData = async (id, page, perPage = null, search = "") => {
-  loading.value = true;
+  console.log(id, page, "id and page");
   try {
     let url = `/superadmin/dashboard?status=${id}&page=${page}&search=${search}`;
     if (perPage) {
@@ -264,8 +264,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Loader v-if="loading" />
-  <div v-else>
+  <div>
     <div class="flex justify-between items-center mb-4">
       <div class="text-xl font-semibold text-rich-navy m-0">Vendor</div>
       <div class="fs-4">

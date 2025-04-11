@@ -137,7 +137,7 @@ import CompanyHeader from "../../components/CompanyHeader.vue";
 import ChangeManagerModal from "../../components/common/ChangeManagerModal/ChangeManagerModal.vue";
 import ThemeCheckbox from "../../components/common/ThemeCheckbox/ThemeCheckbox.vue";
 import VerticalCard from "../../components/common/VerticalCard/VerticalCard.vue";
-import {debounce} from "../../utils/helper.js";
+import { debounce } from "../../utils/helper.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -177,7 +177,7 @@ const goToVerticalDetails = () => {
   router.push(`/super-admin/company-details/${route.params.companyId}/verticals/details`);
 };
 
-const fetchData = async (search = '', sorting = null) => {
+const fetchData = async (search = "", sorting = null) => {
   try {
     let url = `/superadmin/user/verticals?user_id=${route.params.companyId}&search=${search}`;
     if (sorting) {
