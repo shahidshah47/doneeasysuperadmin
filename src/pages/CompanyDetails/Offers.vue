@@ -180,7 +180,6 @@
             :lastPageCallback="lastPageCallback"
             :rowChangeCallback="rowChangeCallback"
             :prevPageCallback="prevPageCallback"
-            @nextPageClick="(page) => fetchData(statusBtn, page)"
             :nextPageCallback="nextPageCallback"
             :totalRecords="totalRecords"
             :perPage="pagination.perPage"
@@ -203,6 +202,8 @@ import { useRoute, useRouter } from "vue-router";
 import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
 import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
 import { formatCompactDateTime, formatDate } from "../../utils/helper";
+
+import { Paginator } from "primevue";
 const selectedSurvey = ref();
 const router = useRouter();
 const route = useRoute();

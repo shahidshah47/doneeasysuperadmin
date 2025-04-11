@@ -4,7 +4,7 @@
       <li v-for="tab in tabs" :key="tab.path" class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyId}/employees/${tab.path}`"
-          class="nav-link font-semibold"
+          class="nav-link !font-semibold !text-[15px]"
           active-class="active-tab"
         >
           {{ tab.label }}

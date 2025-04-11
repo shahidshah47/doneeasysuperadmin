@@ -25,7 +25,7 @@
               {{ store?.companyData?.company?.company_name }}
             </h3>
             <p
-              class="m-0 font-theme text-grayish-purple leading-5 font-normal text-[14px]"
+              class="m-0 font-theme text-grayish-purple leading-5 font-normal !text-[15px] !mt-1"
             >
               ID OFC 903823
             </p>

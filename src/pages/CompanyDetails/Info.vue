@@ -115,7 +115,7 @@
         </div>
         <div class="bg-white py-4 pl-4 pr-2 rounded-xl flex-1">
           <div
-            class="max-h-[45rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3"
+            class="max-h-[50rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3"
           >
             <div
               v-for="(user, index) in infoDetails?.company?.users"
@@ -161,7 +161,7 @@
         <div
           class="bg-white py-4 pl-4 pr-2 rounded-xl flex flex-col gap-3 flex-1"
         >
-          <div class="max-h-[45rem] overflow-auto vivid-scrollbar pr-2">
+          <div class="max-h-[50rem] overflow-auto vivid-scrollbar pr-2">
             <div
               v-for="(address, index) in infoDetails?.company?.addresses"
               class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start"
@@ -909,7 +909,7 @@ onMounted(() => {
 }
 
 .form-label {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
 }
 </style>

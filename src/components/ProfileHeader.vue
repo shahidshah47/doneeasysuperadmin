@@ -37,7 +37,7 @@
       <StatItem title="No. of Order Completed" value="2190" />
       <StatItem title="Assign. of Verticals" value="01" />
       <div class="stat-item">
-        <h2 class="stat-title">Rating</h2>
+        <h2 class="stat-title text-[14.5px]">Rating</h2>
         <div class="rating-wrapper">
           <StarRating :rating="3" :width="20" :height="20" />
           <span class="rating-value !font-semibold">4.5</span>
@@ -60,7 +60,7 @@ export default {
 <style scoped>
 .stat-title {
   color: #5825eb;
-  font-size: 12px;
+  font-size: 14.5px;
   font-weight: 600;
 }
 .profile-header {
@@ -158,7 +158,8 @@ export default {
 
 .user-id {
   color: #6e6e86;
-  font-size: 15px;
+  font-size: 16px;
+  margin-top: 4px;
   font-weight: 400;
   line-height: 1.4;
 }

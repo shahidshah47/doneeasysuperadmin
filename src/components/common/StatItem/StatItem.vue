@@ -28,7 +28,7 @@ defineProps({
 
 .stat-title {
   color: #5825eb;
-  font-size: 12px;
+  font-size: 14.5px;
   font-weight: 600;
 }
 

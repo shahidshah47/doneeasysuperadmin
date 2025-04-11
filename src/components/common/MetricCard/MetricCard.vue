@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-light-lilac p-3 rounded-xl mt-4 col-span-1">
+  <div class="bg-light-lilac p-3 rounded-xl mb-4 col-span-1">
     <div class="">
       <div class="d-flex justify-content-between">
         <p class="mb-0 text-sm font-semibold text-vivid-purple">{{ title }}</p>
