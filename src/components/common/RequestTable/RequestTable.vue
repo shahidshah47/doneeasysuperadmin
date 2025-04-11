@@ -36,7 +36,7 @@
           </td>
           <td class="px-4 py-3">
             <button
-                @click="navigateToDetails(request.id)"
+                @click="navigateToDetails(request)"
                 class="p-2 !border-[1.5px] !border-vivid-purple !rounded-[10px] hover:bg-purple-100"
             >
               <img
@@ -79,8 +79,8 @@ const route = useRoute();
 const companyId = computed(() => route.params.companyId || 'default_id');
 const appointmentId = computed(() => route.params.appointmentId || 'default_id');
 
-function navigateToDetails(id) {
-  emit('viewDetail', true, id);
+function navigateToDetails(req) {
+  emit('viewDetail', [true, req.id]);
   router.push(`/super-admin/company-details/${companyId.value}/appointment/${appointmentId.value}/reoccurring/details`);
 }
 </script>
