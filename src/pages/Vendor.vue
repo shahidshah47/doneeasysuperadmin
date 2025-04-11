@@ -341,12 +341,12 @@ onMounted(() => {
                 class="primary-btn px-4 py-3 bg-gradient-aqua-lavender relative"
               >
                 <img
-                  src="../assets/image/icons/star-1.svg"
+                  src="../assets/image/icons/Star-1.svg"
                   alt="star icon"
                   class="w-4 h-4 absolute -top-2 z-10 left-1"
                 />
                 <img
-                  src="../assets/image/icons/star-2.svg"
+                  src="../assets/image/icons/Star-2.svg"
                   alt="star icon"
                   class="w-5 h-5 absolute top-1 -left-1"
                 />
@@ -354,12 +354,12 @@ onMounted(() => {
                   >Newbies</span
                 >
                 <img
-                  src="../assets/image/icons/star-1.svg "
+                  src="../assets/image/icons/Star-1.svg"
                   alt="star icon"
                   class="w-4 h-4 absolute -top-2 right-1"
                 />
                 <img
-                  src="../assets/image/icons/star-2.svg"
+                  src="../assets/image/icons/Star-2.svg"
                   alt="star icon"
                   class="w-4 h-4 absolute -right-1 top-1 rotate-[62deg]"
                 />

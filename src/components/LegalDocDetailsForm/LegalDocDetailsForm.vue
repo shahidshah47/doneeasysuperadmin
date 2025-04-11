@@ -300,7 +300,8 @@ const updateTradeLicense = (index, updatedLicense) => {
                         type="date"
                         v-model="dob"
                         v-bind="dobAttrs"
-                        class="w-full p-3 rounded outline-0 focus:outline-0 bg-light-lilac"
+                        placeholder="Date"
+                        class="w-full p-3 rounded outline-0 focus:outline-0 bg-light-lilac picker"
                       />
                       <span class="text-red-500 text-sm">{{
                         errors?.dob
@@ -369,13 +370,6 @@ const updateTradeLicense = (index, updatedLicense) => {
               </div>
             </div>
           </div>
-          <Datepicker
-            v-model="datetime"
-            type="datetime"
-            clearable
-            format="yyyy-MM-dd HH:mm"
-            @input="handleClearableInput"
-          />
 
           <div
             class="flex justify-end gap-2 space-x-2 flex-1/2 p-4 border-t border-solid border-soft-pastel-blue"
@@ -389,4 +383,19 @@ const updateTradeLicense = (index, updatedLicense) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+input.picker[type="date"] {
+  position: relative;
+}
+
+input.picker[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  color: transparent;
+  background: transparent;
+}
+</style>

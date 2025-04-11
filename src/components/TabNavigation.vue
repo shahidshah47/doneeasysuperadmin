@@ -4,7 +4,7 @@
       <li v-for="(tab, index) in tabs" :key="index" class="nav-item">
         <router-link
           :to="`/super-admin/company-details/${companyStore.companyId}${tab.path}`"
-          class="nav-link !text-sm !font-semibold"
+          class="nav-link !text-[15px] !font-semibold"
           active-class="active-tab"
         >
           {{ tab.label }}
@@ -64,7 +64,6 @@ onMounted(() => {
 
 .nav-link.active-tab {
   color: #5825eb !important;
-  font-weight: bold;
 }
 
 .nav-link::after {
