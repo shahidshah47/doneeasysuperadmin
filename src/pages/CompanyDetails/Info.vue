@@ -1,7 +1,5 @@
 <template>
-  <Loader v-if="loading" />
-
-  <div class="company-details" v-else>
+  <div class="company-details">
     <!-- Company Info and Stats -->
     <CompanyHeader />
 

@@ -204,8 +204,7 @@ const typeClasses = {
 </script>
 
 <template>
-  <Loader v-if="loading" />
-  <div v-else>
+  <div>
     <div class="flex justify-between items-center mb-4">
       <div class="fs-4 fw-bold">Order</div>
     </div>

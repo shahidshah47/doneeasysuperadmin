@@ -4,7 +4,7 @@
     :key="index"
     class="inline-flex flex-col gap-2"
   >
-    <p class="text-sm font-semibold leading-3.5 text-vivid-purple m-0">
+    <p class="text-[15px] font-semibold leading-3.5 text-vivid-purple m-0">
       {{ item.label }}
     </p>
     <h5 class="font-theme-bold !text-2xl">

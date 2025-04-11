@@ -114,11 +114,11 @@ const closeAllModals = () => {
 
   <DetailsModel v-if="isDetail" @close="closeAllModals" title="More Details" :description="modalDesc" />
   <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails"
-    :itemNumber="`Item No ` + (appointmentDetails?.offer?.quotations?.length + 1)"  
+    :itemNumber="`Item No ` + (appointmentDetails?.offer?.quotations?.length + 1)"
     :appointOfferId="appointmentDetails?.offer?.id" 
     @close="closeAllModals" />
   <ServicesModal v-if="isServiceDetails" :serviceDetails="serviceDetails" 
-    :itemNumber="`Item No ` + (appointmentDetails?.offer?.services?.length + 1)" 
+    :itemNumber="`Item No ` + (appointmentDetails?.offer?.services?.length + 1)"
     :appointOfferId="appointmentDetails?.offer?.id" 
     @close="closeAllModals" />
   <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
