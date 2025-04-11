@@ -1,16 +1,26 @@
 <template>
-  <div class="row my-4 flex">
+  <div class="row my-4 flex" v-if="!isReqDetails">
     <div class="col-md-6">
       <h5 class="fw-bold !text-base !text-dm-blue">Active Requests</h5>
-      <RequestTable title="Order Details" :requests="requests" />
+      <RequestTable title="Order Details" :requests="requests" @viewDetail="handleViewDetails" />
     </div>
     <div class="col-md-6">
       <h5 class="fw-bold !text-base !text-dm-blue">Previous Requests</h5>
-<!--      <SectionHeading-->
-<!--        title="Previous Requests"-->
-<!--        customClass="!text-[20px] !font-semibold text-dm-blue leading-5 mb-3"-->
-<!--      />-->
-      <RequestTable title="Order Summary" :requests="requests" />
+      <RequestTable title="Order Summary" :requests="requests" @viewDetail="handleViewDetails" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <button
+          class="btn !font-semibold focus:outline-none focus:ring-0 p-0 active:border-transparent"
+          @click="isReqDetails = false"
+          style="text-transform: none !important"
+        >
+        <span>
+          <i class="fa-solid fa-arrow-left text-dm-blue mr-4"></i>
+        </span>
+        <span> Back </span>
+      </button>
     </div>
   </div>
   <div class="row my-4 flex" v-if="appointDetails !== null">
@@ -144,6 +154,7 @@ import UserProfileCard from "../../../../components/common/UserProfileCard/UserP
 import InfoDisplay from "../../../../components/common/InfoDisplay/InfoDisplay.vue";
 import DescriptionCard from "../../../../components/common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../../../../components/common/FileCard/FileCard.vue";
+import {getRequestStatus} from "../../../../utils/constants.js";
 
 const route = useRoute();
 const loading = ref(true);
@@ -152,6 +163,7 @@ const appointDetails = ref(null);
 const toast = useToast();
 const user = ref(null);
 const company = ref(null);
+const isReqDetails = ref(false);
 const isUserAvailable = ref(JSON.parse(localStorage.getItem("user")));
 const requests = ref([
   {
@@ -165,6 +177,33 @@ const requests = ref([
     summary: "Proin tellus...",
   },
 ]);
+const fetchRequestDetails = async (id) => {
+  try {
+    const response = await api.get("/superadmin/user/appointment/request/" + id);
+    if (response.status === 200) {
+      const { data, message } = response?.data;
+      if (data) {
+        // appointDetails.value = data;
+        console.log(data, "Data");
+      }
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: message,
+        life: 3000,
+      });
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+}
+const handleViewDetails = (val, id) => {
+  isReqDetails.value = val;
+  fetchRequestDetails(id);
+};
 
 const isVendorOrAdmin = computed(() => {
   const { current_user_type, user_type, role_type } = isUserAvailable.value;
@@ -186,43 +225,24 @@ const fetchAppointDetailsById = async (id) => {
     const response = await api.get("/superadmin/user/appointment/" + id);
     if (response.status === 200) {
       const { data, message } = response?.data;
-      appointDetails.value = data;
-      console.log(data, "appointment Details");
-
-      const { offer, user: appointmentUser } = appointDetails?.value;
-      const { user: offerUser, payment_terms } = offer || {};
-      user.value = isVendorOrAdmin.value ? appointDetails?.value?.user : offerUser || appointmentUser;
-      company.value = user?.value?.company || appointmentUser?.company || "";
-      toast.add({
-        severity: "success",
-        summary: "Success",
-        detail: message,
-        life: 3000,
-      });
-    }
-  } catch (err) {
-    error.value = "Error fetching data";
-    console.error(err);
-  } finally {
-    loading.value = false;
-  }
-};
-
-const fetchRequestsById = async (id) => {
-  try {
-    const response = await api.get("/superadmin/user/appointment/request/" + id);
-    if (response.status === 200) {
-      const { data, message } = response?.data;
-      console.log(response, "data response for fetch requests");
-      toast.add({
-        severity: "success",
-        summary: "Success",
-        detail: message,
-        life: 3000,
-      });
-      if (!data) {
-        requests.value = [];
+      if (data) {
+        appointDetails.value = data;
+        requests.value = data.order.requests?.map((item) => ({
+          date: item.start_date,
+          status: getRequestStatus(item.status)?.statusText,
+          summary: item.summery
+        }))
+        const { offer, user: appointmentUser } = appointDetails?.value;
+        const { user: offerUser, payment_terms } = offer || {};
+        user.value = isVendorOrAdmin.value ? appointDetails?.value?.user : offerUser || appointmentUser;
+        company.value = user?.value?.company || appointmentUser?.company || "";
       }
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: message,
+        life: 3000,
+      });
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -234,7 +254,6 @@ const fetchRequestsById = async (id) => {
 
 onMounted(() => {
   window.scroll(0, 0);
-  fetchRequestsById(route.params.appointmentId);
   fetchAppointDetailsById(route.params.appointmentId);
 });
 </script>
