@@ -1,8 +1,6 @@
 <template>
-  <div class="container-fluid company-details">
-    <div class="row">
-      <CompanyHeader />
-    </div>
+  <div class="company-details">
+    <CompanyHeader />
     <div class="grid grid-cols-12 gap-3">
       <div class="col-span-6 col-start-8 flex items-center gap-6">
         <div class="relative flex-1 min-w-0 max-w-80 ml-auto">
@@ -18,62 +16,60 @@
             class="absolute right-3 top-1/2 transform -translate-y-1/2 w-6 h-6"
           />
         </div>
-        <div class="relative mr-4">
-          <div class="flex items-center gap-2.5">
-            <span class="text-grayColor text-base font-semibold">Year</span>
-            <button
-              @click="toggleYearDropdown"
-              class="flex items-center focus:outline-none gap-2.5"
-            >
-              <span class="text-base font-semibold text-dm-blue">{{
-                selectedYear
-              }}</span>
-              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
-            </button>
-          </div>
+        <!--        <div class="relative mr-4">-->
+        <!--          <div class="flex items-center gap-2.5">-->
+        <!--            <span class="text-grayColor text-base font-semibold">Year</span>-->
+        <!--            <button-->
+        <!--              @click="toggleYearDropdown"-->
+        <!--              class="flex items-center focus:outline-none gap-2.5"-->
+        <!--            >-->
+        <!--              <span class="text-base font-semibold text-dm-blue">{{-->
+        <!--                selectedYear-->
+        <!--              }}</span>-->
+        <!--              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />-->
+        <!--            </button>-->
+        <!--          </div>-->
 
-          <div
-            v-if="yearDropdownOpen"
-            class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
-          >
-            <div
-              v-for="year in years"
-              :key="year"
-              @click="selectYear(year)"
-              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-            >
-              {{ year }}
-            </div>
-          </div>
-        </div>
-        <div class="relative mr-4">
-          <div class="flex items-center gap-2.5">
-            <span class="text-grayColor text-base font-semibold">Month</span>
-            <button
-              @click="toggleMonthDropdown"
-              class="flex items-center focus:outline-none gap-2.5"
-            >
-              <span class="text-base font-semibold text-dm-blue">{{
-                selectedMonth
-              }}</span>
-              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />
-            </button>
-          </div>
+        <!--          <div-->
+        <!--            v-if="yearDropdownOpen"-->
+        <!--            class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"-->
+        <!--          >-->
+        <!--            <div-->
+        <!--              v-for="year in years"-->
+        <!--              :key="year"-->
+        <!--              @click="selectYear(year)"-->
+        <!--              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"-->
+        <!--            >-->
+        <!--              {{ year }}-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <!--        <div class="relative mr-4">-->
+        <!--          <div class="flex items-center gap-2.5">-->
+        <!--            <span class="text-grayColor text-base font-semibold">Month</span>-->
+        <!--            <button-->
+        <!--              @click="toggleMonthDropdown"-->
+        <!--              class="flex items-center focus:outline-none gap-2.5"-->
+        <!--            >-->
+        <!--              <span class="text-base font-semibold text-dm-blue">{{ selectedMonth }}</span>-->
+        <!--              <img :src="chevronDown" alt="chevron-down" class="w-3 h-2" />-->
+        <!--            </button>-->
+        <!--          </div>-->
 
-          <div
-            v-if="monthDropdownOpen"
-            class="static bottom-0 top-0 left-0 right-0 z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"
-          >
-            <div
-              v-for="month in months"
-              :key="month"
-              @click="selectMonth(month)"
-              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-            >
-              {{ month }}
-            </div>
-          </div>
-        </div>
+        <!--          <div-->
+        <!--            v-if="monthDropdownOpen"-->
+        <!--            class="static bottom-0 top-0 left-0 right-0 z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg"-->
+        <!--          >-->
+        <!--            <div-->
+        <!--              v-for="month in months"-->
+        <!--              :key="month"-->
+        <!--              @click="selectMonth(month)"-->
+        <!--              class="px-3 py-2 hover:bg-gray-100 cursor-pointer"-->
+        <!--            >-->
+        <!--              {{ month }}-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
         <div class="relative">
           <button
             @click="toggleFilter"
@@ -144,6 +140,7 @@ import CompanyHeader from "../../components/CompanyHeader.vue";
 import ChangeManagerModal from "../../components/common/ChangeManagerModal/ChangeManagerModal.vue";
 import ThemeCheckbox from "../../components/common/ThemeCheckbox/ThemeCheckbox.vue";
 import VerticalCard from "../../components/common/VerticalCard/VerticalCard.vue";
+import { debounce } from "../../utils/helper.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -193,7 +190,7 @@ const goToVerticalDetails = () => {
   );
 };
 
-const fetchData = async () => {
+const fetchData = async (search = "", sorting = null) => {
   try {
     let url = `/superadmin/user/verticals?user_id=${route.params.companyId}&search=${search}`;
     if (sorting) {
@@ -222,12 +219,9 @@ const fetchData = async () => {
   }
 };
 
-watch(
-  () => searchTerm.value,
-  (newVal, oldValue) => {
-    console.log(newVal, "newVal");
-  }
-);
+const handleSelectSort = (value) => {
+  selectedSort.value = value;
+};
 
 onMounted(() => {
   nextTick(() => {

@@ -168,7 +168,7 @@ const updateTradeLicense = (index, updatedLicense) => {
         </div>
 
         <form @submit.prevent="onSubmit">
-          <div class="flex flex-wrap flex-col gap-2 p-6">
+          <div class="flex flex-wrap flex-col gap-6 p-6">
             <div class="flex items-center justify-between gap-2">
               <ul class="nav nav-pills gap-3" id="pills-tab" role="tablist">
                 <li
@@ -208,6 +208,10 @@ const updateTradeLicense = (index, updatedLicense) => {
               </ul>
 
               <img
+                v-if="
+                  legDocType !== 'trn_details' &&
+                  legDocType !== 'emirates_id_details'
+                "
                 src="../../assets//image/icons/legacy.svg"
                 alt="legacy-icon"
                 width="48"
@@ -248,7 +252,7 @@ const updateTradeLicense = (index, updatedLicense) => {
                 <div class="flex flex-wrap flex-col gap-2">
                   <div class="flex-1 inline-flex flex-row gap-4">
                     <div class="w-full">
-                      <label class="block text-sm !font-bold mb-1"
+                      <label class="block text-base !font-bold mb-1"
                         >Entered Emirates ID Number</label
                       >
                       <input
@@ -259,7 +263,7 @@ const updateTradeLicense = (index, updatedLicense) => {
                       />
                     </div>
                     <div class="w-full">
-                      <label class="block text-sm !font-bold mb-1"
+                      <label class="block text-base !font-bold mb-1"
                         >Response Emirates ID</label
                       >
                       <input
@@ -276,7 +280,7 @@ const updateTradeLicense = (index, updatedLicense) => {
 
                   <div class="flex-1 inline-flex flex-row gap-4">
                     <div class="flex-1">
-                      <label class="block text-sm !font-bold mb-1"
+                      <label class="block text-base !font-bold mb-1"
                         >Nationality</label
                       >
                       <input
@@ -285,13 +289,13 @@ const updateTradeLicense = (index, updatedLicense) => {
                         v-bind="nationalityAttrs"
                         class="w-full p-3 rounded outline-0 focus:outline-0 bg-light-lilac"
                       />
-                      <span class="text-red-500 text-sm">{{
+                      <span class="text-red-500 text-base">{{
                         errors?.nationality
                       }}</span>
                     </div>
 
                     <div class="flex-1">
-                      <label class="block text-sm !font-bold">DOB</label>
+                      <label class="block text-base !font-bold">DOB</label>
                       <input
                         type="date"
                         v-model="dob"
@@ -318,7 +322,9 @@ const updateTradeLicense = (index, updatedLicense) => {
                 <div class="flex flex-wrap flex-col gap-2">
                   <div class="flex-1 inline-flex flex-row gap-4">
                     <div class="w-full">
-                      <label class="block text-sm !font-bold">TRN Number</label>
+                      <label class="block text-base !font-bold"
+                        >TRN Number</label
+                      >
                       <input
                         type="text"
                         v-model="trnNumber"
@@ -327,7 +333,9 @@ const updateTradeLicense = (index, updatedLicense) => {
                       />
                     </div>
                     <div class="w-full">
-                      <label class="block text-sm !font-bold">Legal Name</label>
+                      <label class="block text-base !font-bold"
+                        >Legal Name</label
+                      >
                       <input
                         type="text"
                         v-model="legalName"
@@ -342,7 +350,7 @@ const updateTradeLicense = (index, updatedLicense) => {
 
                   <div class="flex-1 inline-flex flex-row gap-4">
                     <div class="flex-1">
-                      <label class="block text-sm !font-bold"
+                      <label class="block text-base !font-bold"
                         >Legal Names List</label
                       >
                       <input
@@ -361,6 +369,13 @@ const updateTradeLicense = (index, updatedLicense) => {
               </div>
             </div>
           </div>
+          <Datepicker
+            v-model="datetime"
+            type="datetime"
+            clearable
+            format="yyyy-MM-dd HH:mm"
+            @input="handleClearableInput"
+          />
 
           <div
             class="flex justify-end gap-2 space-x-2 flex-1/2 p-4 border-t border-solid border-soft-pastel-blue"
@@ -374,4 +389,4 @@ const updateTradeLicense = (index, updatedLicense) => {
   </div>
 </template>
 
-<style></style>
+<style scoped></style>

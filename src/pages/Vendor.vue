@@ -92,7 +92,7 @@ const dashboardStats = ref([
 ]);
 
 const fetchData = async (id, page, perPage = null, search = "") => {
-  loading.value = true;
+  console.log(id, page, "id and page");
   try {
     let url = `/superadmin/dashboard?status=${id}&page=${page}&search=${search}`;
     if (perPage) {
