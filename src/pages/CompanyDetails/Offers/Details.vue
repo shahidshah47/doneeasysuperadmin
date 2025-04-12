@@ -64,13 +64,13 @@
 
           <div class="row">
             <ProfileCard
-              imageSrc="../../../assets/images2/manager.png"
+              :imageSrc="ManagerIcon"
               altText="manager img"
               subText="Manager"
               mainText="John Doe"
             />
             <ProfileCard
-              imageSrc="../../../assets/images2/ltd.png"
+              :imageSrc="CompanyIcon"
               altText="ltd"
               mainText="XYZ Bito Group Pvt Ltd"
               linkText="View Details"
@@ -97,7 +97,7 @@
         </p>
       </div>
       <UserProfileCard
-        profileImage="../../../assets/images2/profile-1.png"
+        :profileImage="ManagerIcon"
         name="Nancy Tolbert"
         designation="Senior Manager"
         :rating="4"
@@ -209,6 +209,8 @@ import ServiceCard from "../../../components/common/ServiceCard/ServiceCard.vue"
 import SummaryCard from "../../../components/common/SummaryCard/SummaryCard.vue";
 import UserProfileCard from "../../../components/common/UserProfileCard/UserProfileCard.vue";
 import MapIcon from "../../../assets/images2/map-2.png";
+import ManagerIcon from "../../../assets/images2/manager.png";
+import CompanyIcon from "../../../assets/images2/ltd.png";
 
 const handleClickEdit = (data) => {
   // if (data.item_title) {
