@@ -6,7 +6,7 @@
       class="d-flex bg-success-subtle justify-content-center p-3 rounded-start-4 min-w-16"
     >
       <img
-        :src="getImageUrl(fileIcon)"
+        :src="FileIcon"
         alt="File Icon"
         class="img-fluid"
         style="width: 30px"
@@ -22,7 +22,7 @@
     <div class="d-flex align-items-center cursor-pointer gap-2 ml-auto mr-3">
       <div v-if="isEyeIcon" class="bg-light-lilac p-1 rounded">
         <img
-          :src="getImageUrl('../../../assets/image/icons/eye.svg')"
+          :src="EyeIcon"
           alt="View File"
           class="icon-size"
           @click="viewFile"
@@ -30,9 +30,7 @@
       </div>
       <div class="bg-light-lilac p-1 rounded">
         <img
-          :src="
-            getImageUrl('../../../assets/image/icons/document-download.svg')
-          "
+          :src="DownloadIcon"
           alt="Download File"
           class="icon-size"
           @click="downloadFile"
@@ -44,6 +42,9 @@
 
 <script setup>
 import { onMounted } from "vue";
+import FileIcon from "../../../assets/images2/file-icon.png";
+import EyeIcon from "../../../assets/image/icons/eye.svg";
+import DownloadIcon from "../../../assets/image/icons/document-download.svg";
 
 const props = defineProps({
   fileIcon: {

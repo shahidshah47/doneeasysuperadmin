@@ -109,7 +109,7 @@
         <LocationCard
           class="flex-grow h-full"
           address="123 Main St."
-          imageSrc="../../../assets/images2/map-2.png"
+          :imageSrc="MapIcon"
           buttonText="Open Map"
         />
       </div>
