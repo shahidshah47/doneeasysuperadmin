@@ -1,6 +1,6 @@
 <template>
-  <article class="user-profile">
-    <ProfileHeader />
+  <article class="user-profile" v-if="userDetails">
+    <ProfileHeader :userDetails="userDetails" />
     <ProfileTabs :companyId="companyId" />
   </article>
 
@@ -29,46 +29,55 @@
           />
 
           <div class="grid grid-cols-2 gap-4 bg-white-100 p-4 rounded-xl">
-            <InfoDisplay label="Emirates ID" value="98734-3423-21" />
-            <InfoDisplay label="TRN" value="98734-3423-21" />
-            <InfoDisplay label="Trade License No. 1" value="98734-3423-21" />
-            <InfoDisplay label="Trade License No. 2" value="98734-3423-21" />
+            <div
+              v-for="(legalDoc, index) in legalDocsDetails"
+              :key="index"
+              class="flex-1/3"
+            >
+              <InfoDisplay :label="legalDoc?.label" :value="legalDoc?.value || '---'" />
+            </div>
+            <div
+              v-for="(trade, index) in userDetails?.user?.trade_licenses"
+              :key="index"
+              class="flex-1/3"
+            >
+              <InfoDisplay :label="`Trade License No. ${trade.id}`" :value="trade?.license_number" />
+            </div>
           </div>
         </div>
 
-        <div class="bg-white p-3 rounded-4 mb-4">
+        <div class="bg-white p-3 rounded-4 mb-4" v-if="userDetails?.about">
           <SummaryCard
             title="About"
-            description="Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentum tellus."
+            :description="userDetails?.about"
             readMoreLink="#"
           />
         </div>
-        <div>
-          <div class="flex justify-between">
-            <SectionHeading
-              title="Experiences"
-              customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
-            />
 
-            <p class="text-grayColor text-sm font-semibold">View All</p>
-          </div>
-          <div class="bg-white p-3 rounded-4 mb-3 row">
-            <ExperienceCard
-              imageSrc="emp_detail_1.png"
-              altText="emp"
-              jobTitle="Laundry Expert"
-              company="ABS Private Ltd"
-              employmentType="Full-time"
-              duration="Sep 2022 - Sep 2024"
-              experience="2 yrs 4 mos"
-              location="Abu Dhabi, UAE"
-              :responsibilities="[
-                'Handled laundry operations efficiently',
-                'Ensured high standards of cleaning and customer satisfaction',
-              ]"
-              @click="openModal"
-            />
-          </div>
+        <div class="flex justify-between" v-if="userDetails?.experiences?.length > 0">
+          <SectionHeading
+            title="Experiences"
+            customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
+          />
+          <p class="text-grayColor text-sm font-semibold">View All</p>
+        </div>
+
+        <div class="bg-white p-3 rounded-4 mb-3 row" v-if="userDetails?.experiences?.length > 0">
+          <ExperienceCard
+            imageSrc="emp_detail_1.png"
+            altText="emp"
+            jobTitle="Laundry Expert"
+            company="ABS Private Ltd"
+            employmentType="Full-time"
+            duration="Sep 2022 - Sep 2024"
+            experience="2 yrs 4 mos"
+            location="Abu Dhabi, UAE"
+            :responsibilities="[
+              'Handled laundry operations efficiently',
+              'Ensured high standards of cleaning and customer satisfaction',
+            ]"
+            @click="openModal"
+          />
         </div>
       </div>
 
@@ -85,28 +94,30 @@
             fileSize="3.2mb"
           />
         </div>
-        <div>
+        <div v-if="userDetails?.verticals?.length > 0">
           <SectionHeading
             title="Assign Verticals"
             customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
           />
         </div>
 
-        <AssignVerticalCard
-          title="Home Repair & Maintenance Services"
-          icon="electronics-icon.png"
-          :stats="[
-            { value: '554', label: 'Jan' },
-            { value: '34', label: 'Feb' },
-            { value: '123', label: 'March' },
-            { value: '338', label: 'April' },
-            { value: '1,034', label: 'May' },
-          ]"
-        />
+        <div v-if="userDetails?.verticals?.length > 0" v-for="(vertical, index) in userDetails?.verticals" :key="index">
+          <AssignVerticalCard
+            :title="vertical.name"
+            icon="electronics-icon.png"
+            :stats="[
+              { value: vertical.marketing_fee, label: getMonthFromISO(vertical?.created_at) },
+              // { value: '34', label: 'Feb' },
+              // { value: '123', label: 'March' },
+              // { value: '338', label: 'April' },
+              // { value: '1,034', label: 'May' },
+            ]"
+          />
+        </div>
       </div>
 
       <div class="col-md-3">
-        <div>
+        <div v-if="userDetails?.skills?.length > 0">
           <SectionHeading
             title="Skills"
             customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
@@ -114,7 +125,7 @@
           <SkillList :tags="['Garment Care', 'Care', 'Garment']" />
         </div>
 
-        <div>
+        <div v-if="documents?.length > 0">
           <div class="flex justify-between">
             <SectionHeading
               title="Licenses & Certifications"
@@ -152,13 +163,20 @@ import FileCard from "../../../components/common/FileCard/FileCard.vue";
 import AssignVerticalCard from "../../../components/common/AssignVerticalCard/AssignVerticalCard.vue";
 import SkillList from "../../../components/common/SkillList/SkillList.vue";
 import DocumentPreview from "../../../components/common/DocumentPreview/DocumentPreview.vue";
-import { ref } from "vue";
+import {onMounted, ref, watch} from "vue";
 import { useEmployeeStore } from "../../../store";
+import api from "../../../api/index.js";
+import {useToast} from "primevue";
+import {getLegalDocsDetails, getMonthFromISO} from "../../../utils/helper.js";
 
 const route = useRoute();
 const modalStore = useEmployeeStore();
 const companyId = route.params.companyId;
-
+const loading = ref(true);
+const error = ref(null);
+const toast = useToast();
+const userDetails = ref(null);
+const legalDocsDetails = ref(null);
 const documents = ref([
   {
     imageName: "license.png",
@@ -175,6 +193,35 @@ const documents = ref([
     credentialId: "9384932",
   },
 ]);
+
+const fetchEmpDetailsById = async () => {
+  try {
+    const response = await api.get("/superadmin/user/details?user_id=" + route.params.employeeId);
+    if (response.status === 200) {
+      const { data, message } = response?.data;
+      userDetails.value = data;
+      console.log(userDetails?.value, "userDetails value");
+      documents.value = userDetails?.value?.certificates;
+      legalDocsDetails.value = getLegalDocsDetails(data?.user);
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: message,
+        life: 3000,
+      });
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  window.scroll(0, 0);
+  fetchEmpDetailsById();
+});
 
 const openModal = () => {
   modalStore.openModal({

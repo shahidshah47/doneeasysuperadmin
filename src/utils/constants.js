@@ -422,3 +422,27 @@ export const getRequestStatus = (status) => {
             break;
     }
 }
+
+export const getUserStatus = (status) => {
+    switch (status) {
+        case 1:
+            return { ...green, statusText: "Active" }
+        case 2:
+            return { ...gray, statusText: "Deactivated" }
+        case 3:
+            return { ...gray, statusText: "In-active" }
+        case 4:
+            return { ...yellow, statusText: "Monitory" }
+        case 5:
+            return { ...red, statusText: "Banned" }
+    }
+}
+
+export const getUserRole = (type) => {
+    switch (type) {
+        case 3:
+            return "Manager";
+        default:
+            return "Admin";
+    }
+}
