@@ -108,7 +108,7 @@
         <LocationCard
           class="flex-grow h-full"
           address="123 Main St."
-          imageSrc="../../../../../assets/images2/map-2.png"
+          :imageSrc="MapIcon"
           buttonText="Open Map"
         />
       </div>
@@ -208,6 +208,7 @@ import SectionHeading from "../../../../../components/common/SectionHeading/Sect
 import ServiceCard from "../../../../../components/common/ServiceCard/ServiceCard.vue";
 import SummaryCard from "../../../../../components/common/SummaryCard/SummaryCard.vue";
 import UserProfileCard from "../../../../../components/common/UserProfileCard/UserProfileCard.vue";
+import MapIcon from "../../../../../assets/images2/map-2.png";
 
 const handleClickEdit = (data) => {
   if (data.item_title) {
