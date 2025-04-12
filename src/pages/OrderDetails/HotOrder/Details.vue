@@ -87,7 +87,7 @@
 
           <div class="row">
             <ProfileCard
-              imageSrc="../../../assets/images2/manager.png"
+              :imageSrc="ManagerIcon"
               altText="manager img"
               subText="Manager"
               mainText="John Doe"
@@ -114,7 +114,7 @@
         </p>
       </div>
       <UserProfileCard
-        profileImage="../../../assets/images2/profile-1.png"
+        :profileImage="ManagerIcon"
         name="Nancy Tolbert"
         designation="Senior Manager"
         :rating="4"
@@ -233,6 +233,7 @@ import PaymentCard from "../../../components/common/PaymentCard/PaymentCard.vue"
 import ServiceCard from "../../../components/common/ServiceCard/ServiceCard.vue";
 import BreakDown from "../../../components/common/BreakDown/BreakDown.vue";
 import MapIcon from "../../../assets/images2/map-2.png";
+import ManagerIcon from "../../../assets/images2/manager.png";
 
 const handleClickEdit = (data) => {
   // if (data.item_title) {

@@ -266,8 +266,9 @@ const routes = [
           ],
         },
       },
+
       {
-        path: "/super-admin/company-details/:companyId/employees/appointment",
+        path: "/super-admin/company-details/:companyId/employees/:employeeId/appointment",
         component: () =>
           import("../pages/CompanyDetails/Employees/Appointment.vue"),
         meta: {
@@ -279,7 +280,7 @@ const routes = [
             },
             {
               label: "Appointments",
-              link: "/super-admin/company-details/:companyId/employees/appointment",
+              link: "/super-admin/company-details/:companyId/employees/:employeeId/appointment",
             },
           ],
         },
@@ -292,7 +293,7 @@ const routes = [
           ),
       },
       {
-        path: "/super-admin/company-details/:companyId/employees/site-survey",
+        path: "/super-admin/company-details/:companyId/employees/:employeeId/site-survey",
         component: () =>
           import("../pages/CompanyDetails/Employees/SiteSurvey.vue"),
         meta: {
@@ -304,13 +305,13 @@ const routes = [
             },
             {
               label: "Site Survey",
-              link: "/super-admin/company-details/:companyId/employees/site-survey",
+              link: "/super-admin/company-details/:companyId/employees/:employeeId/site-survey",
             },
           ],
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/employees/chat-history",
+        path: "/super-admin/company-details/:companyId/employees/:employeeId/chat-history",
         component: () =>
           import("../pages/CompanyDetails/Employees/ChatsHistory.vue"),
         meta: {
@@ -322,13 +323,13 @@ const routes = [
             },
             {
               label: "Chats History",
-              link: "/super-admin/company-details/:companyId/employees/chat-history",
+              link: "/super-admin/company-details/:companyId/employees/:employeeId/chat-history",
             },
           ],
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/employees/rating-reviews",
+        path: "/super-admin/company-details/:companyId/employees/:employeeId/rating-reviews",
         component: () =>
           import("../pages/CompanyDetails/Employees/RatingReviews.vue"),
         meta: {
@@ -340,7 +341,7 @@ const routes = [
             },
             {
               label: "Rating & Reviews",
-              link: "/super-admin/company-details/:companyId/employees/rating-reviews",
+              link: "/super-admin/company-details/:companyId/employees/:employeeId/rating-reviews",
             },
           ],
         },
