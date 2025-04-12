@@ -12,30 +12,28 @@
     <div class="profile-info">
       <div class="profile-status">
         <div class="status-label">
-          <span class="status-text">Active</span>
+          <span class="status-text">{{ getUserStatus(userDetails?.user?.status)?.statusText }}</span>
           <img
             loading="lazy"
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/7fa5745e9ce934738f3c7c471924ca75ebd2fa8b2282ca7278f60b7b13917a2b?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-            class="status-icon"
-            alt=""
-          />
+            class="status-icon" alt="" />
         </div>
         <button
           class="btn btn-primary rounded-3 !px-2 !py-[1px] !text-sm"
           style="text-transform: none !important"
         >
-          Admin
+          {{ getUserRole(userDetails?.user?.user_type) }}
         </button>
       </div>
       <div class="user-details">
-        <h1 class="user-name m-0">Esther Howard</h1>
-        <p class="user-id">ID OFC 903823</p>
+        <h1 class="user-name m-0">{{ userDetails?.user?.name }}</h1>
+        <p class="user-id">ID OFC {{ userDetails?.user?.id }}</p>
       </div>
     </div>
     <div class="user-stats">
-      <StatItem title="Revenue Contribution" value="332,100" currency="AED" />
-      <StatItem title="No. of Order Completed" value="2190" />
-      <StatItem title="Assign. of Verticals" value="01" />
+      <StatItem title="Revenue Contribution" :value="formatWithCommas(userDetails?.revenue_contribution)" currency="AED" />
+      <StatItem title="No. of Order Completed" :value="userDetails?.total_orders" />
+      <StatItem title="Assign. of Verticals" :value="userDetails?.vertical_count" />
       <div class="stat-item">
         <h2 class="stat-title text-[14.5px]">Rating</h2>
         <div class="rating-wrapper">
@@ -47,14 +45,17 @@
   </header>
 </template>
 <script setup>
+import { defineProps } from "vue";
 import StarRating from "./common/StarRating/StarRating.vue";
 import StatItem from "./common/StatItem/StatItem.vue";
-</script>
+import {getUserRole, getUserStatus} from "../utils/constants.js";
+import {formatWithCommas} from "../utils/helper.js";
 
-<script>
-export default {
-  name: "ProfileHeader",
-};
+const props = defineProps({
+  userDetails: Object
+});
+
+console.log(props.userDetails, "user details");
 </script>
 
 <style scoped>

@@ -3,7 +3,7 @@
     <ul class="nav nav-tabs d-flex justify-content-around border-0">
       <li v-for="tab in tabs" :key="tab.path" class="nav-item">
         <router-link
-          :to="`/super-admin/company-details/${companyId}/employees/${tab.path}`"
+          :to="`/super-admin/company-details/${companyId}/employees/${empId}/${tab.path}`"
           class="nav-link !font-semibold !text-[15px]"
           active-class="active-tab"
         >
@@ -19,6 +19,7 @@ import { useRoute } from "vue-router";
 
 const route = useRoute();
 const companyId = route.params.companyId;
+const empId = route.params.employeeId;
 
 const tabs = [
   { label: "Info", path: "details" },

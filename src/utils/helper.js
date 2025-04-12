@@ -488,3 +488,13 @@ export const debounce = (func, delay) => {
     }, delay);
   };
 };
+
+export const  getMonthFromISO = (dateString) => {
+  const date = new Date(dateString);
+  // Months are zero-based (0 = January, 4 = May, etc.)
+  const monthNames = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ];
+  return monthNames[date.getUTCMonth()];
+}
