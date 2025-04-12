@@ -21,3 +21,6 @@ jobs:
           git pull origin console-deploy
           npm install
           npm run build
+          cd /var/www/html2/live/DoneEasyBackendLaravel
+          git pull
+          php artisan migrate
