@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://pilot.doneeasy.io", // deploy test Replace with your API URL
+  baseURL: "https://pilot.doneeasy.io", // deploy test again Replace with your API URL
   timeout: 10000, // Request timeout (optional)
   headers: {
     "Content-Type": "application/json",
