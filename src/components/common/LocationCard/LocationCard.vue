@@ -15,7 +15,7 @@
           {{ buttonText }}
         </p>
       </div>
-      <div v-if="!location">
+      <div v-if="!location" class="h-full">
         <img
           class="w-full h-full object-cover rounded-b-3"
           :src="imageUrl"

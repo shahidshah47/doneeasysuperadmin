@@ -12,11 +12,15 @@
     <div class="profile-info">
       <div class="profile-status">
         <div class="status-label">
-          <span class="status-text">{{ getUserStatus(userDetails?.user?.status)?.statusText }}</span>
+          <span class="status-text">{{
+            getUserStatus(userDetails?.user?.status)?.statusText
+          }}</span>
           <img
             loading="lazy"
             src="https://cdn.builder.io/api/v1/image/assets/TEMP/7fa5745e9ce934738f3c7c471924ca75ebd2fa8b2282ca7278f60b7b13917a2b?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
-            class="status-icon" alt="" />
+            class="status-icon"
+            alt=""
+          />
         </div>
         <button
           class="btn btn-primary rounded-3 !px-2 !py-[1px] !text-sm"
@@ -31,9 +35,24 @@
       </div>
     </div>
     <div class="user-stats">
-      <StatItem title="Revenue Contribution" :value="formatWithCommas(userDetails?.revenue_contribution)" currency="AED" />
-      <StatItem title="No. of Order Completed" :value="userDetails?.total_orders" />
-      <StatItem title="Assign. of Verticals" :value="userDetails?.vertical_count" />
+      <StatItem
+        title="Revenue Contribution"
+        :value="
+          userDetails?.revenue_contribution
+            ? formatWithCommas(userDetails.revenue_contribution)
+            : '0'
+        "
+        currency="AED"
+      />
+
+      <StatItem
+        title="No. of Order Completed"
+        :value="userDetails?.total_orders"
+      />
+      <StatItem
+        title="Assign. of Verticals"
+        :value="userDetails?.vertical_count"
+      />
       <div class="stat-item">
         <h2 class="stat-title text-[14.5px]">Rating</h2>
         <div class="rating-wrapper">
@@ -48,11 +67,11 @@
 import { defineProps } from "vue";
 import StarRating from "./common/StarRating/StarRating.vue";
 import StatItem from "./common/StatItem/StatItem.vue";
-import {getUserRole, getUserStatus} from "../utils/constants.js";
-import {formatWithCommas} from "../utils/helper.js";
+import { getUserRole, getUserStatus } from "../utils/constants.js";
+import { formatWithCommas } from "../utils/helper.js";
 
 const props = defineProps({
-  userDetails: Object
+  userDetails: Object,
 });
 
 console.log(props.userDetails, "user details");

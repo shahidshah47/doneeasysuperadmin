@@ -95,7 +95,7 @@
           <div class="row">
             <!-- User Profile -->
             <ProfileCard
-              :imageSrc="'../../../assets/images2/manager.png'"
+              :imageSrc="ManagerIcon"
               altText="Manager Image"
               :subText="orderData?.user?.designation || 'N/A'"
               :mainText="orderData?.user?.name || 'Unknown User'"
@@ -103,7 +103,7 @@
 
             <!-- Company Profile -->
             <ProfileCard
-              :imageSrc="'../../../assets/images2/ltd.png'"
+              :imageSrc="CompanyIcon"
               altText="Company Logo"
               :mainText="
                 orderData?.user?.company?.company_name || 'Unknown Company'
@@ -209,6 +209,8 @@ import LocationCard from "../common/LocationCard/LocationCard.vue";
 import ProfileCard from "../common/ProfileCard/ProfileCard.vue";
 import SummaryCard from "../common/SummaryCard/SummaryCard.vue";
 import SectionHeading from "../common/SectionHeading/SectionHeading.vue";
+import ManagerIcon from "../../assets/images2/manager.png";
+import CompanyIcon from "../../assets/images2/ltd.png";
 import { defineProps } from "vue";
 
 const getImageUrl = (path) => {
