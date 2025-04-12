@@ -73,7 +73,7 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
         detail: response?.data?.message,
         life: 3000,
       });
-      console.log(data, "Data from users");
+      // console.log(data, "Data from users");
       companiesData.value = data.map(item => convertEmployeeUsersData(item));
     }
   } catch (err) {
@@ -84,11 +84,11 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
   }
 };
 
-const handleClickToDetails = () => {
+const handleClickToDetails = (empId) => {
   const companyId = route.params.companyId;
   if (companyId) {
     router.push({
-      path: `/super-admin/company-details/${companyId}/employees/details`,
+      path: `/super-admin/company-details/${companyId}/employees/${empId}/details`,
     });
   }
 };
