@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://pilot.doneeasy.io", // Replace with your API URL
+  baseURL: "https://blogger.doneeasy.io", // Replace with your API URL
   timeout: 10000, // Request timeout (optional)
   headers: {
     "Content-Type": "application/json",
@@ -9,7 +9,7 @@ const api = axios.create({
 });
 
 export const authApi = axios.create({
-  baseURL: "https://pilot.doneeasy.io", // Replace with your API URL
+  baseURL: "https://blogger.doneeasy.io", // Replace with your API URL
   timeout: 10000, // Request timeout (optional)
   headers: {
     "Content-Type": "application/json",
