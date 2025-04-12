@@ -1,0 +1,23 @@
+name: Deploy To Console Web
+
+on:
+  push:
+    branches:
+      - console-deploy  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Deploy To Console Dir
+      uses: appleboy/ssh-action@master
+      with:
+        host: 3.29.86.231
+        username: ec2-user
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd /var/www/html2/live/doneeasysuperadmin
+          git pull origin console-deploy
+          npm install
+          npm run build
