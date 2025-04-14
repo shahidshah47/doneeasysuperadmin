@@ -627,3 +627,44 @@ select {
   ) !important;
   border-radius: 12px;
 }
+
+.bg-gradient-aqua-lavender {
+  background: linear-gradient(
+    148.03deg,
+    #d6f1f5 -18.12%,
+    #ebe4fd 84.98%
+  ) !important;
+  border-radius: 12px;
+}
+
+.bg-gradient-aqua-light {
+  background: linear-gradient(
+    148.03deg,
+    #d6f1f5 -18.12%,
+    #ebe4fd 84.98%
+  ) !important;
+  border-radius: 8px;
+}
+
+.prime-btn {
+  position: relative;
+}
+
+.prime-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 1.6px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  background: linear-gradient(
+    98.24deg,
+    #38e0b2 -18.55%,
+    #442ae8 28.45%,
+    #5925eb 64.63%,
+    #9e21ee 116.94%
+  );
+}

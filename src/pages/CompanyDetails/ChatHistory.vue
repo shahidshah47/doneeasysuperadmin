@@ -56,133 +56,182 @@
           </button>
         </div>
       </div>
-    </div>
-    <div class="grid grid-cols-12 gap-3">
-      <div class="col-span-9 grid grid-cols-9">
-        <div class="rounded-2xl bg-white-100 col-span-3 flex flex-col gap-1">
-          <div
-            v-for="user in users"
-            :key="user.id"
-            :class="[
-              'flex items-center space-x-3 py-2 px-3 rounded-tl-2xl rounded-bl-2xl cursor-pointer',
-              user.id === selectedUser.id
-                ? 'bg-light-lilac'
-                : 'hover:bg-light-lilac',
-            ]"
-            @click="selectUser(user)"
-          >
-            <div class="relative">
-              <div
-                class="w-12 h-12 rounded-2xl border-2 border-solid border-white-100 shadow-lavendar-card overflow-hidden"
-              >
-                <img
-                  :src="user.img"
-                  :alt="user.name"
-                  class="w-12 h-12 object-cover"
-                />
-              </div>
-              <div
-                class="absolute -bottom-0 -right-1 w-3 h-3 bg-accent-green rounded-full border-2 border-white-100"
-              ></div>
-            </div>
-            <div class="flex-1">
-              <p class="text-sm font-semibold text-dm-blue m-0">
-                {{ user.name }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="flex-1 flex flex-col bg-light-lilac col-span-6 py-6 px-4 rounded-2xl"
-        >
-          <div class="flex-1 space-y-2 overflow-y-auto">
+      <div class="grid grid-cols-12 gap-3">
+        <div class="col-span-9 grid grid-cols-9">
+          <div class="rounded-2xl bg-white-100 col-span-3 flex flex-col gap-1">
             <div
-              v-for="(msg, index) in selectedUserMessages"
-              :key="index"
-              class="flex"
-              :class="msg.from === 'me' ? 'justify-end' : 'justify-start'"
+              v-for="user in users"
+              :key="user.id"
+              :class="[
+                'flex items-center space-x-3 py-2 px-3 rounded-tl-2xl rounded-bl-2xl cursor-pointer',
+                user.id === selectedUser.id
+                  ? 'bg-light-lilac'
+                  : 'hover:bg-light-lilac',
+              ]"
+              @click="selectUser(user)"
             >
-              <div
-                class="max-w-xs p-3 flex flex-col gap-2 rounded-tl-2xl rounded-tr-2xl"
-                :class="
-                  msg.from === 'me'
-                    ? 'bg-soft-lilac rounded-bl-2xl'
-                    : 'bg-white-100 rounded-br-2xl'
-                "
-              >
-                <div class="flex items-center gap-2 justify-between">
-                  <span class="text-xs !font-semibold text-dm-blue">{{
-                    msg.user.name
-                  }}</span>
-                  <span class="text-grayColor font-normal text-xs">{{
-                    msg.date
-                  }}</span>
+              <div class="relative">
+                <div
+                  class="w-12 h-12 rounded-2xl border-2 border-solid border-white-100 shadow-lavendar-card overflow-hidden"
+                >
+                  <img
+                    :src="user.img"
+                    :alt="user.name"
+                    class="w-12 h-12 object-cover"
+                  />
                 </div>
-                <span class="text-sm font-normal text-dm-blue">
-                  {{ msg.text }}
-                </span>
+                <div
+                  class="absolute -bottom-0 -right-1 w-3 h-3 bg-accent-green rounded-full border-2 border-white-100"
+                ></div>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-dm-blue m-0">
+                  {{ user.name }}
+                </p>
               </div>
             </div>
           </div>
-          <div class="">
-            <div
-              class="flex items-center gap-2 rounded-full bg-white-100/80 border border-solid border-lavender pr-1 pl-3 py-1"
-            >
-              <div class="items-center flex gap-2">
-                <button class="w-5 h-5">
-                  <img
-                    src="../../assets/image/icons/paperclip-2.svg"
-                    alt="paperclip-icon"
-                  />
-                </button>
-                <button class="w-5 h-5">
-                  <img
-                    src="../../assets/image/icons/camera.svg"
-                    alt="camera-icon"
-                  />
-                </button>
-                <button class="w-5 h-5">
-                  <img
-                    src="../../assets/image/icons/microphone.svg"
-                    alt="microphone-icon"
-                  />
-                </button>
-                <div class="bg-gray-blue-100 w-0.5 h-4"></div>
-              </div>
-              <input
-                type="text"
-                placeholder="Text Message"
-                class="flex-1 bg-transparent outline-none text-sm ml-2 placeholder:text-sm placeholder:text-lavender-gray-2 placeholder:font-semibold"
-              />
-              <button
-                class="ml-2 bg-lavender-gray-2 !rounded-full p-2 w-10 h-10 flex items-center justify-center"
+
+          <div
+            class="flex-1 flex flex-col bg-light-lilac col-span-6 py-6 px-4 rounded-2xl"
+          >
+            <div class="flex-1 space-y-2 overflow-y-auto">
+              <div
+                v-for="(msg, index) in selectedUserMessages"
+                :key="index"
+                class="flex"
+                :class="msg.from === 'me' ? 'justify-end' : 'justify-start'"
               >
-                <img
-                  src="../../assets/image/icons/send-2.svg"
-                  alt="send-icon"
+                <div
+                  class="max-w-xs p-3 flex flex-col gap-2 rounded-tl-2xl rounded-tr-2xl"
+                  :class="
+                    msg.from === 'me'
+                      ? 'bg-soft-lilac rounded-bl-2xl'
+                      : 'bg-white-100 rounded-br-2xl'
+                  "
+                >
+                  <div class="flex items-center gap-2 justify-between">
+                    <span class="text-xs !font-semibold text-dm-blue">{{
+                      msg.user.name
+                    }}</span>
+                    <span class="text-grayColor font-normal text-xs">{{
+                      msg.date
+                    }}</span>
+                  </div>
+                  <span class="text-sm font-normal text-dm-blue">
+                    {{ msg.text }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="">
+              <div
+                class="flex items-center gap-2 rounded-full bg-white-100/80 border border-solid border-lavender pr-1 pl-3 py-1"
+              >
+                <div class="items-center flex gap-2">
+                  <button class="w-5 h-5">
+                    <img
+                      src="../../assets/image/icons/paperclip-2.svg"
+                      alt="paperclip-icon"
+                    />
+                  </button>
+                  <button class="w-5 h-5">
+                    <img
+                      src="../../assets/image/icons/camera.svg"
+                      alt="camera-icon"
+                    />
+                  </button>
+                  <button class="w-5 h-5">
+                    <img
+                      src="../../assets/image/icons/microphone.svg"
+                      alt="microphone-icon"
+                    />
+                  </button>
+                  <div class="bg-gray-blue-100 w-0.5 h-4"></div>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Text Message"
+                  class="flex-1 bg-transparent outline-none text-sm ml-2 placeholder:text-sm placeholder:text-lavender-gray-2 placeholder:font-semibold"
                 />
-              </button>
+                <button
+                  class="ml-2 bg-lavender-gray-2 !rounded-full p-2 w-10 h-10 flex items-center justify-center"
+                >
+                  <img
+                    src="../../assets/image/icons/send-2.svg"
+                    alt="send-icon"
+                  />
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-span-3">
-        <div class="p-3 bg-white border-start">
-          <div class="violation-info bg-light p-3 rounded mb-3">
-            <h5>No. of Violations: <span class="text-danger">32</span></h5>
-            <ul class="list-unstyled">
-              <li class="mb-2">Under investigation</li>
-              <li class="mb-2">Violation level 1, 2, 3</li>
-              <li class="mb-2">False Alarm</li>
-              <li>Un-identified</li>
-            </ul>
+        <div class="col-span-3">
+          <div class="p-4 bg-light-lilac h-full rounded-xl">
+            <button class="bg-white-100 p-2 !rounded-lg">
+              <img :src="BackIcon" alt="Back-Icon" class="w-4 h-4" />
+            </button>
+            <div class="bg-blush-100 rounded-lg p-3 mt-4">
+              <div class="flex items-center gap-4 justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="bg-white-100 rounded-lg py-2 px-2.5">
+                    <img :src="FlagIcon" alt="flat-icon" class="w-4 h-5" />
+                  </div>
+                  <div>
+                    <h5 class="text-dm-blue !font-semibold !text-base mb-0">
+                      No. of Violations:
+                    </h5>
+                    <button
+                      class="font-bold !text-xs text-vivid-purple focus:ring-0 outline-none !uppercase"
+                    >
+                      Add more
+                    </button>
+                  </div>
+                </div>
+                <h5 class="!text-2xl !font-bold !text-light-orange">32</h5>
+              </div>
+              <div class="flex flex-col gap-2 mt-2">
+                <div v-for="(item, index) in statusItems" :key="index" class="">
+                  <div
+                    class="flex justify-between items-center py-2 px-3 bg-white-100/50 rounded-[6px] cursor-pointer"
+                    @click="toggleDropdown(index)"
+                  >
+                    <span class="text-base font-semibold text-dm-blue">{{
+                      item.label
+                    }}</span>
+                    <img :src="ArrowIcon" alt="dropdown-icon" class="w-4 h-4" />
+                  </div>
+
+                  <div
+                    v-if="item.isOpen"
+                    class="p-4 bg-pink-50 text-dm-blue border-t border-pink-200"
+                  >
+                    {{ item.content }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2 mt-4">
+              <div
+                v-for="(item, index) in items"
+                :key="index"
+                :class="[
+                  'px-3 py-4 !rounded-lg flex items-center gap-4 justify-between cursor-pointer border border-solid',
+                  activeIndex === index
+                    ? 'prime-btn bg-gradient-aqua-light'
+                    : 'border-lavender bg-white-100',
+                ]"
+                @click="setActive(index)"
+              >
+                <h5 class="!font-semibold !text-[18px] !text-dm-blue mb-0">
+                  {{ item }}
+                </h5>
+                <button class="text-vivid-purple !text-sm font-bold !uppercase">
+                  View Chat
+                </button>
+              </div>
+            </div>
           </div>
-          <button class="btn btn-primary w-100 mb-2">Offer</button>
-          <button class="btn btn-outline-primary w-100 mb-2">
-            Site survey
-          </button>
-          <button class="btn btn-outline-primary w-100">Appointment</button>
         </div>
       </div>
     </div>
@@ -196,9 +245,41 @@ import ProfileImg from "../../assets/image/profile-picture.jpg";
 import { InputText } from "primevue";
 import filterIcon from "../../assets/image/icons/candle.svg";
 import searchIcon from "../../assets/image/icons/search.svg";
+import BackIcon from "../../assets/image/icons/arrow-left.svg";
+import FlagIcon from "../../assets/image/icons/flag-2.svg";
+import ArrowIcon from "../../assets/image/icons/arrow-down.svg";
 
 const getImagePath = (imageName) => {
   return new URL(`../../assets/images2/${imageName}`, import.meta.url).href;
+};
+
+const items = ["Offer", "Site survey", "Appointment"];
+const activeIndex = ref(0);
+const statusItems = ref([
+  {
+    label: "Under investigation",
+    isOpen: false,
+    content: 'This is a demo detail for "Under investigation".',
+  },
+  {
+    label: "Violation level 1, 2, 3",
+    isOpen: false,
+    content: "This is a demo detail about all Violation levels.",
+  },
+  {
+    label: "False Alarm",
+    isOpen: false,
+    content: "This is a demo explanation for a False Alarm scenario.",
+  },
+  {
+    label: "Un-identified",
+    isOpen: false,
+    content: "This is a demo detail about unidentified issues.",
+  },
+]);
+
+const toggleDropdown = (index) => {
+  statusItems.value[index].isOpen = !statusItems.value[index].isOpen;
 };
 
 const users = ref([
@@ -390,11 +471,6 @@ body {
 
 .violation-warning {
   background-color: #ffe8e8;
-}
-
-.violation-info h5 {
-  font-size: 18px;
-  color: #ff6347;
 }
 
 .list-unstyled li {
