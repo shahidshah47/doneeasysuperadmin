@@ -32,14 +32,14 @@
             <InfoDisplay
               label="Date"
               :value="
-                formatDateAndTime(appointmentDetails.delivery_date)
+                formatDateAndTime(appointmentDetails.offer.delivery_date)
                   ?.formattedDate
               "
             />
             <InfoDisplay
               label="Time"
               :value="
-                formatDateAndTime(null, appointmentDetails.delivery_time)
+                formatDateAndTime(null, appointmentDetails.offer.delivery_time)
                   ?.formattedTime
               "
             />
@@ -169,7 +169,7 @@ const props = defineProps({
   company: Object,
 });
 
-const handleViewDetails = () => {
+const handleViewDetails = (id) => {
   companyStore.toggleCompanyDetail();
 };
 

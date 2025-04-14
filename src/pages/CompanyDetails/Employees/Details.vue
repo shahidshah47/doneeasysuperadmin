@@ -1,7 +1,7 @@
 <template>
   <article class="user-profile" v-if="userDetails">
     <ProfileHeader :userDetails="userDetails" />
-    <ProfileTabs :companyId="companyId" />
+    <ProfileTabs />
   </article>
 
   <div class="col-md-12 company-details-section">
@@ -164,13 +164,14 @@ import AssignVerticalCard from "../../../components/common/AssignVerticalCard/As
 import SkillList from "../../../components/common/SkillList/SkillList.vue";
 import DocumentPreview from "../../../components/common/DocumentPreview/DocumentPreview.vue";
 import {onMounted, ref, watch} from "vue";
-import { useEmployeeStore } from "../../../store";
+import { useEmployeeStore, useUserStore } from "../../../store";
 import api from "../../../api/index.js";
 import {useToast} from "primevue";
 import {getLegalDocsDetails, getMonthFromISO} from "../../../utils/helper.js";
 
 const route = useRoute();
 const modalStore = useEmployeeStore();
+const userStore = useUserStore();
 const companyId = route.params.companyId;
 const loading = ref(true);
 const error = ref(null);
@@ -200,7 +201,7 @@ const fetchEmpDetailsById = async () => {
     if (response.status === 200) {
       const { data, message } = response?.data;
       userDetails.value = data;
-      console.log(userDetails?.value, "userDetails value");
+      userStore.setUserDetails(userDetails?.value);
       documents.value = userDetails?.value?.certificates;
       legalDocsDetails.value = getLegalDocsDetails(data?.user);
       toast.add({

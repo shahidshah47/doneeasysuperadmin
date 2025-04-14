@@ -1,4 +1,4 @@
-import { blue, gray, green, red, yellow } from "./constants";
+import { blue, getOfferStatus, gray, green, red, yellow } from "./constants";
 
 export const transformData = (data) => {
   return data.map((item, index) => {
@@ -276,6 +276,29 @@ export const convertEmployeeUsersData = (empUser) => {
       end_date: "11/02.2023",
       image: "Avatar.png",
     },
+  };
+};
+
+// Utility function to convert API response to table format
+export const convertOffersData = (offer) => {
+  return {
+    id: offer.id,
+    organizationName: {
+      logo: offer.company.company_logo?.file_path || "",
+      name: offer.company.company_name || "N/A",
+    },
+    order: {
+      name: offer.order.title,
+      description: offer.order.description,
+    },
+    orderType: offer.order.type === 1 ? "One-time" : "Reoccuring",
+    verticle: {
+      image: offer.order.verticle.image_path,
+      name: offer.order.verticle.name,
+    },
+    offerSentDate: formatDateAtMidnight(offer.created_at),
+    status: getOfferStatus(offer.status),
+    offerValue: offer.grand_total
   };
 };
 
