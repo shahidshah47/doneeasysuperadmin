@@ -180,13 +180,13 @@ const routes = [
             },
             {
               label: "Details",
-              link: "/super-admin/company-details/site-survey/details",
+              link: "/super-admin/company-details/site-survey/:siteSurveyId/details",
             },
           ],
         },
       },
       {
-        path: "/super-admin/company-details/site-survey/SurveyDetails/details",
+        path: "/super-admin/company-details/site-survey/SurveyDetails/:siteSurveyId/details",
         component: () =>
           import(
             "../pages/CompanyDetails/SiteSurvey/SurveyDetails/Details.vue"
