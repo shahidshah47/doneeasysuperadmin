@@ -360,7 +360,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/verticals/details",
+        path: "/super-admin/company-details/:companyId/verticals/:verticalId/details",
         component: () =>
           import("../pages/CompanyDetails/Verticals/Details.vue"),
         meta: {
@@ -372,7 +372,7 @@ const routes = [
             },
             {
               label: "Details",
-              link: "/super-admin/company-details/:companyId/verticals/details",
+              link: "/super-admin/company-details/:companyId/verticals/:verticalId/details",
             },
           ],
         },
