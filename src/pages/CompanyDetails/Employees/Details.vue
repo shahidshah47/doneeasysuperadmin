@@ -1,7 +1,7 @@
 <template>
-  <article class="user-profile" v-if="userDetails">
+  <article class="user-profile">
     <ProfileHeader :userDetails="userDetails" />
-    <ProfileTabs :companyId="companyId" />
+    <ProfileTabs />
   </article>
 
   <div class="col-md-12 company-details-section">
@@ -14,12 +14,26 @@
           />
 
           <div class="grid grid-cols-2 gap-4 bg-white-100 p-4 rounded-xl">
-            <InfoDisplay label="Company ID" value="ID OFC 903823" />
-            <InfoDisplay label="No. of Employees" value="50-100" />
-            <InfoDisplay label="HQ Phone No." value="+971 983402031" />
-            <InfoDisplay label="HQ Email" value="johnthompson15@gmail.com" />
-            <InfoDisplay label="Joined Date" value="Jan 2020" />
-            <InfoDisplay label="Added By" value="Alex Smith" />
+            <InfoDisplay
+              label="Company ID"
+              :value="`ID OFC ${userDetails?.user?.company?.id}`"
+            />
+
+            <InfoDisplay
+              label="No. of Employees"
+              :value="userDetails?.user?.company?.company_size"
+            />
+            <InfoDisplay
+              label="HQ Phone No."
+              :value="`+97 ${userDetails?.user?.mobile_number}`"
+            />
+            <InfoDisplay label="HQ Email" :value="userDetails?.user?.email" />
+            <InfoDisplay
+              label="Joined Date"
+              :value="formatToMonthYear(userDetails?.user?.created_at)"
+            />
+
+            <InfoDisplay label="Added By" value="-" />
           </div>
         </div>
         <div>
@@ -76,19 +90,26 @@
           v-if="userDetails?.experiences?.length > 0"
         >
           <ExperienceCard
-            imageSrc="emp_detail_1.png"
+            v-for="experience in userDetails.experiences"
+            :key="experience.id"
+            :imageSrc="experience.media ? experience.media.file_path : ''"
             altText="emp"
-            jobTitle="Laundry Expert"
-            company="ABS Private Ltd"
-            employmentType="Full-time"
-            duration="Sep 2022 - Sep 2024"
-            experience="2 yrs 4 mos"
-            location="Abu Dhabi, UAE"
-            :responsibilities="[
-              'Handled laundry operations efficiently',
-              'Ensured high standards of cleaning and customer satisfaction',
-            ]"
-            @click="openModal"
+            :jobTitle="experience.title"
+            :company="experience.company_name"
+            :employmentType="experience.employment_type"
+            :duration="
+              experience.end_date
+                ? `${formatToMonthYear(
+                    experience.start_date
+                  )} - ${formatToMonthYear(experience.end_date)}`
+                : `${formatToMonthYear(experience.start_date)} - Present`
+            "
+            :experience="
+              calculateExperience(experience.start_date, experience.end_date)
+            "
+            :Location="experience.location || 'Not specified'"
+            :responsibilities="convertDescriptionToList(experience.description)"
+            @click="openModal(experience)"
           />
         </div>
       </div>
@@ -100,11 +121,14 @@
         />
 
         <div>
-          <FileCard
-            fileIcon="../../../assets/images2/file-icon.png"
-            fileName="Company Profile"
-            fileSize="3.2mb"
-          />
+          <div v-if="documents.length">
+            <FileCard
+              v-for="(doc, index) in documents"
+              :key="index"
+              :fileName="doc.fileName || doc.title"
+              :fileSize="doc.fileSize"
+            />
+          </div>
         </div>
         <div v-if="userDetails?.verticals?.length > 0">
           <SectionHeading
@@ -131,30 +155,38 @@
 
       <div class="col-md-3">
         <div v-if="userDetails?.skills?.length > 0">
-          <SectionHeading
-            title="Skills"
-            customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
-          />
-          <SkillList :tags="['Garment Care', 'Care', 'Garment']" />
+          <div class="flex justify-between">
+            <SectionHeading
+              title="Skills"
+              customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
+            />
+          </div>
+
+          <SkillList :tags="userDetails.skills.map((skill) => skill.name)" />
         </div>
 
-        <div v-if="documents?.length > 0">
+        <div v-if="userDetails?.certificates.length > 0">
           <div class="flex justify-between">
             <SectionHeading
               title="Licenses & Certifications"
               customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
             />
-
             <p class="text-grayColor text-sm font-semibold">View All</p>
           </div>
+
           <div class="flex flex-col gap-3">
-            <div v-for="(document, index) in documents" :key="index">
+            <div
+              v-for="(certificate, index) in userDetails.certificates"
+              :key="index"
+            >
               <DocumentPreview
-                :imageName="document.imageName"
-                :title="document.title"
-                :institute="document.institute"
-                :duration="document.duration"
-                :credentialId="document.credentialId"
+                :imageName="certificate.media.file_path"
+                :title="certificate.name"
+                :institute="certificate.issuing_organization"
+                :duration="`${formatToMonthYear(
+                  certificate.start_date
+                )} - ${formatToMonthYear(certificate.end_date)}`"
+                :credentialId="certificate.credential_id"
               />
             </div>
           </div>
@@ -176,36 +208,27 @@ import FileCard from "../../../components/common/FileCard/FileCard.vue";
 import AssignVerticalCard from "../../../components/common/AssignVerticalCard/AssignVerticalCard.vue";
 import SkillList from "../../../components/common/SkillList/SkillList.vue";
 import DocumentPreview from "../../../components/common/DocumentPreview/DocumentPreview.vue";
-import { onMounted, ref, watch } from "vue";
-import { useEmployeeStore } from "../../../store";
+import { onMounted, ref, toRaw, watch } from "vue";
+import { useEmployeeStore, useUserStore } from "../../../store";
 import api from "../../../api/index.js";
 import { useToast } from "primevue";
-import { getLegalDocsDetails, getMonthFromISO } from "../../../utils/helper.js";
+import {
+  getLegalDocsDetails,
+  getMonthFromISO,
+  formatDate,
+  formatToMonthYear,
+} from "../../../utils/helper.js";
 
 const route = useRoute();
 const modalStore = useEmployeeStore();
+const userStore = useUserStore();
 const companyId = route.params.companyId;
 const loading = ref(true);
 const error = ref(null);
 const toast = useToast();
 const userDetails = ref(null);
 const legalDocsDetails = ref(null);
-const documents = ref([
-  {
-    imageName: "license.png",
-    title: "Diploma in Laundry",
-    institute: "Dubai Laundry Institute",
-    duration: "Sep 2022 - Sep 2024",
-    credentialId: "9384932",
-  },
-  {
-    imageName: "license.png",
-    title: "Diploma in Laundry",
-    institute: "Dubai Laundry Institute",
-    duration: "Sep 2022 - Sep 2024",
-    credentialId: "9384932",
-  },
-]);
+const documents = ref([]);
 
 const fetchEmpDetailsById = async () => {
   try {
@@ -215,9 +238,43 @@ const fetchEmpDetailsById = async () => {
     if (response.status === 200) {
       const { data, message } = response?.data;
       userDetails.value = data;
-      console.log(userDetails?.value, "userDetails value");
-      documents.value = userDetails?.value?.certificates;
+      userStore.setUserDetails(userDetails?.value);
       legalDocsDetails.value = getLegalDocsDetails(data?.user);
+
+      const user = data?.user;
+      const docs = [];
+
+      if (user?.emirates_id_front) {
+        docs.push({
+          title: "Emirates ID (Front)",
+          filePath: user.emirates_id_front.file_path,
+          fileName: user.emirates_id_front.file_name,
+          fileSize: user.emirates_id_front.file_size,
+        });
+      }
+
+      if (user?.emirates_id_back) {
+        docs.push({
+          title: "Emirates ID (Back)",
+          filePath: user.emirates_id_back.file_path,
+          fileName: user.emirates_id_back.file_name,
+          fileSize: user.emirates_id_back.file_size,
+        });
+      }
+
+      if (user?.visa) {
+        docs.push({
+          title: "Visa",
+          filePath: user.visa.file_path,
+          fileName: user.visa.file_name,
+          fileSize: user.visa.file_size,
+        });
+      }
+
+      documents.value = docs;
+
+      localStorage.setItem("employeeDetails", JSON.stringify(data));
+
       toast.add({
         severity: "success",
         summary: "Success",
@@ -238,27 +295,49 @@ onMounted(() => {
   fetchEmpDetailsById();
 });
 
-const openModal = () => {
+const openModal = (experience) => {
   modalStore.openModal({
-    logoUrl: new URL(
-      `../../../assets/images2/emp_detail_1.png`,
-      import.meta.url
-    ).href,
+    logoUrl: experience.media
+      ? new URL(experience.media.file_path, import.meta.url).href
+      : "",
     details: {
-      Designation: "Laundry Expert",
-      Company: "ABS Private Ltd",
-      "Employment Type": "Full-time",
-      Location: "Abu Dhabi",
-      "Start Date": "September, 2022",
-      "End Date": "September 2024",
+      Designation: experience.title,
+      Company: experience.company_name,
+      "Employment Type": experience.employment_type,
+      Location: experience.location || "Not specified", // Assuming location might not always be available
+      "Start Date": formatToMonthYear(experience.start_date),
+      "End Date": experience.end_date
+        ? formatToMonthYear(experience.end_date)
+        : "Present",
     },
-    responsibilities: [
-      "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
-      "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
-      "Lorem ipsum dolor sit, amet consectetur adipisicing elit.",
-    ],
+    responsibilities: convertDescriptionToList(experience.description),
   });
 };
+
+const calculateExperience = (startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : new Date();
+
+  let years = end.getFullYear() - start.getFullYear();
+  let months = end.getMonth() - start.getMonth();
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  return `${years} yrs ${months} mos`;
+};
+
+const convertDescriptionToList = (description) => {
+  return description
+    .split(".")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+};
+watch(userDetails, (newVal) => {
+  console.log("userDetails changed:", toRaw(newVal));
+});
 </script>
 
 <style scoped>

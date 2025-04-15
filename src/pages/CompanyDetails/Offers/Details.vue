@@ -1,152 +1,29 @@
 <template>
-  <div class="row my-4 flex">
-    <div class="col-md-6 flex flex-col">
-      <SectionHeading
-        title="Offers Details"
-        customClass="!text-base !font-semibold text-dm-blue leading-5"
-      />
+  
+  <AppointmentDetailCards :appointmentDetails="offerDetails" 
+    :user="user" :company="company" />
 
-      <div class="card border-0 rounded-3 flex-grow">
-        <div class="card-body position-relative">
-          <div class="position-absolute end-0 me-3 mt-3 top-0">
-            <span
-              class="bg-gradient-primary rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1"
-            >
-              In Progress
-            </span>
-          </div>
-          <p class="!text-base !text-grayish-purple font-normal leading-5 mb-0">
-            ID: 98374861
-          </p>
-          <h4
-            class="text-dm-blue !font-semibold leading-4 !text-[20px] font-theme"
-          >
-            Laundry Services
-          </h4>
-
-          <div class="row g-2 mb-2">
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Date"
-                value="Sat, 19 Nov 2023"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Time"
-                value="10:30 AM"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Order Type"
-                value="Online"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Payment Status"
-                value="Paid"
-                className="flex flex-col gap-1"
-              />
-            </div>
-            <div class="col-md-6">
-              <InfoDisplay
-                label="Order Amount"
-                value="$150.00"
-                className="flex flex-col gap-1"
-              />
-            </div>
-          </div>
-
-          <div class="row">
-            <ProfileCard
-              :imageSrc="ManagerIcon"
-              altText="manager img"
-              subText="Manager"
-              mainText="John Doe"
-            />
-            <ProfileCard
-              :imageSrc="CompanyIcon"
-              altText="ltd"
-              mainText="XYZ Bito Group Pvt Ltd"
-              linkText="View Details"
-            />
-          </div>
-
-          <div class="mt-4">
-            <SummaryCard
-              title="Customer Summary"
-              description="Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentum tellus."
-              readMoreLink="#"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3 flex flex-col">
-      <div class="d-flex">
-        <h5 class="fw-semibold !text-base !text-dm-blue">Assign to</h5>
-        <p
-          class="!text-grayColor text-sm leading-5 !font-semibold mb-0 ms-auto font-theme"
-        >
-          View All
-        </p>
-      </div>
-      <UserProfileCard
-        :profileImage="ManagerIcon"
-        name="Nancy Tolbert"
-        designation="Senior Manager"
-        :rating="4"
-      />
-
-      <h5 class="fw-semibold mt-3 !text-base !text-dm-blue">Order Location</h5>
-      <div class="flex-1 flex">
-        <LocationCard
-          class="flex-grow h-full"
-          address="123 Main St."
-          :imageSrc="MapIcon"
-          buttonText="Open Map"
-        />
-      </div>
-    </div>
-    <div class="col-md-3 flex flex-col">
-      <h5 class="fw-semibold !text-base !text-dm-blue">Attachments</h5>
-      <FileCard
-        fileIcon="../../../assets/images2/file-icon.png"
-        fileName="Company Profile"
-        fileSize="3.2mb"
-      />
-
-      <DescriptionCard
-        title="Additional terms"
-        content="Custom content goes here..."
-        linkText="read more"
-        :lineClamp="3"
+  
+  <div v-if="offerDetails?.offer.payment_terms.length > 0">
+    <h5 class="fw-bold !text-base !text-dm-blue">Payment Terms</h5>
+    <div
+      class="bg-white rounded-xl p-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"
+    >
+      <PaymentCard
+        :key="index"
+        v-for="(paymentTerm, index) in offerDetails.offer.payment_terms"
+        :badgeText="getOrdinalNumber(index + 1) + ' Payment'"
+        :paymentDescription="paymentTerm.description"
+        :paymentDate="formatDateAndTime(paymentTerm.created_at)?.formattedDate"
+        currency="AED"
+        :amount="formatWithCommas(paymentTerm.amount)"
+        :statusClass="paymentTermsStatus(paymentTerm.status)?.gradient"
+        :status="paymentTermsStatus(paymentTerm.status)?.statusText"
       />
     </div>
   </div>
 
-  <h5 class="fw-semibold">Payment Terms</h5>
-  <div class="card border-0 rounded-3">
-    <div class="card-body">
-      <div class="row">
-        <PaymentCard
-          badgeText="1st payment"
-          paymentDescription="25% - After event reservation."
-          paymentDate="2020-05-17, 10:00 AM"
-          currency="AED"
-          amount="2300.00"
-          status="Paid"
-        />
-      </div>
-    </div>
-  </div>
-
-  <BreakDown title="Offer Breakdown" @toggle="handleToggle" />
+  <!-- <BreakDown title="Offer Breakdown" @toggle="handleToggle" />
 
   <div class="mb-4" v-if="services.length > 0">
     <div class="flex justify-between items-center">
@@ -192,11 +69,11 @@
         @edit="(data) => handleClickEdit(data)"
       />
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import BreakDown from "../../../components/common/BreakDown/BreakDown.vue";
 import DescriptionCard from "../../../components/common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../../../components/common/FileCard/FileCard.vue";
@@ -211,6 +88,20 @@ import UserProfileCard from "../../../components/common/UserProfileCard/UserProf
 import MapIcon from "../../../assets/images2/map-2.png";
 import ManagerIcon from "../../../assets/images2/manager.png";
 import CompanyIcon from "../../../assets/images2/ltd.png";
+import AppointmentDetailCards from "../../../components/Appointment/AppointmentDetailCards.vue";
+import { useRoute } from "vue-router";
+import { useToast } from "primevue";
+import api from "../../../api";
+import { formatDateAndTime, formatWithCommas, getOrdinalNumber } from "../../../utils/helper";
+import { paymentTermsStatus } from "../../../utils/constants";
+
+const route = useRoute();
+const loading = ref(true);
+const error = ref(null);
+const offerDetails = ref(null);
+const toast = useToast();
+const user = ref(null);
+const company = ref(null);
 
 const handleClickEdit = (data) => {
   // if (data.item_title) {
@@ -219,6 +110,34 @@ const handleClickEdit = (data) => {
   //   appointStore.toggleIsServiceDetails(data);
   // }
 };
+
+const fetchOfferDetailsById = async (id) => {
+  try {
+    const response = await api.get("/superadmin/user/offer/" + id);
+    if (response.status === 200) {
+      const { data, message } = response?.data;
+      offerDetails.value = { offer: data };
+      user.value = data.user;
+      company.value = data.user.company;
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: message,
+        life: 3000,
+      });
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  window.scroll(0, 0);
+  fetchOfferDetailsById(route.params.offerId);
+});
 
 const services = ref([
   {

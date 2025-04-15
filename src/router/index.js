@@ -219,7 +219,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/offers/details",
+        path: "/super-admin/company-details/:companyId/offers/:offerId/details",
         component: () => import("../pages/CompanyDetails/Offers/Details.vue"),
         meta: {
           breadcrumb: [
@@ -230,7 +230,7 @@ const routes = [
             },
             {
               label: "Details",
-              link: "/super-admin/company-details/:companyId/offers/details",
+              link: "/super-admin/company-details/:companyId/offers/:offerId/details",
             },
           ],
         },
@@ -286,7 +286,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/employees/appointment/details",
+        path: "/super-admin/company-details/:companyId/employees/appointment/:appointmentId/details",
         component: () =>
           import(
             "../pages/CompanyDetails/Employees/AppointmentDetails/Detail.vue"

@@ -56,7 +56,6 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
     });
     if (response?.status === 200) {
       const { data } = response.data;
-      console.log("🚀 ~ fetchData ~ data:", data);
 
       pagination.value = {
         currentPage: response.data.current_page,
@@ -158,7 +157,6 @@ const getStatusClass = (status) => {
 };
 
 const getWorkStatusClass = (status) => {
-  console.log("🚀 ~ getWorkStatusClass ~ status:", status);
   switch (status) {
     case "Working on Survey Task":
       return "status-working-survey-task";
@@ -259,13 +257,23 @@ async function updateStatus(data) {
   }
 }
 
-watch(
-  companiesData,
-  (newVal, oldVal) => {
-    console.log("New Value (Raw):", toRaw(newVal));
-  },
-  { deep: true }
-);
+const copyUrl = (id) => {
+  const location = window.location;
+  navigator.clipboard.writeText(
+    location.origin +
+      "/super-admin/company-details/" +
+      route.params.companyId +
+      "/employees/" +
+      id +
+      "/details"
+  );
+  toast.add({
+    severity: "success",
+    summary: "Success",
+    detail: "Copied to clipboard!",
+    life: 3000,
+  });
+};
 </script>
 
 <template>

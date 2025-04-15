@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid company-details">
-    <div class="row">
+    <div class="row" v-if="!route.params.employeeId">
       <!-- Company Info and Stats -->
       <keep-alive>
         <CompanyHeader />
@@ -347,7 +347,6 @@ const copyUrl = (id) => {
   });
 };
 
-const statusOptions = ["In Progress", "On Location", "Waiting", "Cancelled"];
 const columns = ref([
   { field: "id", header: "ID" },
   {

@@ -1,4 +1,4 @@
-import { blue, gray, green, red, yellow } from "./constants";
+import { blue, getOfferStatus, gray, green, red, yellow } from "./constants";
 
 export const transformData = (data) => {
   return data.map((item, index) => {
@@ -284,6 +284,32 @@ export const convertAppointmentData = (appointment) => {
   };
 };
 
+export const convertAppointmentEmployeeData = (appointment) => {
+  return {
+    id: appointment.id,
+    organizationName: {
+      logo: appointment.user.profile_picture?.file_path || "",
+      name: appointment.user.name || "N/A",
+    },
+    title: {
+      name: appointment.order.title,
+      description: appointment.order.description,
+    },
+    verticle: {
+      image: appointment.order.verticle.image_path,
+      name: appointment.order.verticle.name,
+    },
+    manager: {
+      name: appointment?.user?.name,
+      logo: appointment?.user?.profile_picture?.file_path,
+    },
+    contact: appointment?.user?.mobile_number,
+    status: getAppointmentStatus(appointment.status),
+    expectedDateAndTime:
+      appointment.delivery_date + " " + formatTime(appointment.delivery_time),
+  };
+};
+
 // Utility function to convert API response to table format
 export const convertSiteSurveyData = (site_survey) => {
   return {
@@ -327,6 +353,29 @@ export const convertEmployeeUsersData = (empUser) => {
       end_date: empUser?.working_order?.end_date,
       image: empUser?.created_by?.profile_picture?.file_path,
     },
+  };
+};
+
+// Utility function to convert API response to table format
+export const convertOffersData = (offer) => {
+  return {
+    id: offer.id,
+    organizationName: {
+      logo: offer.company.company_logo?.file_path || "",
+      name: offer.company.company_name || "N/A",
+    },
+    order: {
+      name: offer.order.title,
+      description: offer.order.description,
+    },
+    orderType: offer.order.type === 1 ? "One-time" : "Reoccuring",
+    verticle: {
+      image: offer.order.verticle.image_path,
+      name: offer.order.verticle.name,
+    },
+    offerSentDate: formatDateAtMidnight(offer.created_at),
+    status: getOfferStatus(offer.status),
+    offerValue: offer.grand_total,
   };
 };
 
@@ -380,6 +429,35 @@ export const getAppointProgressStatus = (status) => {
       return { name: "Pending From Client", ...red };
     default:
       return { name: "Other", ...gray };
+  }
+};
+
+const STATUS_SCHEDULED = 1;
+const STATUS_RESCHEDULED = 2;
+const CANCELED = 3;
+const COMPLETED = 4;
+const REJECTED_RESCHEDULED = 5;
+const DELIVERED = 6;
+const DISPUTED = 7;
+
+export const getAppointmentStatus = (status) => {
+  switch (status) {
+    case STATUS_SCHEDULED:
+      return { name: "Scheduled", ...green };
+    case STATUS_RESCHEDULED:
+      return { name: "Rescheduled", ...green };
+    case CANCELED:
+      return { name: "Canceled", ...red };
+    case COMPLETED:
+      return { name: "Completed", ...green };
+    case REJECTED_RESCHEDULED:
+      return { name: "Rejected - Rescheduled", ...red };
+    case DELIVERED:
+      return { name: "Delivered", ...green };
+    case DISPUTED:
+      return { name: "Disputed", ...red };
+    default:
+      return { name: "Other", color: "gray" };
   }
 };
 
@@ -558,4 +636,23 @@ export const getMonthFromISO = (dateString) => {
     "Dec",
   ];
   return monthNames[date.getUTCMonth()];
+};
+
+export const formatToMonthYear = (dateString) => {
+  if (!dateString) return "Invalid Date"; // Handle null or undefined
+
+  let date;
+
+  if (dateString.includes("T")) {
+    date = new Date(dateString);
+  } else {
+    // If it's in "YYYY-MM-DD" format (start_date)
+    date = new Date(`${dateString}T00:00:00Z`);
+  }
+
+  // Check if date is valid
+  if (isNaN(date.getTime())) return "Invalid Date";
+
+  const options = { year: "numeric", month: "short" };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
 };
