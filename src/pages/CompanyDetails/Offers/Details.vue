@@ -1,7 +1,7 @@
 <template>
   
   <AppointmentDetailCards :appointmentDetails="offerDetails" 
-    :user="user" :company="company" />
+    :user="user" :company="company" mainCardHeading="Offer Details" associateHeading="Offer Created by" />
 
   
   <div v-if="offerDetails?.offer.payment_terms.length > 0">
