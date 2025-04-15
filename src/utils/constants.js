@@ -446,3 +446,18 @@ export const getUserRole = (type) => {
             return "Admin";
     }
 }
+
+export const getOfferStatus = (status) => {
+    switch (status) {
+        case 1:
+            return { ...green, statusText: "Active" };
+        case 2:
+            return { ...yellow, statusText: "Pending" };
+        case 3:
+            return { ...red, statusText: "Rejected" };
+        case 4:
+            return { ...green, statusText: "Submitted" };
+        default:
+            return { ...gray, statusText: "Unknown" }
+    }
+};

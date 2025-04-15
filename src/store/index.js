@@ -88,6 +88,12 @@ export const useUserStore = defineStore("userStore", {
     setLegDocDetails(data) {
       this.legDocDetails = data;
     },
+    setUserDetails(data) {
+      this.userDetails = data;
+    }
+  },
+  persist: {
+    paths: ["legDocDetails", "userDetails"],
   },
 });
 

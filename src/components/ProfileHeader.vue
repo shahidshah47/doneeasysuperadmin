@@ -64,17 +64,56 @@
   </header>
 </template>
 <script setup>
-import { defineProps } from "vue";
+import { computed, defineProps, onMounted, ref } from "vue";
 import StarRating from "./common/StarRating/StarRating.vue";
 import StatItem from "./common/StatItem/StatItem.vue";
 import { getUserRole, getUserStatus } from "../utils/constants.js";
 import { formatWithCommas } from "../utils/helper.js";
+import { useUserStore } from "../store/index.js";
+import { storeToRefs } from "pinia";
+import api from "../api/index.js";
+import { useToast } from "primevue";
+import { useRoute } from "vue-router";
 
 const props = defineProps({
-  userDetails: Object,
-});
+  userDetails: Object
+})
 
-console.log(props.userDetails, "user details");
+const loading = ref(true);
+const error = ref(null);
+const userStore = useUserStore();
+const toast = useToast();
+const route = useRoute();
+const userDetails = ref(null);
+
+const fetchEmpDetailsById = async () => {
+  try {
+    const response = await api.get("/superadmin/user/details?user_id=" + route.params.employeeId);
+    if (response.status === 200) {
+      const { data, message } = response?.data;
+      userDetails.value = data;
+      userStore.setUserDetails(data);
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: message,
+        life: 3000,
+      });
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  window.scroll(0, 0);
+  if (!props.userDetails) {
+    fetchEmpDetailsById();
+  }
+});
 </script>
 
 <style scoped>

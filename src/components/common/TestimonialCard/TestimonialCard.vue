@@ -14,13 +14,21 @@
           }}</time>
         </div>
         <div class="rating">
-          <StarRating :rating="rating" :width="10" :height="10" />
+          <StarRating :rating="parseFloat(rating)" :width="10" :height="10" />
         </div>
       </div>
     </div>
     <p class="testimonial-text">{{ testimonialText }}</p>
     <div class="client-info">
-      <img :src="clientAvatar" :alt="clientName" class="client-avatar" />
+      <div
+        class="shadow-lavendar-card border-2 border-solid border-white-100 w-9 h-9 overflow-hidden rounded-lg"
+      >
+        <img
+          :src="clientAvatar"
+          :alt="clientName"
+          class="w-full h-full object-cover"
+        />
+      </div>
       <div class="client-details">
         <span class="client-label">Client</span>
         <span class="client-name">{{ clientName }}</span>
@@ -37,7 +45,7 @@ const props = defineProps({
   serviceIcon: String,
   serviceTitle: String,
   serviceDate: String,
-  rating: Number,
+  rating: String,
   testimonialText: String,
   clientAvatar: String,
   clientName: String,
@@ -146,7 +154,7 @@ const formattedDate = computed(() => {
   align-self: start;
   display: flex;
   margin-top: 16px;
-  align-items: end;
+  align-items: center;
   gap: 8px;
   font-family: Averta, sans-serif;
   line-height: 1.2;

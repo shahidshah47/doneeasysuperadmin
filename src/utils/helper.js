@@ -1,4 +1,4 @@
-import { blue, gray, green, red, yellow } from "./constants";
+import { blue, getOfferStatus, gray, green, red, yellow } from "./constants";
 
 export const transformData = (data) => {
   return data.map((item, index) => {
@@ -88,6 +88,29 @@ export const getLegalDocsDetails = (user) => {
     { label: "Emirates ID", value: user?.emirates_id },
     { label: "TRN", value: user?.trn },
   ];
+};
+
+const ACTIVE = 1;
+const DEACTIVATED = 2;
+const INACTIVE = 3;
+const MONITORY = 4;
+const BANNED = 5;
+
+const getStatusText = (status) => {
+  switch (status) {
+    case ACTIVE:
+      return "Active";
+    case DEACTIVATED:
+      return "Deactivated";
+    case INACTIVE:
+      return "Inactive";
+    case MONITORY:
+      return "Monitory";
+    case BANNED:
+      return "Banned";
+    default:
+      return "";
+  }
 };
 
 // Utility function to convert API response to table format
@@ -267,7 +290,7 @@ export const convertEmployeeUsersData = (empUser) => {
     },
     role: empUser.designation,
     vertical: empUser.vertical_count ?? 0,
-    status: "Active",
+    status: getStatusText(empUser?.status),
     contact: { phone: empUser.mobile_number, email: empUser.email },
     currentWork: "Occupied",
     projectDetail: {
@@ -276,6 +299,29 @@ export const convertEmployeeUsersData = (empUser) => {
       end_date: "11/02.2023",
       image: "Avatar.png",
     },
+  };
+};
+
+// Utility function to convert API response to table format
+export const convertOffersData = (offer) => {
+  return {
+    id: offer.id,
+    organizationName: {
+      logo: offer.company.company_logo?.file_path || "",
+      name: offer.company.company_name || "N/A",
+    },
+    order: {
+      name: offer.order.title,
+      description: offer.order.description,
+    },
+    orderType: offer.order.type === 1 ? "One-time" : "Reoccuring",
+    verticle: {
+      image: offer.order.verticle.image_path,
+      name: offer.order.verticle.name,
+    },
+    offerSentDate: formatDateAtMidnight(offer.created_at),
+    status: getOfferStatus(offer.status),
+    offerValue: offer.grand_total
   };
 };
 
@@ -489,12 +535,22 @@ export const debounce = (func, delay) => {
   };
 };
 
-export const  getMonthFromISO = (dateString) => {
+export const getMonthFromISO = (dateString) => {
   const date = new Date(dateString);
   // Months are zero-based (0 = January, 4 = May, etc.)
   const monthNames = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
   return monthNames[date.getUTCMonth()];
-}
+};

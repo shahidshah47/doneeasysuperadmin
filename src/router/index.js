@@ -180,13 +180,13 @@ const routes = [
             },
             {
               label: "Details",
-              link: "/super-admin/company-details/site-survey/details",
+              link: "/super-admin/company-details/site-survey/:siteSurveyId/details",
             },
           ],
         },
       },
       {
-        path: "/super-admin/company-details/site-survey/SurveyDetails/details",
+        path: "/super-admin/company-details/site-survey/SurveyDetails/:siteSurveyId/details",
         component: () =>
           import(
             "../pages/CompanyDetails/SiteSurvey/SurveyDetails/Details.vue"
@@ -219,7 +219,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/offers/details",
+        path: "/super-admin/company-details/:companyId/offers/:offerId/details",
         component: () => import("../pages/CompanyDetails/Offers/Details.vue"),
         meta: {
           breadcrumb: [
@@ -230,7 +230,7 @@ const routes = [
             },
             {
               label: "Details",
-              link: "/super-admin/company-details/:companyId/offers/details",
+              link: "/super-admin/company-details/:companyId/offers/:offerId/details",
             },
           ],
         },
@@ -360,7 +360,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/verticals/details",
+        path: "/super-admin/company-details/:companyId/verticals/:verticalId/details",
         component: () =>
           import("../pages/CompanyDetails/Verticals/Details.vue"),
         meta: {
@@ -372,7 +372,7 @@ const routes = [
             },
             {
               label: "Details",
-              link: "/super-admin/company-details/:companyId/verticals/details",
+              link: "/super-admin/company-details/:companyId/verticals/:verticalId/details",
             },
           ],
         },

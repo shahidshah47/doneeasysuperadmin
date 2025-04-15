@@ -87,7 +87,10 @@
     </div>
 
     <div class="col-md-3 flex flex-col gap-2">
-      <div v-if="orderSummary.associate_user?.length > 0" class="h-full flex-1">
+      <div
+        v-if="orderSummary.associate_users?.length > 0"
+        class="h-full flex-1"
+      >
         <div class="d-flex">
           <h5 class="fw-bold !text-base !text-dm-blue">Assign to</h5>
           <p
@@ -96,7 +99,10 @@
             View All
           </p>
         </div>
-        <div v-for="(associate, index) in orderSummary.associate_user">
+        <div
+          v-for="(associate, index) in orderSummary.associate_users"
+          :key="index"
+        >
           <UserProfileCard
             :key="index"
             :profileImage="associate.profile_picture.file_path"
@@ -123,7 +129,7 @@
 
     <div class="col-md-3 flex flex-col">
       <h5 class="fw-bold !text-base !text-dm-blue">Attachments</h5>
-      <div v-for="(doc, index) in orderSummary.order.documents">
+      <div v-for="(doc, index) in orderSummary.order.documents" :key="index">
         <FileCard
           :key="index"
           fileIcon="../../../assets/images2/file-icon.png"
@@ -141,12 +147,57 @@
       />
     </div>
   </div>
+  <div class="row my-4 flex">
+    <div class="col-md-6 flex flex-col">
+      <SectionHeading
+        title="Schedule site survey "
+        customClass="!text-base !font-semibold text-dm-blue leading-5"
+      />
+      <div class="card border-0 rounded-3 flex-grow">
+        <div class="card-body position-relative">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <InfoDisplay
+                className="flex flex-col gap-1"
+                label="Survey No.1 Date"
+                :value="formatDateAndTime(orderSummary.date)?.formattedDate"
+              />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay
+                class="flex flex-col gap-1"
+                label="Survey No.1 Time"
+                :value="`${formatTime(orderSummary.start_time)} - ${formatTime(
+                  orderSummary.end_time
+                )}`"
+              />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay
+                className="flex flex-col gap-1"
+                label="Coordinator Name "
+                :value="orderSummary.coordinator_name || '-'"
+              />
+            </div>
+            <div class="col-md-6">
+              <InfoDisplay
+                className="flex flex-col gap-1"
+                label="Coordinator Phone No."
+                :value="orderSummary.mobile_number || '-'"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { defineProps, ref } from "vue";
+import { defineProps, ref, toRaw, watch } from "vue";
 import {
   formatDateAndTime,
+  formatTime,
   formatWithCommas,
   getOrderType,
 } from "../../utils/helper";
@@ -167,6 +218,4 @@ const props = defineProps({
   user: Object,
   company: Object,
 });
-
-console.log(props.orderSummary, "props appointment details");
 </script>

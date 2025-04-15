@@ -1,5 +1,5 @@
 <script setup>
-import {nextTick, onMounted, ref, watch} from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 
 import { useRoute, useRouter } from "vue-router";
 
@@ -13,14 +13,14 @@ import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useCompanyStore } from "../../store";
 import StatusButtons from "../../components/common/StatusButtons/StatusButtons.vue";
 import SearchAndFilter from "../../components/common/SearchAndFilter/SearchAndFilter.vue";
-import {convertEmployeeUsersData, debounce} from "../../utils/helper.js";
+import { convertEmployeeUsersData, debounce } from "../../utils/helper.js";
 
 const store = useCompanyStore();
 // const companiesData = ref([]);
 const selectedCompany = ref();
 const loading = ref(true);
 const error = ref(null);
-const statusBtn = ref('');
+const statusBtn = ref("");
 const router = useRouter();
 const route = useRoute();
 const toast = useToast();
@@ -56,6 +56,7 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
     });
     if (response?.status === 200) {
       const { data } = response.data;
+      console.log("🚀 ~ fetchData ~ data:", data);
       pagination.value = {
         currentPage: response.data.current_page,
         lastPage: response.data.last_page,
@@ -74,7 +75,7 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
         life: 3000,
       });
       // console.log(data, "Data from users");
-      companiesData.value = data.map(item => convertEmployeeUsersData(item));
+      companiesData.value = data.map((item) => convertEmployeeUsersData(item));
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -94,7 +95,7 @@ const handleClickToDetails = (empId) => {
 };
 
 const handleFetchUsers = (id, page) => {
-  searchTerm.value = '';
+  searchTerm.value = "";
   fetchData(id, 1);
   statusBtn.value = id;
 };
@@ -103,8 +104,21 @@ const handlePerPage = async (props) => {
   await fetchData(statusBtn.value, props[0], props[1], searchTerm.value);
 };
 
+const statusOptions = [
+  "Active",
+  "Deactivated",
+  "Inactive",
+  "Monitory",
+  "Banned",
+];
 
-const statusOptions = ["All", "Active", "Pending", "Cancelled"];
+const statusMap = {
+  Active: 1,
+  Deactivated: 2,
+  Inactive: 3,
+  Monitory: 4,
+  Banned: 5,
+};
 const columns = ref([
   { field: "id", header: "ID" },
   { field: "employeeName", header: "Employee Name", class: "w-32" },
@@ -115,7 +129,7 @@ const columns = ref([
     icon: "chevron-down.svg",
     iconWidth: 10,
     iconHeight: 10,
-    class: "w-40"
+    class: "w-40",
   },
   { field: "status", header: "Status" },
   { field: "contact", header: ["Contact/ ", "Email"] },
@@ -127,17 +141,17 @@ const columns = ref([
 const getStatusClass = (status) => {
   switch (status) {
     case "Active":
-      return { backgroundColor: "#D6FFEF", color: "#00995C" }; // Green
+      return "status-active";
     case "Deactivated":
-      return { backgroundColor: "#E7E7EB", color: "#0E0D35" }; // Yellow
+      return "status-deactivated";
     case "Inactive":
-      return { backgroundColor: "#E7E7EB", color: "#575672" }; // Red
+      return "status-inactive";
     case "Monitory":
-      return { backgroundColor: "#FCEED9", color: "#DC8B13" }; // Red
+      return "status-monitory";
     case "Banned":
-      return { backgroundColor: "#FFE5E5", color: "#FF5555" }; // Red
+      return "status-banned";
     default:
-      return { backgroundColor: "#f1f1f1", color: "#000" }; // Default Gray
+      return "status-default";
   }
 };
 
@@ -153,8 +167,6 @@ const getWorkStatusClass = (status) => {
       return "!text-accent-green !bg-green-200";
   }
 };
-
-const updateStatus = async (data) => {};
 
 const companiesData = ref([
   {
@@ -205,12 +217,15 @@ const companiesData = ref([
 ]);
 
 const debouncedFetch = debounce((val) => {
-  fetchData(statusBtn.value, 1, null, val)
+  fetchData(statusBtn.value, 1, null, val);
 }, 500);
 
-watch(() => searchTerm.value, (newVal, oldValue) => {
-  debouncedFetch(newVal);
-});
+watch(
+  () => searchTerm.value,
+  (newVal, oldValue) => {
+    debouncedFetch(newVal);
+  }
+);
 
 onMounted(() => {
   nextTick(() => {
@@ -231,6 +246,49 @@ const typeClasses = {
   Reoccurring: "!text-accent-green bg-green-200",
   "Hot Orders": "!text-light-orange bg-blush-100",
 };
+
+async function updateStatus(data) {
+  const statusCode = statusMap[data.status];
+  try {
+    const response = await api.post(
+      "/superadmin/update-status",
+      {
+        user_id: data.id,
+        status: statusCode,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage?.getItem("token")}`,
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message || "Status updated",
+        life: 3000,
+      });
+      await fetchData(statusBtn.value, pagination.value.currentPage);
+    } else {
+      toast.add({
+        severity: "error",
+        summary: "Failed",
+        detail: response?.data?.message || "Update failed",
+        life: 3000,
+      });
+    }
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: "Something went wrong",
+      life: 3000,
+    });
+    console.error(error);
+  }
+}
 </script>
 
 <template>
@@ -360,16 +418,20 @@ const typeClasses = {
           <Dropdown
             v-model="data.status"
             :options="statusOptions"
-            @change="updateStatus(data)"
-            :style="getStatusClass(data.status)"
-            class="p-dropdown-sm !font-semibold"
-            ><template #dropdownicon>
+            @change="(e) => updateStatus({ id: data?.id, status: e.value })"
+            :class="[
+              'p-dropdown-sm font-semibold',
+              getStatusClass(data.status),
+            ]"
+          >
+            <template #dropdownicon>
               <img
                 :src="getImageIcon('chevron-down.svg')"
-                alt="Employee Image"
+                alt="Status Dropdown Icon"
                 class="w-2.5 h-2 rounded-xl object-cover"
-              /> </template
-          ></Dropdown>
+              />
+            </template>
+          </Dropdown>
         </template>
 
         <template #actions="{ data }">
