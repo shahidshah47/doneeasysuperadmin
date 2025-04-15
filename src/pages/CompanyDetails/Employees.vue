@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, ref, toRaw, watch } from "vue";
 
 import { useRoute, useRouter } from "vue-router";
 
@@ -43,7 +43,7 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
   console.log(id, page, "id and page");
   try {
     let url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&search=${search}`;
-    if (id !== "") {
+    if (id !== "" && id !== 1) {
       url = `/superadmin/user/users?user_id=${route.params.companyId}&page=${page}&user_type=${id}&search=${search}`;
     }
     if (perPage) {
@@ -57,6 +57,7 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
     if (response?.status === 200) {
       const { data } = response.data;
       console.log("🚀 ~ fetchData ~ data:", data);
+
       pagination.value = {
         currentPage: response.data.current_page,
         lastPage: response.data.last_page,
@@ -74,6 +75,7 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
         detail: response?.data?.message,
         life: 3000,
       });
+
       // console.log(data, "Data from users");
       companiesData.value = data.map((item) => convertEmployeeUsersData(item));
     }
@@ -156,65 +158,32 @@ const getStatusClass = (status) => {
 };
 
 const getWorkStatusClass = (status) => {
+  console.log("🚀 ~ getWorkStatusClass ~ status:", status);
   switch (status) {
+    case "Working on Survey Task":
+      return "status-working-survey-task";
+    case "Working on Request Task":
+      return "status-working-request-task";
+    case "Working on Appointment Task":
+      return "status-working-appointment-task";
+    case "Appointment Assigned":
+      return "status-appointment-assigned";
+    case "Request Assigned":
+      return "status-request-assigned";
+    case "Survey Assigned":
+      return "status-survey-assigned";
     case "Occupied":
-      return "!text-accent-green !bg-green-200";
+      return "status-occupied";
     case "Site Survey":
-      return "!text-accent-green !bg-green-200";
+      return "status-site-survey";
     case "Available":
-      return "!text-accent-green !bg-green-200";
+      return "status-available";
     default:
-      return "!text-accent-green !bg-green-200";
+      return "status-default";
   }
 };
 
-const companiesData = ref([
-  {
-    id: 1,
-    employeeName: { name: "John Doe", image: "Avatar.png" },
-    role: "Software Engineer",
-    vertical: 44,
-    status: "Active",
-    contact: { phone: "+1234567890", email: "john.doe@example.com" },
-    currentWork: "Occupied",
-    projectDetail: {
-      name: "Business Setup",
-      client: "Client Name",
-      end_date: "11/02.2023",
-      image: "Avatar.png",
-    },
-  },
-  // {
-  //   id: 2,
-  //   employeeName: { name: "Jane Smith", image: "Avatar.png" },
-  //   role: "Product Manager",
-  //   vertical: 23,
-  //   status: "Active",
-  //   contact: { phone: "+9876543210", email: "jane.smith@example.com" },
-  //   currentWork: "Site Survey",
-  //   projectDetail: {
-  //     name: "Business Setup",
-  //     client: "Client Name",
-  //     end_date: "11/02.2023",
-  //     image: "Avatar.png",
-  //   },
-  // },
-  // {
-  //   id: 3,
-  //   employeeName: { name: "Alice Johnson", image: "Avatar.png" },
-  //   role: "Data Scientist",
-  //   vertical: 33,
-  //   status: "Active",
-  //   contact: { phone: "+1928374650", email: "alice.johnson@example.com" },
-  //   currentWork: "Occupied",
-  //   projectDetail: {
-  //     name: "Business Setup",
-  //     client: "Client Name",
-  //     end_date: "11/02.2023",
-  //     image: "Avatar.png",
-  //   },
-  // },
-]);
+const companiesData = ref([]);
 
 const debouncedFetch = debounce((val) => {
   fetchData(statusBtn.value, 1, null, val);
@@ -289,6 +258,14 @@ async function updateStatus(data) {
     console.error(error);
   }
 }
+
+watch(
+  companiesData,
+  (newVal, oldVal) => {
+    console.log("New Value (Raw):", toRaw(newVal));
+  },
+  { deep: true }
+);
 </script>
 
 <template>
@@ -370,11 +347,20 @@ async function updateStatus(data) {
         <template #currentWork="{ data }">
           <Dropdown
             v-model="data.currentWork"
-            :options="['Occupied', 'Site Survey', 'Available']"
+            :options="[
+              'Occupied',
+              'Survey Task',
+              'Request Task',
+              'Appointment Task',
+              'Appointment Assigned',
+              'Request Assigned',
+              'Survey Assigned',
+            ]"
             @change="updateStatus(data)"
             :class="[
-              'p-dropdown-sm !font-semibold',
-              getWorkStatusClass(data.status),
+              'p-dropdown-sm',
+              'font-semibold',
+              getWorkStatusClass(data.currentWork),
             ]"
           >
             <template #dropdownicon>
@@ -388,30 +374,53 @@ async function updateStatus(data) {
         </template>
 
         <template #projectDetail="{ data }">
-          <div class="flex items-center gap-2">
-            <img
-              :src="getImageUrl(data.projectDetail.image)"
-              alt="Project Image"
-              class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
-            />
-            <div class="">
-              <span class="!font-semibold">
-                {{ data.projectDetail.name }}
-              </span>
-              <div class="!text-neutral-70 !text-sm">
-                <span class="">
-                  {{ data.projectDetail.client }}
+          <div
+            v-if="
+              data.projectDetail &&
+              data.projectDetail.image &&
+              data.projectDetail.name &&
+              data.projectDetail.client &&
+              data.projectDetail.end_date
+            "
+          >
+            <div class="flex items-center gap-2">
+              <img
+                v-if="data.projectDetail.image"
+                :src="data.projectDetail.image"
+                alt="Project Image"
+                class="min-w-10 max-w-10 min-h-10 max-h-10 w-full rounded-xl object-cover"
+              />
+              <div>
+                <span v-if="data.projectDetail.name" class="!font-semibold">
+                  {{ data.projectDetail.name }}
                 </span>
-                -
-                <span class="">
-                  {{ data.projectDetail.end_date }}
-                </span>
-                <button class="!text-vivid-purple !text-sm font-semibold">
-                  View Details
-                </button>
+                <div
+                  class="!text-neutral-70 !text-sm"
+                  v-if="
+                    data.projectDetail.client || data.projectDetail.end_date
+                  "
+                >
+                  <span v-if="data.projectDetail.client">
+                    {{ data.projectDetail.client }}
+                  </span>
+                  <span
+                    v-if="
+                      data.projectDetail.client && data.projectDetail.end_date
+                    "
+                  >
+                    -
+                  </span>
+                  <span v-if="data.projectDetail.end_date">
+                    {{ data.projectDetail.end_date }}
+                  </span>
+                  <button class="!text-vivid-purple !text-sm font-semibold">
+                    View Details
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+          <div v-else>-</div>
         </template>
 
         <template #status="{ data }">
@@ -508,3 +517,55 @@ async function updateStatus(data) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.status-default {
+  background-color: #f1f1f1 !important;
+  color: #000 !important;
+}
+
+.status-working-survey-task {
+  background-color: #e0f7fa !important;
+  color: #00796b !important;
+}
+
+.status-working-request-task {
+  background-color: #fff3e0 !important;
+  color: #ef6c00 !important;
+}
+
+.status-working-appointment-task {
+  background-color: #f3e5f5 !important;
+  color: #6a1b9a !important;
+}
+
+.status-appointment-assigned {
+  background-color: #e8f5e9 !important;
+  color: #2e7d32 !important;
+}
+
+.status-request-assigned {
+  background-color: #fce4ec !important;
+  color: #c2185b !important;
+}
+
+.status-survey-assigned {
+  background-color: #ede7f6 !important;
+  color: #512da8 !important;
+}
+
+.status-occupied {
+  background-color: #eeeeee !important;
+  color: #616161 !important;
+}
+
+.status-site-survey {
+  background-color: #f1f8e9 !important;
+  color: #33691e !important;
+}
+
+.status-available {
+  background-color: #e0f2f1 !important;
+  color: #004d40 !important;
+}
+</style>

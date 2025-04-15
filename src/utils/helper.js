@@ -96,6 +96,32 @@ const INACTIVE = 3;
 const MONITORY = 4;
 const BANNED = 5;
 
+const WORKING_SURVEY_TASK = 1;
+const WORKING_REQUEST_TASK = 2;
+const WORKING_APPOINTMENT_TASK = 3;
+const APPOINTMENT_ASSIGNED = 4;
+const REQUEST_ASSIGNED = 5;
+const SURVEY_ASSIGNED = 6;
+
+const getProgressStatusText = (status) => {
+  switch (status) {
+    case WORKING_SURVEY_TASK:
+      return "Survey Task";
+    case WORKING_REQUEST_TASK:
+      return "Request Task";
+    case WORKING_APPOINTMENT_TASK:
+      return "Appointment Task";
+    case APPOINTMENT_ASSIGNED:
+      return "Appointment Assigned";
+    case REQUEST_ASSIGNED:
+      return "Request Assigned";
+    case SURVEY_ASSIGNED:
+      return "Survey Assigned";
+    default:
+      return "Occupied";
+  }
+};
+
 const getStatusText = (status) => {
   switch (status) {
     case ACTIVE:
@@ -286,18 +312,20 @@ export const convertEmployeeUsersData = (empUser) => {
     id: empUser.id,
     employeeName: {
       name: empUser.name,
-      image: empUser.profile_picture.file_path,
+      image:
+        empUser?.profile_picture?.file_path ||
+        "https://pilot.doneeasy.io/api/files/UploadedFiles/1738997376_profile_picture.jpg",
     },
-    role: empUser.designation,
-    vertical: empUser.vertical_count ?? 0,
+    role: empUser?.designation,
+    vertical: empUser?.vertical_count ?? 0,
     status: getStatusText(empUser?.status),
-    contact: { phone: empUser.mobile_number, email: empUser.email },
-    currentWork: "Occupied",
+    contact: { phone: empUser?.mobile_number, email: empUser?.email },
+    currentWork: getProgressStatusText(empUser?.working_type || 0),
     projectDetail: {
-      name: "Business Setup",
-      client: "Client Name",
-      end_date: "11/02.2023",
-      image: "Avatar.png",
+      name: empUser?.working_order?.title,
+      client: empUser?.created_by?.name,
+      end_date: empUser?.working_order?.end_date,
+      image: empUser?.created_by?.profile_picture?.file_path,
     },
   };
 };

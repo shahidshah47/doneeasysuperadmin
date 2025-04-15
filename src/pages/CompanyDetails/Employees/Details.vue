@@ -34,14 +34,20 @@
               :key="index"
               class="flex-1/3"
             >
-              <InfoDisplay :label="legalDoc?.label" :value="legalDoc?.value || '---'" />
+              <InfoDisplay
+                :label="legalDoc?.label"
+                :value="legalDoc?.value || '---'"
+              />
             </div>
             <div
               v-for="(trade, index) in userDetails?.user?.trade_licenses"
               :key="index"
               class="flex-1/3"
             >
-              <InfoDisplay :label="`Trade License No. ${trade.id}`" :value="trade?.license_number" />
+              <InfoDisplay
+                :label="`Trade License No. ${trade.id}`"
+                :value="trade?.license_number"
+              />
             </div>
           </div>
         </div>
@@ -54,7 +60,10 @@
           />
         </div>
 
-        <div class="flex justify-between" v-if="userDetails?.experiences?.length > 0">
+        <div
+          class="flex justify-between"
+          v-if="userDetails?.experiences?.length > 0"
+        >
           <SectionHeading
             title="Experiences"
             customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
@@ -62,7 +71,10 @@
           <p class="text-grayColor text-sm font-semibold">View All</p>
         </div>
 
-        <div class="bg-white p-3 rounded-4 mb-3 row" v-if="userDetails?.experiences?.length > 0">
+        <div
+          class="bg-white p-3 rounded-4 mb-3 row"
+          v-if="userDetails?.experiences?.length > 0"
+        >
           <ExperienceCard
             imageSrc="emp_detail_1.png"
             altText="emp"
@@ -101,18 +113,19 @@
           />
         </div>
 
-        <div v-if="userDetails?.verticals?.length > 0" v-for="(vertical, index) in userDetails?.verticals" :key="index">
-          <AssignVerticalCard
-            :title="vertical.name"
-            icon="electronics-icon.png"
-            :stats="[
-              { value: vertical.marketing_fee, label: getMonthFromISO(vertical?.created_at) },
-              // { value: '34', label: 'Feb' },
-              // { value: '123', label: 'March' },
-              // { value: '338', label: 'April' },
-              // { value: '1,034', label: 'May' },
-            ]"
-          />
+        <div v-if="userDetails?.verticals?.length > 0">
+          <div v-for="(vertical, index) in userDetails?.verticals" :key="index">
+            <AssignVerticalCard
+              :title="vertical.name"
+              icon="electronics-icon.png"
+              :stats="[
+                {
+                  value: vertical.marketing_fee,
+                  label: getMonthFromISO(vertical?.created_at),
+                },
+              ]"
+            />
+          </div>
         </div>
       </div>
 
@@ -163,11 +176,11 @@ import FileCard from "../../../components/common/FileCard/FileCard.vue";
 import AssignVerticalCard from "../../../components/common/AssignVerticalCard/AssignVerticalCard.vue";
 import SkillList from "../../../components/common/SkillList/SkillList.vue";
 import DocumentPreview from "../../../components/common/DocumentPreview/DocumentPreview.vue";
-import {onMounted, ref, watch} from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useEmployeeStore } from "../../../store";
 import api from "../../../api/index.js";
-import {useToast} from "primevue";
-import {getLegalDocsDetails, getMonthFromISO} from "../../../utils/helper.js";
+import { useToast } from "primevue";
+import { getLegalDocsDetails, getMonthFromISO } from "../../../utils/helper.js";
 
 const route = useRoute();
 const modalStore = useEmployeeStore();
@@ -196,7 +209,9 @@ const documents = ref([
 
 const fetchEmpDetailsById = async () => {
   try {
-    const response = await api.get("/superadmin/user/details?user_id=" + route.params.employeeId);
+    const response = await api.get(
+      "/superadmin/user/details?user_id=" + route.params.employeeId
+    );
     if (response.status === 200) {
       const { data, message } = response?.data;
       userDetails.value = data;
