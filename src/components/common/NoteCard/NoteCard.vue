@@ -11,9 +11,10 @@
         <img
           v-for="(image, index) in images"
           :key="index"
-          :src="getSurveyImage(image.src)"
+          :src="image.file_path"
           :alt="image.alt"
           class="w-13 h-13 rounded-md object-cover border-[0.55px] border-solid border-white-100"
+          @error="(e) => (e.target.style.display = 'none')"
         />
       </div>
     </div>

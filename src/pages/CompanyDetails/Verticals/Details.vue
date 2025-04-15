@@ -21,16 +21,32 @@
             >
               <img
                 loading="lazy"
-                src="https://cdn.builder.io/api/v1/image/assets/TEMP/b4b5cd94a5ada2edf38a6428c3e725c80981d732a20068193e70a604cb679d0f?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
+                :src="verticalDetails?.image_path"
                 class="plan-image"
                 alt="Event Management Plan Icon"
               />
-              <p class="my-3 text-grayish-purple font-normal">ID OFC 903823</p>
+              <p class="my-3 text-grayish-purple font-normal">
+                ID OFC {{ verticalDetails?.id }}
+              </p>
               <h4 class="mb-2 text-[22px] !font-semibold text-dm-blue">
-                Event Management
+                {{ verticalDetails?.name }}
               </h4>
             </div>
-            <p class="plan-date mb-2">Created At: 2020-05-17 | 10:00 AM</p>
+            <p class="plan-date mb-2">
+              Created At:
+              {{
+                new Date(verticalDetails?.created_at)
+                  .toLocaleDateString("en-GB")
+                  .replace("/", "-")
+                  .replace("/", "-") +
+                " | " +
+                new Date(verticalDetails?.created_at).toLocaleTimeString(
+                  "en-US",
+                  { hour: "2-digit", minute: "2-digit", hour12: true }
+                )
+              }}
+            </p>
+
             <div class="manager-section">
               <p class="mb-2 text-sm font-normal text-dark-indigo-100">
                 Manager
@@ -40,12 +56,14 @@
                   <div class="manager-profile">
                     <img
                       loading="lazy"
-                      src="https://cdn.builder.io/api/v1/image/assets/TEMP/bb193e848a7fcfc1aa143b87967dd23bec93f9c06a485de3451026a67814abaa?placeholderIfAbsent=true&apiKey=8b21d8e85c2c46cba1ed62101821a18e"
+                      :src="
+                        verticalDetails?.users[0]?.profile_picture?.file_path
+                      "
                       class="manager-avatar"
                       alt="Floyd Miles profile picture"
                     />
-                    <span class="manager-name text-xs font-semibold"
-                      >Floyd Miles</span
+                    <span class="manager-name text-xs font-semibold">
+                      {{ verticalDetails?.users[0]?.name }}</span
                     >
                   </div>
                 </div>
@@ -63,15 +81,31 @@
 
     <div class="col-span-2">
       <div class="flex flex-col gap-3 h-full">
-        <VerticalStats title="Appointment" :number="9090" linkText="View All" />
-        <VerticalStats title="Offers" :number="9090" linkText="View All" />
+        <VerticalStats
+          title="Appointment"
+          :number="verticalDetails?.appointments || 0"
+          linkText="View All"
+        />
+        <VerticalStats
+          title="Completed"
+          :number="verticalDetails?.offer_count || 0"
+          linkText="View All"
+        />
       </div>
     </div>
 
     <div class="col-span-2">
       <div class="flex flex-col gap-3 h-full">
-        <VerticalStats title="Completed" :number="9090" linkText="View All" />
-        <VerticalStats title="Cancelled" :number="9090" linkText="View All" />
+        <VerticalStats
+          title="Offers"
+          :number="verticalDetails?.offer_count || 0"
+          linkText="View All"
+        />
+        <VerticalStats
+          title="Cancelled"
+          :number="verticalDetails?.offer_rejected_count || 0"
+          linkText="View All"
+        />
       </div>
     </div>
 
@@ -89,20 +123,47 @@
   <div class="grid grid-cols-12 gap-4">
     <div class="col-span-6">
       <div class="bg-white rounded-3 p-4 h-100">
-        <h5 class="!font-semibold text-base">Information</h5>
-        <p class="text-primary mb-0 small-font">Description</p>
-        <p class="text-xs font-normal text-dm-blue">
-          At ABS Company, we craft unforgettable experiences tailored to your
-          dreams. With over a decade of curating celebrations and flawless
-          executions, our team ensures your moments shine brighter. Let our
-          passion for perfection turn your event into a cherished memory.
+        <h5 class="font-semibold text-base">Information</h5>
+        <p class="text-primary mb-0 text-sm">Description</p>
+        <p class="text-sm text-dm-blue">
+          {{ verticalDetails?.portfolio?.company_desc }}
         </p>
-        <h5 class="!font-semibold text-base mb-4">Portfolios</h5>
-        <img
-          src="../../../assets/images2/portfolios.png"
-          alt="portfolios"
-          class="w-full"
-        />
+        <h5 class="font-semibold text-base mb-4">Portfolios</h5>
+
+        <!-- Carousel -->
+        <div class="relative">
+          <div
+            class="flex transition-transform duration-500"
+            :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
+          >
+            <div
+              v-for="mediaItem in verticalDetails?.portfolio?.media"
+              :key="mediaItem.id"
+              class="w-full flex-shrink-0 max-h-44 object-contain"
+            >
+              <img
+                :src="mediaItem.file_path"
+                alt="Portfolio Image"
+                class="w-full h-44 object-contain"
+              />
+            </div>
+          </div>
+
+          <!-- Carousel Dots -->
+          <div
+            class="absolute -bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2"
+          >
+            <button
+              v-for="(mediaItem, index) in verticalDetails?.portfolio?.media"
+              :key="'dot-' + mediaItem.id"
+              class="bg-lavender w-1.5 h-1.5 !rounded-full"
+              :class="{
+                'bg-vivid-purple w-2 h-2': currentIndex === index,
+              }"
+              @click="goToSlide(index)"
+            ></button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -139,18 +200,23 @@
           class="overflow-y-auto max-h-[400px] space-y-4 pr-2 vivid-gradient-scrollbar"
         >
           <div
-            v-for="(testimonial, index) in filteredTestimonials"
+            v-for="(review, index) in filteredTestimonials"
             :key="index"
             class="testimonial-card mb-3 border border-solid !border-light-lilac p-3 rounded-xl"
           >
             <TestimonialCard
-              :service-icon="testimonial.serviceIcon"
-              :service-title="testimonial.serviceTitle"
-              :service-date="testimonial.serviceDate"
-              :rating="testimonial.rating"
-              :testimonial-text="testimonial.testimonialText"
-              :client-avatar="testimonial.clientAvatar"
-              :client-name="testimonial.clientName"
+              :service-icon="verticalDetails?.image_path"
+              :service-title="verticalDetails?.name"
+              :service-date="review.created_at || 'No Date Available'"
+              :rating="review.avg_rating || 0"
+              :testimonial-text="
+                review.review_text || 'No Review Text Available'
+              "
+              :client-avatar="
+                review.reviewed_by.profile_picture.file_path ||
+                'default-avatar.png'
+              "
+              :client-name="review.reviewed_by.name || 'Anonymous Client'"
             />
           </div>
         </div>
@@ -160,46 +226,85 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, watch, toRaw, onBeforeUnmount } from "vue";
 import VerticalStats from "../../../components/common/VerticalStats/VerticalStats.vue";
 import TestimonialCard from "../../../components/common/TestimonialCard/TestimonialCard.vue";
 import searchIcon from "../../../assets/image/icons/search.svg";
 import filterIcon from "../../../assets/image/icons/candle.svg";
+import { useToast } from "primevue";
+import { useRoute } from "vue-router";
+import api from "../../../api";
 
 const searchQuery = ref("");
+const route = useRoute();
+const verticalDetails = ref(null);
 
-const testimonials = ref([
-  {
-    serviceIcon:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/66f4f7ad2a335555725f5018a220efddc1804ee02fd969249f19ecdf96bc2d81",
-    serviceTitle: "Wash and Fold - Residential",
-    serviceDate: "2023-11-19",
-    rating: 4,
-    testimonialText:
-      "John is fantastic! He always delivers clean and fresh laundry with impressive efficiency. His attention to detail is remarkable, and he's a pleasure to work with. Highly recommended!",
-    clientAvatar:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/3235fe7f6e44e4bd4d77f87b39a0930574bdaffb9bf11e55a94dfa9be1c3f090",
-    clientName: "Sarah Johnson",
-  },
-  {
-    serviceIcon:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/66f4f7ad2a335555725f5018a220efddc1804ee02fd969249f19ecdf96bc2d81",
-    serviceTitle: "Dry Cleaning - Commercial",
-    serviceDate: "2023-10-01",
-    rating: 5,
-    testimonialText:
-      "Excellent commercial service. Always on time and spotless results.",
-    clientAvatar:
-      "https://cdn.builder.io/api/v1/image/assets/TEMP/3235fe7f6e44e4bd4d77f87b39a0930574bdaffb9bf11e55a94dfa9be1c3f090",
-    clientName: "Michael Lee",
-  },
-]);
+const loading = ref(true);
+const error = ref(null);
+const toast = useToast();
 
 const filteredTestimonials = computed(() => {
-  return testimonials.value.filter((item) =>
-    item.serviceTitle.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+  const result =
+    verticalDetails.value?.reviews?.filter((item) =>
+      item.order_id.toString().includes(searchQuery.value.toLowerCase())
+    ) || [];
+  console.log(result); // Check if the filtered data is correct
+  return result;
 });
+
+const fetchVerticalDetailsById = async (id) => {
+  try {
+    const response = await api.get("/superadmin/user/vertical/details/" + id);
+
+    if (response.status === 200) {
+      const { data, message } = response?.data;
+      verticalDetails.value = data;
+
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: message,
+        life: 3000,
+      });
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  window.scroll(0, 0);
+  fetchVerticalDetailsById(route.params.verticalId);
+});
+
+const currentIndex = ref(0);
+let interval = null;
+
+onMounted(() => {
+  startAutoplay();
+});
+
+onBeforeUnmount(() => {
+  clearInterval(interval);
+});
+
+const startAutoplay = () => {
+  interval = setInterval(() => {
+    nextSlide();
+  }, 3000); // Change slide every 3 seconds
+};
+
+const nextSlide = () => {
+  currentIndex.value =
+    (currentIndex.value + 1) % verticalDetails.value.portfolio.media.length;
+};
+
+const goToSlide = (index) => {
+  currentIndex.value = index;
+};
 </script>
 
 <style scoped>

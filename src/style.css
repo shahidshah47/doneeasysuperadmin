@@ -627,3 +627,73 @@ select {
   ) !important;
   border-radius: 12px;
 }
+
+.bg-gradient-aqua-lavender {
+  background: linear-gradient(
+    148.03deg,
+    #d6f1f5 -18.12%,
+    #ebe4fd 84.98%
+  ) !important;
+  border-radius: 12px;
+}
+
+.bg-gradient-aqua-light {
+  background: linear-gradient(
+    148.03deg,
+    #d6f1f5 -18.12%,
+    #ebe4fd 84.98%
+  ) !important;
+  border-radius: 8px;
+}
+
+.prime-btn {
+  position: relative;
+}
+
+.prime-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 1.6px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  background: linear-gradient(
+    98.24deg,
+    #38e0b2 -18.55%,
+    #442ae8 28.45%,
+    #5925eb 64.63%,
+    #9e21ee 116.94%
+  );
+}
+.status-active {
+  background-color: #d6ffef !important;
+  color: #00995c !important;
+}
+
+.status-deactivated {
+  background-color: #e7e7eb !important;
+  color: #0e0d35 !important;
+}
+
+.status-inactive {
+  background-color: #e7e7eb !important;
+  color: #575672 !important;
+}
+
+.status-monitory {
+  background-color: #fceed9 !important;
+  color: #dc8b13 !important;
+}
+
+.status-banned {
+  background-color: #ffe5e5 !important;
+  color: #ff5555 !important;
+}
+
+.status-default {
+  background-color: #f1f1f1 !important;
+  color: #000 !important;
+}

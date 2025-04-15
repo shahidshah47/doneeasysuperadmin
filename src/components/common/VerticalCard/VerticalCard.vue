@@ -34,7 +34,7 @@
         </div>
 
         <div
-          class="stats-section d-flex justify-content-between bg-light rounded py-3 px-4 mb-3"
+          class="stats-section d-flex justify-content-between bg-light-lilac rounded py-3 px-4 mb-3"
         >
           <div class="text-center">
             <p class="text-primary mb-0">

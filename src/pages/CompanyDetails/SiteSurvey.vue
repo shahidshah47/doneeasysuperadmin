@@ -220,6 +220,17 @@ const filterFields = ref([
   "surveyStatus.name",
 ]);
 
+const handleClickToDetails = (id) => {
+  let url =
+    "/super-admin/company-details/" +
+    route.params.companyId +
+    "/site-survey/" +
+    id +
+    "/details";
+
+  router.push(url);
+};
+
 const pagination = ref({
   currentPage: 0,
   lastPage: 0,
