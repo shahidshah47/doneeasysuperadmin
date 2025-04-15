@@ -623,6 +623,12 @@
     @submit="handleLegDocSubmit"
     @close="closeModal"
   />
+  <AddorUpdateAdminForm 
+    :showAddOrUpdateAdminModal="showAddOrUpdateAdminModal"
+    :addOrUpdateAdminDetails="addOrUpdateAdminDetails"
+    @submit="handleAdminSubmit"
+    @close="closeModal"
+  />
 </template>
 
 <script setup>
@@ -656,6 +662,8 @@ const editingCompany = ref(null);
 const locationData = ref(null);
 const showCompanyModal = ref(false);
 const showLegDocModal = ref(false);
+const showAddOrUpdateAdminModal = ref(false);
+const addOrUpdateAdminDetails = ref(null);
 const toast = useToast();
 
 const openCreateModal = () => {
@@ -667,6 +675,7 @@ const openCreateModal = () => {
 const closeModal = () => {
   showCompanyModal.value = false;
   showLegDocModal.value = false;
+  showAddOrUpdateAdminModal.value = false;
   document.body.classList.remove("overflow-hidden");
 };
 
@@ -822,6 +831,10 @@ const handleLegDocSubmit = async (values) => {
   } finally {
     loading.value = false;
   }
+};
+
+const handleAdminSubmit = async (values) => {
+  console.log(values, "values");
 };
 
 onMounted(() => {
