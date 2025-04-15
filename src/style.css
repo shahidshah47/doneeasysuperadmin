@@ -697,3 +697,34 @@ select {
   background-color: #f1f1f1 !important;
   color: #000 !important;
 }
+
+.p-toast-message {
+  background: #fff !important;
+  @apply !shadow-2xl !rounded-xl !border-light-lilac;
+}
+.p-toast-message-content {
+  position: relative !important;
+  align-items: center !important;
+  padding: 14px 22px !important;
+}
+.p-toast-close-button {
+  @apply !text-gray-blue-100;
+}
+.p-toast-message-content::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 40px;
+  background-color: #0EC37B;
+  bottom: 0;
+  margin: auto;
+}
+.p-toast-message .p-toast-close-button:hover {
+  background: transparent !important;
+}
+.p-toast-message-success .p-toast-close-button:focus-visible {
+  outline-color: transparent !important;
+  box-shadow: none !important;
+}
