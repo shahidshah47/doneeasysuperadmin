@@ -59,19 +59,21 @@
 
           <div class="flex justify-between" v-if="user || company">
             <ProfileCard
-              :filePath="user.profile_picture?.file_path"
+              v-if="user"
+              :filePath="user?.profile_picture?.file_path"
               :imageSrc="ManagerIcon"
               altText="manager img"
               subText="Manager"
-              :mainText="user.name"
+              :mainText="user?.name"
             />
             <ProfileCard
-              :filePath="company.company_logo?.file_path"
+              v-if="company"
+              :filePath="company?.company_logo?.file_path"
               :imageSrc="CompanyIcon"
               altText="ltd"
-              :mainText="company.company_name"
+              :mainText="company?.company_name"
               linkText="View Details"
-              @viewDetails="handleViewDetails()"
+              @viewDetails="handleViewDetails(company.id)"
             />
           </div>
 

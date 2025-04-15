@@ -30,7 +30,7 @@
       <SiteSurveyActivity :orderActivity="siteSurveyDetails" />
     </div>
     <div v-if="activeButton === 'order'">
-      <OrderSummary :orderSummary="siteSurveyDetails" />
+      <OrderSummary :orderSummary="siteSurveyDetails" :user="user" :company="company" />
     </div>
   </div>
 </template>
@@ -46,6 +46,8 @@ import SiteSurveyActivity from "../../../components/SiteSurveys/SiteSurveyActivi
 
 const route = useRoute();
 const siteSurveyDetails = ref(null);
+const user = ref(null);
+const company = ref(null);
 const loading = ref(true);
 const error = ref(null);
 const toast = useToast();
@@ -58,10 +60,11 @@ const setActiveButton = (button) => {
 const fetchSiteSurveyDetailsById = async (id) => {
   try {
     const response = await api.get("/superadmin/user/site-survey/" + id);
-    console.log(response, "response from site survey details");
     if (response.status === 200) {
       const { data, message } = response?.data;
       siteSurveyDetails.value = data;
+      user.value = data?.order?.user;
+      company.value = data?.order?.user?.company;
       if (data.progress_status === 0) {
         setActiveButton("order");
       }
