@@ -1,8 +1,10 @@
 <template>
   <div class="row">
     <div class="col-7 px-0 d-flex gap-0 cursor-pointer" @click="handleClick">
-      <div>
-        <img :src="resolvedImageSrc" :alt="altText" />
+      <div
+        class="w-8 h-8 mr-2 shadow-lavendar-card border-2 border-solid border-white-100 overflow-hidden rounded-lg"
+      >
+        <img :src="imageSrc" :alt="altText" class="w-full h-full" />
       </div>
       <div>
         <p class="fw-bold mb-0 text-base">{{ jobTitle }}</p>

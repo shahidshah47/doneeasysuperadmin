@@ -1,6 +1,9 @@
 <template>
   <div v-if="siteSurveyDetails">
-    <div class="flex items-center gap-2">
+    <div
+      class="flex items-center gap-2"
+      v-if="siteSurveyDetails.progress_status !== 0"
+    >
       <button
         class="btn !font-semibold"
         :class="

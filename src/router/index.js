@@ -286,7 +286,7 @@ const routes = [
         },
       },
       {
-        path: "/super-admin/company-details/:companyId/employees/appointment/details",
+        path: "/super-admin/company-details/:companyId/employees/appointment/:appointmentId/details",
         component: () =>
           import(
             "../pages/CompanyDetails/Employees/AppointmentDetails/Detail.vue"

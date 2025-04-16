@@ -24,10 +24,10 @@
         class="flex flex-col !bg-white-100 rounded-bl-2xl rounded-br-2xl px-6 py-3 shadow-soft-blue"
       >
         <div class="flex flex-row justify-center">
-          <div class="w-44 h-44 overflow-hidden !shadow-lavendar-card">
+          <div class="w-44 h-44 overflow-hidden !shadow-lavendar-card mb-2">
             <img
               :src="modalData.logoUrl"
-              class="w-full h-full object-contain"
+              class="w-full h-full object-cover"
               alt="Company Logo"
             />
           </div>

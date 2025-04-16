@@ -16,8 +16,9 @@
         class="stats-section text-center py-1 px-3 rounded-3"
       >
         <p class="text-vivid-purple text-base font-semibold mb-0">
-          {{ stat.value }}
+          {{ Math.round(stat.value) }}
         </p>
+
         <p class="m-0 text-xs font-semibold text-grayColor">{{ stat.label }}</p>
       </div>
     </div>
