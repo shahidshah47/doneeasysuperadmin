@@ -66,7 +66,7 @@
           </div>
         </div>
 
-        <div class="bg-white p-3 rounded-4 mb-4" v-if="userDetails?.about">
+        <div class="bg-white p-3 rounded-4" v-if="userDetails?.about">
           <SummaryCard
             title="About"
             :description="userDetails?.about"
@@ -74,43 +74,47 @@
           />
         </div>
 
-        <div
-          class="flex justify-between"
-          v-if="userDetails?.experiences?.length > 0"
-        >
-          <SectionHeading
-            title="Experiences"
-            customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
-          />
-          <p class="text-grayColor text-sm font-semibold">View All</p>
-        </div>
+        <div>
+          <div
+            class="flex justify-between"
+            v-if="userDetails?.experiences?.length > 0"
+          >
+            <SectionHeading
+              title="Experiences"
+              customClass="!text-lg !font-bold text-dm-blue leading-5 mb-0"
+            />
+            <p class="text-grayColor text-sm font-semibold">View All</p>
+          </div>
 
-        <div
-          class="bg-white p-3 rounded-4 mb-3 row"
-          v-if="userDetails?.experiences?.length > 0"
-        >
-          <ExperienceCard
-            v-for="experience in userDetails.experiences"
-            :key="experience.id"
-            :imageSrc="experience.media ? experience.media.file_path : ''"
-            altText="emp"
-            :jobTitle="experience.title"
-            :company="experience.company_name"
-            :employmentType="experience.employment_type"
-            :duration="
-              experience.end_date
-                ? `${formatToMonthYear(
-                    experience.start_date
-                  )} - ${formatToMonthYear(experience.end_date)}`
-                : `${formatToMonthYear(experience.start_date)} - Present`
-            "
-            :experience="
-              calculateExperience(experience.start_date, experience.end_date)
-            "
-            :Location="experience.location || 'Not specified'"
-            :responsibilities="convertDescriptionToList(experience.description)"
-            @click="openModal(experience)"
-          />
+          <div
+            class="bg-white p-3 rounded-4 mb-3 row"
+            v-if="userDetails?.experiences?.length > 0"
+          >
+            <ExperienceCard
+              v-for="experience in userDetails.experiences"
+              :key="experience.id"
+              :imageSrc="experience.media ? experience.media.file_path : ''"
+              altText="emp"
+              :jobTitle="experience.title"
+              :company="experience.company_name"
+              :employmentType="experience.employment_type"
+              :duration="
+                experience.end_date
+                  ? `${formatToMonthYear(
+                      experience.start_date
+                    )} - ${formatToMonthYear(experience.end_date)}`
+                  : `${formatToMonthYear(experience.start_date)} - Present`
+              "
+              :experience="
+                calculateExperience(experience.start_date, experience.end_date)
+              "
+              :Location="experience.location || 'Not specified'"
+              :responsibilities="
+                convertDescriptionToList(experience.description)
+              "
+              @click="openModal(experience)"
+            />
+          </div>
         </div>
       </div>
 
