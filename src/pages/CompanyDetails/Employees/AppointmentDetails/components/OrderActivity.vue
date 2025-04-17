@@ -76,14 +76,22 @@
         </div>
       </div>
 
-      <div>
+      <div
+        v-if="
+          orderActivity?.total_time && orderActivity?.timer_summery.length > 0
+        "
+      >
         <SectionHeading
           title="Total Time"
           customClass="!text-base !font-semibold text-dm-blue leading-5"
         />
         <div class="card border-0 rounded-3 p-3 text-center">
           <div class="flex gap-3 justify-content-center">
-            <CountdownTimer :hours="0" :minutes="15" :seconds="0" />
+            <CountdownTimer
+              :hours="hours"
+              :minutes="minutes"
+              :seconds="seconds"
+            />
           </div>
           <div
             class="flex flex-col gap-4 mt-4"
@@ -93,26 +101,22 @@
             "
           >
             <TimeCard
-              :day="1"
-              :hours="2"
-              :minutes="16"
-              :seconds="25"
-              :active="true"
-            />
-            <TimeCard
-              :day="2"
-              :hours="2"
-              :minutes="16"
-              :seconds="25"
-              :active="false"
+              v-for="(entry, index) in orderActivity?.timer_summery"
+              :key="entry.id"
+              :day="Math.floor(entry.total_working_time / 86400)"
+              :hours="Math.floor((entry.total_working_time % 86400) / 3600)"
+              :minutes="Math.floor((entry.total_working_time % 3600) / 60)"
+              :seconds="entry.total_working_time % 60"
+              :active="index === 0"
             />
           </div>
         </div>
       </div>
       <div
         v-if="
-          orderActivity?.progress_status === 3 ||
-          orderActivity?.progress_status === 4
+          (orderActivity?.progress_status === 3 ||
+            orderActivity?.progress_status === 4) &&
+          orderActivity?.before_pictures.length > 0
         "
       >
         <div class="flex justify-between mt-4">
@@ -127,13 +131,13 @@
           class="card border-0 rounded-3 p-3 text-center flex flex-row gap-2"
         >
           <div
-            v-for="(image, index) in images"
+            v-for="(image, index) in orderActivity?.before_pictures"
             :key="index"
             class="w-[88px] h-[62px] overflow-hidden border-2 border-solid border-white-100 rounded"
           >
             <img
-              :src="getSurveyImage(image.src)"
-              :alt="image.alt"
+              :src="image.file_path"
+              alt="work-before-image"
               class="img-fluid rounded w-full h-full"
             />
           </div>
@@ -141,73 +145,84 @@
       </div>
       <div
         v-if="
-          orderActivity?.progress_status === 3 ||
-          orderActivity?.progress_status === 4
+          (orderActivity?.progress_status === 3 ||
+            orderActivity?.progress_status === 4) &&
+          orderActivity?.after_pictures.length > 0
         "
       >
         <div class="flex justify-between mt-4">
           <SectionHeading
             title="After Work Picture"
-            customClass="!text-lg !font-bold text-dm-blue leading-5 "
+            customClass="!text-lg !font-bold text-dm-blue leading-5"
           />
-
           <p class="text-grayColor text-sm font-semibold">View All</p>
         </div>
         <div
           class="card border-0 rounded-3 p-3 text-center flex flex-row gap-2"
         >
           <div
-            v-for="(image, index) in images"
+            v-for="(image, index) in orderActivity.after_pictures"
             :key="index"
             class="w-[88px] h-[62px] overflow-hidden border-2 border-solid border-white-100 rounded"
           >
             <img
-              :src="getSurveyImage(image.src)"
-              :alt="image.alt"
+              :src="image.file_path"
+              alt="work-after-picture"
               class="img-fluid rounded w-full h-full"
             />
           </div>
         </div>
       </div>
+
       <div class="mt-4" v-if="orderActivity?.progress_status === 4">
         <SectionHeading
           title="Download completion report & Sign off"
           customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
         />
 
-        <div class="card border-0 rounded-3 p-2.5 text-center">
+        <div
+          class="card border-0 rounded-3 p-2.5 text-center"
+          v-if="orderActivity?.sign_off"
+        >
           <div class="!bg-light-lilac !rounded-lg flex w-full justify-center">
             <img
-              :src="getImagePath('signature.svg')"
+              v-if="showImage"
+              :src="orderActivity?.sign_off"
               alt="signature"
               class="w-44 h-28"
+              @error="showImage = false"
             />
           </div>
         </div>
       </div>
       <div class="mt-3" v-if="orderActivity?.progress_status === 4">
-        <FileCard
-          fileIcon="../../../assets/images2/file-icon.png"
-          fileName="Company Profile"
-          fileSize="3.2mb"
-          :isEyeIcon="false"
-        />
+        <div
+          v-for="(doc, index) in orderActivity?.complete_reports"
+          :key="index"
+        >
+          <FileCard :fileName="doc.file_name" :fileSize="doc.file_size" />
+        </div>
       </div>
       <div v-if="orderActivity?.progress_status === 4">
         <SectionHeading
           title="Review for Company"
           customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
         />
-        <div>
+        <div
+          v-for="review in orderActivity?.order?.company_reviews"
+          :key="review.id"
+        >
           <CompanyReview
-            :profilePic="'/images/user1.jpg'"
-            :name="'John Doe'"
-            :role="'Product Manager'"
-            :stars="4"
-            :review="'John is fantastic! He always delivers clean and fresh laundry with impressive efficiency. His attention to detail is remarkable, and he’s a pleasure to work with. Highly recommended!'"
-            :reviewImg="'/images/company-logo.png'"
-            :orderTitle="'UI/UX Design Project'"
-            :reviewDate="'Saturday, 19 Nov 2023'"
+            :profilePic="
+              review.reviewed_by.profile_picture || '/images/user1.jpg'
+            "
+            :name="review.reviewed_by.name"
+            :role="review.reviewed_by.designation"
+            :stars="parseFloat(review.avg_rating)"
+            :review="review.review_text"
+            :reviewImg="review.order.image || '/images/company-logo.png'"
+            :orderTitle="review.order.title"
+            :reviewDate="formatDate(review.created_at)"
           />
         </div>
       </div>
@@ -262,24 +277,26 @@
       "
     >
       <div className="col-span-2 md:col-span-1">
-        <SectionHeading
-          title="Add note (s) or Attach picture"
-          customClass="!text-base !font-semibold text-dm-blue leading-4"
-        />
-        <div className="card border-0 rounded-3 p-3 mb-4 !h-full">
-          <div
-            className="flex flex-col gap-4 max-h-full overflow-y-auto vivid-gradient-scrollbar"
-          >
-            <NoteCard
-              v-for="(note, index) in notes"
-              :key="index"
-              :title="note.title"
-              :content="note.content"
-              :images="note.images"
-              :author="note.author"
-              :timestamp="note.timestamp"
-              @note-clicked="handleNoteClick"
-            />
+        <div v-if="orderActivity?.notes?.length > 0" class="h-full">
+          <SectionHeading
+            title="Add note (s) or Attach picture"
+            customClass="!text-base !font-semibold text-dm-blue leading-4"
+          />
+          <div className="card border-0 rounded-3 p-3 mb-4 !h-full">
+            <div
+              class="flex flex-col gap-4 max-h-full overflow-y-auto vivid-gradient-scrollbar"
+            >
+              <NoteCard
+                v-for="note in orderActivity?.notes"
+                :key="note.id"
+                :title="note.title"
+                :content="note.description"
+                :images="note.media"
+                :author="orderActivity?.order?.user?.name"
+                :timestamp="getPrettyDateTime(note.created_at)"
+                @note-clicked="handleNoteClick(note)"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -308,12 +325,15 @@
         class="col-span-2 grid grid-cols-2 gap-4 mt-4"
         v-if="orderActivity?.progress_status === 4"
       >
-        <div v-for="(review, index) in reviews" :key="index">
+        <div
+          v-for="(review, index) in orderActivity?.order?.user_reviews"
+          :key="index"
+        >
           <SectionHeading
             title="Review for Associate"
             customClass="!text-base !font-semibold text-dm-blue leading-4"
           />
-          <AssociateReview :associate="review" :stars="review.stars" />
+          <AssociateReview :associate="review" :stars="review.avg_rating" />
         </div>
       </div>
     </div>
@@ -332,14 +352,36 @@ import FileCard from "../../../../../components/common/FileCard/FileCard.vue";
 import CompanyReview from "../../../../../components/common/CompanyReview/CompanyReview.vue";
 import AssociateReview from "../../../../../components/common/AssociateReview/AssociateReview.vue";
 import { useSurveyStore } from "../../../../../store";
-import { ref, toRaw, watch } from "vue";
+import { onMounted, ref, toRaw, watch } from "vue";
 import exeIcon from "../../../../../assets/image/icons/exe-image.svg";
-import { getPrettyDateTime } from "../../../../../utils/helper";
+import { formatDate, getPrettyDateTime } from "../../../../../utils/helper";
+
+const showImage = ref(true);
 
 const store = useSurveyStore();
 const props = defineProps({
   orderActivity: Object,
 });
+
+const hours = ref(0);
+const minutes = ref(0);
+const seconds = ref(0);
+const showCountdown = ref(false);
+
+watch(
+  () => props.orderActivity?.total_time,
+  (totalTime) => {
+    if (typeof totalTime === "number" && totalTime > 0) {
+      hours.value = Math.floor(totalTime / 3600);
+      minutes.value = Math.floor((totalTime % 3600) / 60);
+      seconds.value = totalTime % 60;
+      showCountdown.value = true;
+    } else {
+      showCountdown.value = false;
+    }
+  },
+  { immediate: true }
+);
 const steps = [
   { text: "Start Trip", icon: "flag.svg" },
   { text: "Reach to Site", icon: "clock.svg", activeIcon: "clock-active.svg" },
@@ -375,75 +417,6 @@ const handleNoteClick = (note) => {
   store.setSelectedNote(note);
 };
 
-const reviews = [
-  {
-    user: {
-      profile_picture: { file_path: null },
-      name: "John Doe",
-      role: "Sales Manager",
-    },
-    review_text: "John is excellent in communication and support.",
-    after_sale_support: 5,
-    communication: 4,
-    pre_sale_support: 5,
-    problem_resolution: 4,
-    response_time: 3,
-    service_quality: 5,
-    reviewed_by: {
-      profile_picture: { file_path: null },
-      name: "Jane Smith",
-      designation: "Manager",
-    },
-    stars: 5,
-  },
-  {
-    user: {
-      profile_picture: { file_path: null },
-      name: "John Doe",
-      role: "Sales Manager",
-    },
-    review_text: "John is excellent in communication and support.",
-    after_sale_support: 5,
-    communication: 4,
-    pre_sale_support: 5,
-    problem_resolution: 4,
-    response_time: 3,
-    service_quality: 5,
-    reviewed_by: {
-      profile_picture: { file_path: null },
-      name: "Jane Smith",
-      designation: "Manager",
-    },
-    stars: 5,
-  },
-];
-
-const getSurveyImage = (imageName) => {
-  return new URL(`../../../../../assets/image/${imageName}`, import.meta.url)
-    .href;
-};
-
-const notifications = ref([
-  {
-    image: "exe-image.svg",
-    message: "John Doe reached the destination location.",
-    date: "Nov 12",
-    time: "07:00PM",
-  },
-  {
-    image: "exe-image.svg",
-    message: "Alice completed the survey task.",
-    date: "Nov 13",
-    time: "10:15AM",
-  },
-  {
-    image: "exe-image.svg",
-    message: "Bob started a new project phase.",
-    date: "Nov 14",
-    time: "03:30PM",
-  },
-]);
-
 const images = [
   { src: "site-survey.jpg", alt: "Profile 1" },
   { src: "site-survey.jpg", alt: "Profile 2" },
@@ -477,11 +450,10 @@ const getImagePath = (imageName) => {
 watch(
   () => props.orderActivity,
   (newValue) => {
-    // Access the raw version of orderSummary
     const rawOrderSummary = toRaw(newValue);
     console.log("Raw orderActivity:", rawOrderSummary);
   },
-  { immediate: true } // You can make it run on initial render as well
+  { immediate: true }
 );
 </script>
 

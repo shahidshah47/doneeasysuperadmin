@@ -69,7 +69,10 @@
           </div>
         </div>
 
-        <div class="flex flex-col w-full gap-1">
+        <div
+          v-if="locationData?.lat && locationData?.lng"
+          class="flex flex-col w-full gap-1"
+        >
           <div class="flex justify-between items-center">
             <h5 class="!font-bold text-base text-dm-blue">Pin Location</h5>
           </div>
@@ -82,21 +85,12 @@
                 <img :src="getImageUrl('share.svg')" alt="edit-icon" />
               </div>
             </div>
-            <!-- <GoogleMap
-                            api-key="AIzaSyB8iGeBjvYsaGeV66adjFtXmEmF9dgGxuI"
-                            style="width: 100%; height: 300px"
-                            :center="locationData"
-                            :zoom="15"
-                        >
-                            <Marker :options="{ position: locationData }" />
-                        </GoogleMap> -->
             <GoogleMapComponent
               :mapCustomStyles="true"
               :height="300"
               :location="locationData"
               :iconUrl="'/location-marker.svg'"
             />
-            <!-- <img :src="getImagePath('maps.png')" class="rounded-xl w-full" alt="Company Logo" /> -->
           </div>
         </div>
       </div>
@@ -161,7 +155,9 @@
         <div
           class="bg-white py-4 pl-4 pr-2 rounded-xl flex flex-col gap-3 flex-1"
         >
-          <div class="max-h-[50rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3">
+          <div
+            class="max-h-[50rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3"
+          >
             <div
               v-for="(address, index) in infoDetails?.company?.addresses"
               class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start"
@@ -626,7 +622,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, toRaw, watch } from "vue";
 import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useRoute } from "vue-router";
 import api from "../../api";
@@ -827,6 +823,11 @@ const handleLegDocSubmit = async (values) => {
 onMounted(() => {
   window.scroll(0, 0);
   fetchCompanyDetailsById(route.params.companyId);
+});
+
+watch(locationData, (newVal) => {
+  const rawLocation = toRaw(newVal);
+  console.log("Raw locationData:", rawLocation);
 });
 </script>
 
