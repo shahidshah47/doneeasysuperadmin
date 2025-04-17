@@ -25,7 +25,7 @@
       >
         <div class="px-6 flex flex-col gap-3">
           <InputField
-            label="Item No."
+            :label="serviceDetails?.item_number ?? itemNumber"
             name="title"
             v-model="title"
             v-bind="titleAttrs"

@@ -139,7 +139,9 @@ const closeAllModals = () => {
   <ServicesModal
     v-if="isServiceDetails"
     :serviceDetails="serviceDetails"
-    :itemNumber="`Item No ` + (appointmentDetails?.offer?.services?.length + 1)"
+    :itemNumber="`Item No ${
+      (appointmentDetails?.offer?.quotations?.length ?? 0) + 1
+    }`"
     :appointOfferId="appointmentDetails?.offer?.id"
     @close="closeAllModals"
   />
