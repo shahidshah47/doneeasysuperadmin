@@ -310,6 +310,31 @@ export const convertAppointmentEmployeeData = (appointment) => {
   };
 };
 
+export const convertSurveyEmployeeData = (survey) => {
+  return {
+    id: survey.id,
+    organizationName: {
+      logo: survey.user.profile_picture?.file_path || "",
+      name: survey.user.name || "N/A",
+    },
+    title: {
+      name: survey.order.title,
+      description: survey.order.description,
+    },
+    verticle: {
+      image: survey.order.verticle.image_path,
+      name: survey.order.verticle.name,
+    },
+    manager: {
+      name: survey?.user?.name,
+      logo: survey?.user?.profile_picture?.file_path,
+    },
+    contact: survey?.user?.mobile_number,
+    status: getAppointmentStatus(survey.status),
+    expectedDateAndTime: survey.date + " " + formatTime(survey.start_time),
+  };
+};
+
 // Utility function to convert API response to table format
 export const convertSiteSurveyData = (site_survey) => {
   return {
@@ -655,4 +680,57 @@ export const formatToMonthYear = (dateString) => {
 
   const options = { year: "numeric", month: "short" };
   return new Intl.DateTimeFormat("en-US", options).format(date);
+};
+
+export const getStatusInfo = (status) => {
+  let statusInfo = {
+    class: "",
+    label: "",
+  };
+
+  switch (status) {
+    case 1:
+      statusInfo.class = "bg-gradient-primary"; // Scheduled
+      statusInfo.label = "Scheduled";
+      break;
+    case 2:
+      statusInfo.class = "bg-gradient-warning"; // Rescheduled
+      statusInfo.label = "Rescheduled";
+      break;
+    case 3:
+      statusInfo.class = "bg-gradient-orange"; // Canceled
+      statusInfo.label = "Canceled";
+      break;
+    case 4:
+      statusInfo.class = "bg-gradient-success"; // Completed
+      statusInfo.label = "Completed";
+      break;
+    case 5:
+      statusInfo.class = "bg-gradient-info"; // Rejected Rescheduled
+      statusInfo.label = "Rejected Rescheduled";
+      break;
+    case 6:
+      statusInfo.class = "bg-gradient-success"; // Delivered
+      statusInfo.label = "Delivered";
+      break;
+    case 7:
+      statusInfo.class = "bg-gradient-dark"; // Disputed
+      statusInfo.label = "Disputed";
+      break;
+    default:
+      statusInfo.class = "bg-gradient-secondary"; // Unknown status
+      statusInfo.label = "Unknown";
+      break;
+  }
+
+  return statusInfo;
+};
+
+export const getPrettyDateTime = (isoString) => {
+  const dateObj = new Date(isoString);
+  const date = dateObj.toISOString().split("T")[0];
+  const time = dateObj.toTimeString().split(" ")[0];
+  const { formattedDate, formattedTime } = formatDateAndTime(date, time);
+
+  return `${formattedDate.replace(",", "")} • ${formattedTime}`;
 };

@@ -10,32 +10,35 @@
         <div class="card-body position-relative">
           <div class="position-absolute end-0 me-3 mt-3 top-0">
             <span
-              class="bg-gradient-primary rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1"
+              :class="[
+                'rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1',
+                statusInfo.class,
+              ]"
             >
-              In Progress
+              {{ statusInfo.label }}
             </span>
           </div>
           <p class="!text-base !text-grayish-purple font-normal leading-5 mb-0">
-            ID: 98374861
+            ID: {{ orderSummary?.order?.id }}
           </p>
           <h4
-            class="text-dm-blue !font-semibold leading-4 !text-[20px] font-theme"
+            class="text-dm-blue !font-semibold leading-4 !text-[20px] font-theme capitalize"
           >
-            Laundry Services
+            {{ orderSummary?.order?.title }}
           </h4>
 
           <div class="row g-2 mb-2">
             <div class="col-md-6">
               <InfoDisplay
                 label="Date"
-                value="Sat, 19 Nov 2023"
+                :value="formatDate(orderSummary?.delivery_date)"
                 className="flex flex-col gap-1"
               />
             </div>
             <div class="col-md-6">
               <InfoDisplay
                 label="Time"
-                value="10:30 AM"
+                :value="formatTime(orderSummary?.delivery_time)"
                 className="flex flex-col gap-1"
               />
             </div>
@@ -49,14 +52,18 @@
             <div class="col-md-6">
               <InfoDisplay
                 label="Payment Status"
-                value="Paid"
+                :value="`Paid ${orderSummary?.paid_percentage}%`"
                 className="flex flex-col gap-1"
               />
             </div>
             <div class="col-md-6">
               <InfoDisplay
                 label="Order Amount"
-                value="$150.00"
+                :value="
+                  orderSummary?.offer?.grand_total != null
+                    ? Math.floor(orderSummary.offer.grand_total)
+                    : ''
+                "
                 className="flex flex-col gap-1"
               />
             </div>
@@ -64,23 +71,26 @@
 
           <div class="row">
             <ProfileCard
-              :imageSrc="ManagerIcon"
-              altText="manager img"
-              subText="Manager"
-              mainText="John Doe"
+              :imageSrc="orderSummary?.offer?.user?.profile_picture?.file_path"
+              :altText="`${orderSummary?.offer?.user?.name} img`"
+              :subText="orderSummary?.offer?.user?.designation"
+              :mainText="orderSummary?.offer?.user?.name"
             />
             <ProfileCard
-              :imageSrc="CompanyIcon"
-              altText="ltd"
-              mainText="XYZ Bito Group Pvt Ltd"
-              linkText="View Details"
+              :imageSrc="
+                orderSummary?.offer?.user?.company?.company_logo?.file_path
+              "
+              :altText="orderSummary?.offer?.user?.company?.company_name"
+              :mainText="orderSummary?.offer?.user?.company?.company_name"
+              linkText="View
+            Details"
             />
           </div>
 
           <div class="mt-4">
             <SummaryCard
               title="Customer Summary"
-              description="Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentum tellus."
+              :description="orderSummary?.order?.description"
               readMoreLink="#"
             />
           </div>
@@ -88,28 +98,39 @@
       </div>
     </div>
     <div class="col-md-3 flex flex-col">
-      <div class="d-flex">
-        <h5 class="fw-semibold !text-base !text-dm-blue">Assign to</h5>
-        <p
-          class="!text-grayColor text-sm leading-5 !font-semibold mb-0 ms-auto font-theme"
+      <div v-if="orderSummary?.associate_user.length > 0">
+        <div class="d-flex">
+          <h5 class="fw-semibold !text-base !text-dm-blue">Assign to</h5>
+          <p
+            class="!text-grayColor text-sm leading-5 !font-semibold mb-0 ms-auto font-theme"
+          >
+            View All
+          </p>
+        </div>
+        <div
+          v-for="(associate, index) in orderSummary?.associate_user"
+          :key="associate.id || index"
         >
-          View All
-        </p>
+          <UserProfileCard
+            :key="index"
+            :profileImage="associate?.profile_picture?.file_path"
+            :name="associate?.name"
+            :designation="associate?.designation"
+            :rating="4"
+          />
+        </div>
       </div>
-      <UserProfileCard
-        :profileImage="ManagerIcon"
-        name="Nancy Tolbert"
-        designation="Senior Manager"
-        :rating="4"
-      />
 
       <h5 class="fw-semibold mt-3 !text-base !text-dm-blue">Order Location</h5>
       <div class="flex-1 flex">
         <LocationCard
           class="flex-grow h-full"
-          address="123 Main St."
-          :imageSrc="MapIcon"
-          buttonText="Open Map"
+          :location="{
+            lat: Number(orderSummary?.order?.address?.lat),
+            lng: Number(orderSummary?.order?.address?.lng),
+          }"
+          :address="orderSummary?.order?.address?.address"
+          buttonText="View Map"
         />
       </div>
     </div>
@@ -130,19 +151,22 @@
     </div>
   </div>
 
-  <h5 class="fw-semibold">Payment Terms</h5>
-  <div class="card border-0 rounded-3">
-    <div class="card-body">
-      <div class="row">
-        <PaymentCard
-          badgeText="1st payment"
-          paymentDescription="25% - After event reservation."
-          paymentDate="2020-05-17, 10:00 AM"
-          currency="AED"
-          amount="2300.00"
-          status="Paid"
-        />
-      </div>
+  <div v-if="orderSummary?.offer.payment_terms.length > 0">
+    <h5 class="fw-bold !text-base !text-dm-blue">Payment Terms</h5>
+    <div
+      class="bg-white rounded-xl p-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"
+    >
+      <PaymentCard
+        :key="index"
+        v-for="(paymentTerm, index) in orderSummary.offer.payment_terms"
+        :badgeText="getOrdinalNumber(index + 1) + ' Payment'"
+        :paymentDescription="paymentTerm.description"
+        :paymentDate="formatDateAndTime(paymentTerm.created_at)?.formattedDate"
+        currency="AED"
+        :amount="formatWithCommas(paymentTerm.amount)"
+        :statusClass="paymentTermsStatus(paymentTerm.status)?.gradient"
+        :status="paymentTermsStatus(paymentTerm.status)?.statusText"
+      />
     </div>
   </div>
 
@@ -196,7 +220,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref, toRaw } from "vue";
 import BreakDown from "../../../../../components/common/BreakDown/BreakDown.vue";
 import DescriptionCard from "../../../../../components/common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../../../../../components/common/FileCard/FileCard.vue";
@@ -211,6 +235,16 @@ import UserProfileCard from "../../../../../components/common/UserProfileCard/Us
 import MapIcon from "../../../../../assets/images2/map-2.png";
 import ManagerIcon from "../../../../../assets/images2/manager.png";
 import CompanyIcon from "../../../../../assets/images2/ltd.png";
+import { watch } from "vue";
+import {
+  getStatusInfo,
+  formatDate,
+  formatTime,
+  getOrdinalNumber,
+  formatDateAndTime,
+  formatWithCommas,
+} from "../../../../../utils/helper";
+import { paymentTermsStatus } from "../../../../../utils/constants";
 
 const handleClickEdit = (data) => {
   if (data.item_title) {
@@ -219,6 +253,16 @@ const handleClickEdit = (data) => {
     // appointStore.toggleIsServiceDetails(data);
   }
 };
+
+const props = defineProps({
+  orderSummary: Object,
+});
+
+const statusInfo = computed(() => {
+  return props.orderSummary?.status
+    ? getStatusInfo(props.orderSummary.status)
+    : { class: "", label: "" };
+});
 
 const services = ref([
   {

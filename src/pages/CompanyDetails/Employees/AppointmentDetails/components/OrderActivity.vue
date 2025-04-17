@@ -5,29 +5,27 @@
   />
   <div class="card border-0 rounded-3 p-3 mb-4">
     <div class="row items-center">
-      <div class="col-md-3">
+      <div v-for="(step, index) in steps" :key="index" class="col-md-3">
         <ProgressStep
-          icon="flag.svg"
-          text="Start Trip"
-          :date="'December 20, 2025 • 10:30 AM'"
-          :isActive="true"
+          :icon="getIcon(step, index + 1)"
+          :text="step.text"
+          :date="
+            orderActivity?.progress_status >= index + 1 ? formattedDate : ''
+          "
+          :isActive="checkActive(index + 1)"
         />
-      </div>
-      <div class="col-md-3">
-        <ProgressStep icon="clock.svg" text="Reach to Site" />
-      </div>
-      <div class="col-md-3">
-        <ProgressStep icon="note.svg" text="Surveying" />
-      </div>
-      <div class="col-md-3">
-        <ProgressStep icon="emoji-happy.svg" text="Completed" />
       </div>
     </div>
   </div>
 
   <div class="row mb-5">
     <div class="col-md-3">
-      <div>
+      <div
+        v-if="
+          orderActivity?.progress_status === 1 ||
+          orderActivity?.progress_status === 2
+        "
+      >
         <SectionHeading
           title="Details"
           customClass="!text-base !font-semibold text-dm-blue leading-5 mb-1"
@@ -36,15 +34,15 @@
         <div class="card border-0 rounded-3 p-3 mb-4">
           <InfoItem
             label="Start Trip"
-            value="2118 Thornridge Cir."
+            :value="orderActivity?.order?.address?.address"
             valueClass="!text-base fw-semibold"
           />
           <InfoItem
             label="End Trip"
-            value="775 Rolling Green Rd."
+            :value="orderActivity?.order?.address?.address"
             valueClass="!text-base fw-semibold"
           />
-          <InfoItem
+          <!-- <InfoItem
             label="Travel Distance"
             :value="50"
             unit="km"
@@ -54,15 +52,15 @@
             label="Travel Time"
             value="15 min"
             valueClass="!text-base fw-semibold"
-          />
+          /> -->
           <InfoItem
             label="Client Name"
-            value="Shane Idrees"
+            :value="orderActivity?.offer?.user?.name"
             valueClass="!text-base fw-semibold"
           />
           <InfoItem
             label="Contact No."
-            value="+97 75955165"
+            :value="`+97 ${orderActivity?.offer?.user?.mobile_number}`"
             valueClass="!text-base fw-semibold"
           />
           <InfoItem
@@ -84,10 +82,16 @@
           customClass="!text-base !font-semibold text-dm-blue leading-5"
         />
         <div class="card border-0 rounded-3 p-3 text-center">
-          <div class="flex gap-3 justify-content-center mb-4">
+          <div class="flex gap-3 justify-content-center">
             <CountdownTimer :hours="0" :minutes="15" :seconds="0" />
           </div>
-          <div class="flex flex-col gap-4">
+          <div
+            class="flex flex-col gap-4 mt-4"
+            v-if="
+              orderActivity?.progress_status === 3 ||
+              orderActivity?.progress_status === 4
+            "
+          >
             <TimeCard
               :day="1"
               :hours="2"
@@ -105,7 +109,12 @@
           </div>
         </div>
       </div>
-      <div>
+      <div
+        v-if="
+          orderActivity?.progress_status === 3 ||
+          orderActivity?.progress_status === 4
+        "
+      >
         <div class="flex justify-between mt-4">
           <SectionHeading
             title="Before Work Picture"
@@ -130,7 +139,12 @@
           </div>
         </div>
       </div>
-      <div>
+      <div
+        v-if="
+          orderActivity?.progress_status === 3 ||
+          orderActivity?.progress_status === 4
+        "
+      >
         <div class="flex justify-between mt-4">
           <SectionHeading
             title="After Work Picture"
@@ -155,7 +169,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-4">
+      <div class="mt-4" v-if="orderActivity?.progress_status === 4">
         <SectionHeading
           title="Download completion report & Sign off"
           customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
@@ -171,7 +185,7 @@
           </div>
         </div>
       </div>
-      <div class="mt-3">
+      <div class="mt-3" v-if="orderActivity?.progress_status === 4">
         <FileCard
           fileIcon="../../../assets/images2/file-icon.png"
           fileName="Company Profile"
@@ -179,7 +193,7 @@
           :isEyeIcon="false"
         />
       </div>
-      <div>
+      <div v-if="orderActivity?.progress_status === 4">
         <SectionHeading
           title="Review for Company"
           customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
@@ -200,40 +214,53 @@
     </div>
 
     <!-- This is the code that I commented on. You can use it -->
-    <!-- <div class="col-md-7">
-        <SectionHeading
-          title="Map"
-          customClass="!text-base !font-semibold text-dm-blue leading-5"
+    <div
+      class="col-md-7"
+      v-if="
+        orderActivity?.progress_status === 1 ||
+        orderActivity?.progress_status === 2
+      "
+    >
+      <SectionHeading
+        title="Map"
+        customClass="!text-base !font-semibold text-dm-blue leading-5"
+      />
+      <div v-if="orderActivity?.progress_status === 1">
+        <img
+          src="../../../../../assets/images2/big-map.png"
+          alt="Map"
+          class="!rounded-lg"
         />
-        <div>
-          <img
-            src="../../../../../assets/images2/big-map.png"
-            alt="Map"
-            class="!rounded-lg"
-          />
+      </div>
+      <div
+        class="card border-0 rounded-3 p-3 !h-full flex flex-col items-center justify-center gap-8"
+        v-if="orderActivity?.progress_status === 2"
+      >
+        <img
+          :src="getImagePath('location.svg')"
+          :alt="text"
+          class="w-32 h-28"
+        />
+        <div class="max-w-xl mx-auto text-center !px-10">
+          <h1 class="!text-[20px] fw-semibold !text-dm-blue">
+            Associate reacher to destination
+          </h1>
+          <p class="!text-sm !text-dm-blue font-normal">
+            Optimize your travel with real-time navigation updates and seamless
+            integration, ensuring you reach your destination efficiently and
+            safely.
+          </p>
         </div>
-        <div
-          class="card border-0 rounded-3 p-3 !h-full flex flex-col items-center justify-center gap-8"
-        >
-          <img
-            :src="getImagePath('location.svg')"
-            :alt="text"
-            class="w-32 h-28"
-          />
-          <div class="max-w-xl mx-auto text-center !px-10">
-            <h1 class="!text-[20px] fw-semibold !text-dm-blue">
-              Associate reacher to destination
-            </h1>
-            <p class="!text-sm !text-dm-blue font-normal">
-              Optimize your travel with real-time navigation updates and seamless
-              integration, ensuring you reach your destination efficiently and
-              safely.
-            </p>
-          </div>
-        </div>
-      </div> -->
+      </div>
+    </div>
 
-    <div className="grid grid-cols-2 grid-rows-2 gap-4  col-md-9 ">
+    <div
+      className="grid grid-cols-2 grid-rows-2 gap-4  col-md-9 "
+      v-if="
+        orderActivity?.progress_status === 3 ||
+        orderActivity?.progress_status === 4
+      "
+    >
       <div className="col-span-2 md:col-span-1">
         <SectionHeading
           title="Add note (s) or Attach picture"
@@ -267,18 +294,20 @@
             className="flex flex-col gap-4 max-h-full overflow-y-auto vivid-gradient-scrollbar"
           >
             <ExecutionLog
-              v-for="(notification, index) in notifications"
+              v-for="(notification, index) in orderActivity?.execution_logs"
               :key="index"
-              :image="notification.image"
-              :message="notification.message"
-              :date="notification.date"
-              :time="notification.time"
+              :image="exeIcon"
+              :message="notification.description"
+              :date="getPrettyDateTime(notification.created_at)"
             />
           </div>
         </div>
       </div>
 
-      <div class="col-span-2 grid grid-cols-2 gap-4 mt-4">
+      <div
+        class="col-span-2 grid grid-cols-2 gap-4 mt-4"
+        v-if="orderActivity?.progress_status === 4"
+      >
         <div v-for="(review, index) in reviews" :key="index">
           <SectionHeading
             title="Review for Associate"
@@ -303,9 +332,44 @@ import FileCard from "../../../../../components/common/FileCard/FileCard.vue";
 import CompanyReview from "../../../../../components/common/CompanyReview/CompanyReview.vue";
 import AssociateReview from "../../../../../components/common/AssociateReview/AssociateReview.vue";
 import { useSurveyStore } from "../../../../../store";
-import { ref } from "vue";
+import { ref, toRaw, watch } from "vue";
+import exeIcon from "../../../../../assets/image/icons/exe-image.svg";
+import { getPrettyDateTime } from "../../../../../utils/helper";
 
 const store = useSurveyStore();
+const props = defineProps({
+  orderActivity: Object,
+});
+const steps = [
+  { text: "Start Trip", icon: "flag.svg" },
+  { text: "Reach to Site", icon: "clock.svg", activeIcon: "clock-active.svg" },
+  { text: "Work Begin", icon: "cup.svg", activeIcon: "cup-active.svg" },
+  {
+    text: "Completed",
+    icon: "emoji-happy.svg",
+    activeIcon: "emoji-happy-active.svg",
+    exact: true,
+  },
+];
+
+const formattedDate = "December 20, 2025 • 10:30 AM";
+
+const getIcon = (step, level) => {
+  if (step.exact) {
+    return props?.orderActivity?.progress_status === level
+      ? step.activeIcon
+      : step.icon;
+  }
+  return props?.orderActivity?.progress_status >= level
+    ? step.activeIcon || step.icon
+    : step.icon;
+};
+
+const checkActive = (level) => {
+  return steps[level - 1]?.exact
+    ? props?.orderActivity?.progress_status === level
+    : props?.orderActivity?.progress_status >= level;
+};
 
 const handleNoteClick = (note) => {
   store.setSelectedNote(note);
@@ -409,6 +473,16 @@ const getImagePath = (imageName) => {
     import.meta.url
   ).href;
 };
+
+watch(
+  () => props.orderActivity,
+  (newValue) => {
+    // Access the raw version of orderSummary
+    const rawOrderSummary = toRaw(newValue);
+    console.log("Raw orderActivity:", rawOrderSummary);
+  },
+  { immediate: true } // You can make it run on initial render as well
+);
 </script>
 
 <style scoped>

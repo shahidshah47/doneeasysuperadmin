@@ -28,15 +28,20 @@ const employeeStore = useEmployeeStore();
 
 const { isVisible } = storeToRefs(employeeStore);
 const { isDetail, isCompanyDetail, modalDesc } = storeToRefs(companyStore);
-const { isMaterialDetails, isServiceDetails, serviceDetails, materialDetails, appointmentDetails } =
-  storeToRefs(appointmentStore);
+const {
+  isMaterialDetails,
+  isServiceDetails,
+  serviceDetails,
+  materialDetails,
+  appointmentDetails,
+} = storeToRefs(appointmentStore);
 const { selectedNote } = storeToRefs(surveyStore);
 const companyId = computed(() => route.params.id);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");
 const isOrderRoute = computed(() => route.path === "/super-admin/order");
 const isCompanyDetailsRoute = computed(() =>
-  route.path.includes("/employees/appointment/details")
+  route.path.includes(`/employees/appointment/`)
 );
 
 // Prevent scrolling when isDetail is true
@@ -60,7 +65,10 @@ if (!localStorage?.getItem("token")) {
 }
 
 const closeAllModals = () => {
-  if ((!isMaterialDetails.value || !isServiceDetails.value) && !isDetail.value) {
+  if (
+    (!isMaterialDetails.value || !isServiceDetails.value) &&
+    !isDetail.value
+  ) {
     appointmentStore.setIsServiceUpdated(true);
   }
 
@@ -112,15 +120,28 @@ const closeAllModals = () => {
     </div>
   </div>
 
-  <DetailsModel v-if="isDetail" @close="closeAllModals" title="More Details" :description="modalDesc" />
-  <MaterialsModal v-if="isMaterialDetails" :materialDetails="materialDetails"
-    :itemNumber="`Item No ` + (appointmentDetails?.offer?.quotations?.length + 1)"
-    :appointOfferId="appointmentDetails?.offer?.id" 
-    @close="closeAllModals" />
-  <ServicesModal v-if="isServiceDetails" :serviceDetails="serviceDetails" 
+  <DetailsModel
+    v-if="isDetail"
+    @close="closeAllModals"
+    title="More Details"
+    :description="modalDesc"
+  />
+  <MaterialsModal
+    v-if="isMaterialDetails"
+    :materialDetails="materialDetails"
+    :itemNumber="
+      `Item No ` + (appointmentDetails?.offer?.quotations?.length + 1)
+    "
+    :appointOfferId="appointmentDetails?.offer?.id"
+    @close="closeAllModals"
+  />
+  <ServicesModal
+    v-if="isServiceDetails"
+    :serviceDetails="serviceDetails"
     :itemNumber="`Item No ` + (appointmentDetails?.offer?.services?.length + 1)"
-    :appointOfferId="appointmentDetails?.offer?.id" 
-    @close="closeAllModals" />
+    :appointOfferId="appointmentDetails?.offer?.id"
+    @close="closeAllModals"
+  />
   <CompanyModal v-if="isCompanyDetail" @close="closeAllModals" />
   <NoteModal v-if="selectedNote" :note="selectedNote" @close="closeAllModals" />
   <ExperienceModal v-if="isVisible" @close="closeAllModals" />

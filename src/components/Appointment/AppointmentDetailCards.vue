@@ -22,10 +22,13 @@
               </h4>
             </div>
             <span
-              class="bg-gradient-primary rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1"
+              :class="[
+                'rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1',
+                statusInfo.class,
+              ]"
             >
-              In Progress</span
-            >
+              {{ statusInfo.label }}
+            </span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -89,7 +92,9 @@
         class="h-full flex-1"
       >
         <div class="d-flex">
-          <h5 class="fw-bold !text-base !text-dm-blue">{{ associateHeading ?? 'Assign to' }}</h5>
+          <h5 class="fw-bold !text-base !text-dm-blue">
+            {{ associateHeading ?? "Assign to" }}
+          </h5>
           <p
             class="!text-grayColor text-sm leading-5 !font-bold mb-0 ms-auto font-theme"
           >
@@ -149,9 +154,13 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from "vue";
+import { computed, defineProps, ref } from "vue";
 import { useCompanyStore } from "../../store";
-import { formatDateAndTime, getOrderType } from "../../utils/helper";
+import {
+  formatDateAndTime,
+  getOrderType,
+  getStatusInfo,
+} from "../../utils/helper";
 import DescriptionCard from "../common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../common/FileCard/FileCard.vue";
 import LocationCard from "../common/LocationCard/LocationCard.vue";
@@ -168,13 +177,17 @@ const props = defineProps({
   user: Object,
   company: Object,
   mainCardHeading: String,
-  associateHeading: String
+  associateHeading: String,
 });
 
 const handleViewDetails = (id) => {
   companyStore.toggleCompanyDetail();
   companyStore.setCompanyId(id);
 };
-
+const statusInfo = computed(() => {
+  return props.orderSummary?.status
+    ? getStatusInfo(props.orderSummary.status)
+    : { class: "", label: "" };
+});
 console.log(props.appointmentDetails, "props appointment details");
 </script>
