@@ -60,8 +60,8 @@
               <InfoDisplay
                 label="Order Amount"
                 :value="
-                  orderSummary?.offer?.grand_total != null
-                    ? Math.floor(orderSummary.offer.grand_total)
+                  offerDetails?.grand_total != null
+                    ? Math.floor(offerDetails?.grand_total)
                     : ''
                 "
                 className="flex flex-col gap-1"
@@ -71,17 +71,15 @@
 
           <div class="row">
             <ProfileCard
-              :imageSrc="orderSummary?.offer?.user?.profile_picture?.file_path"
-              :altText="`${orderSummary?.offer?.user?.name} img`"
-              :subText="orderSummary?.offer?.user?.designation"
-              :mainText="orderSummary?.offer?.user?.name"
+              :imageSrc="offerDetails?.user?.profile_picture?.file_path"
+              :altText="`${offerDetails?.user?.name} img`"
+              :subText="offerDetails?.user?.designation"
+              :mainText="offerDetails?.user?.name"
             />
             <ProfileCard
-              :imageSrc="
-                orderSummary?.offer?.user?.company?.company_logo?.file_path
-              "
-              :altText="orderSummary?.offer?.user?.company?.company_name"
-              :mainText="orderSummary?.offer?.user?.company?.company_name"
+              :imageSrc="offerDetails?.user?.company?.company_logo?.file_path"
+              :altText="offerDetails?.user?.company?.company_name"
+              :mainText="offerDetails?.user?.company?.company_name"
               linkText="View
             Details"
             />
@@ -122,7 +120,7 @@
       </div>
 
       <h5 class="fw-semibold mt-3 !text-base !text-dm-blue">Order Location</h5>
-      <div class="flex-1 flex">
+      <div class="flex-1 flex h-full">
         <LocationCard
           class="flex-grow h-full"
           :location="{
@@ -151,14 +149,14 @@
     </div>
   </div>
 
-  <div v-if="orderSummary?.offer.payment_terms.length > 0">
+  <div v-if="offerDetails?.payment_terms?.length > 0">
     <h5 class="fw-bold !text-base !text-dm-blue">Payment Terms</h5>
     <div
       class="bg-white rounded-xl p-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"
     >
       <PaymentCard
         :key="index"
-        v-for="(paymentTerm, index) in orderSummary.offer.payment_terms"
+        v-for="(paymentTerm, index) in offerDetails?.payment_terms"
         :badgeText="getOrdinalNumber(index + 1) + ' Payment'"
         :paymentDescription="paymentTerm.description"
         :paymentDate="formatDateAndTime(paymentTerm.created_at)?.formattedDate"
@@ -172,7 +170,7 @@
 
   <BreakDown title="Offer Breakdown" @toggle="handleToggle" />
 
-  <div class="mb-4" v-if="services.length > 0">
+  <div class="mb-4" v-if="offerDetails?.services.length > 0">
     <div class="flex justify-between items-center">
       <h5 class="fw-bold !text-base leading-5 text-dm-blue">
         Quote for Services
@@ -186,7 +184,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <ServiceCard
-        v-for="(service, index) in services"
+        v-for="(service, index) in offerDetails?.services"
         :key="service.id"
         :data="service"
         :itemTitle="`Item No ${index + 1}`"
@@ -195,7 +193,7 @@
     </div>
   </div>
 
-  <div v-if="quotations.length > 0">
+  <div v-if="offerDetails?.quotations.length > 0">
     <div class="flex justify-between items-center">
       <h5 class="fw-bold !text-base leading-5 text-dm-blue">
         Quote for Materials
@@ -209,7 +207,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <MaterialCard
-        v-for="(quote, index) in quotations"
+        v-for="(quote, index) in offerDetails?.quotations"
         :key="quote.id"
         :itemTitle="`Item No ${index + 1}`"
         :data="quote"
@@ -220,7 +218,8 @@
 </template>
 
 <script setup>
-import { computed, ref, toRaw } from "vue";
+import { computed, ref, toRaw, watch } from "vue";
+import api from "../../../../../api";
 import BreakDown from "../../../../../components/common/BreakDown/BreakDown.vue";
 import DescriptionCard from "../../../../../components/common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../../../../../components/common/FileCard/FileCard.vue";
@@ -230,12 +229,12 @@ import PaymentCard from "../../../../../components/common/PaymentCard/PaymentCar
 import ProfileCard from "../../../../../components/common/ProfileCard/ProfileCard.vue";
 import SectionHeading from "../../../../../components/common/SectionHeading/SectionHeading.vue";
 import ServiceCard from "../../../../../components/common/ServiceCard/ServiceCard.vue";
+import MaterialCard from "../../../../../components/common/MaterialCard/MaterialCard.vue";
 import SummaryCard from "../../../../../components/common/SummaryCard/SummaryCard.vue";
 import UserProfileCard from "../../../../../components/common/UserProfileCard/UserProfileCard.vue";
 import MapIcon from "../../../../../assets/images2/map-2.png";
 import ManagerIcon from "../../../../../assets/images2/manager.png";
 import CompanyIcon from "../../../../../assets/images2/ltd.png";
-import { watch } from "vue";
 import {
   getStatusInfo,
   formatDate,
@@ -245,18 +244,29 @@ import {
   formatWithCommas,
 } from "../../../../../utils/helper";
 import { paymentTermsStatus } from "../../../../../utils/constants";
-
-const handleClickEdit = (data) => {
-  if (data.item_title) {
-    // appointStore.toggleIsMaterialDetails(data);
-  } else {
-    // appointStore.toggleIsServiceDetails(data);
-  }
-};
+import { useAppointmentStore } from "../../../../../store";
 
 const props = defineProps({
   orderSummary: Object,
 });
+
+const appointStore = useAppointmentStore();
+
+const handleServices = () => {
+  appointStore.toggleIsServiceDetails();
+};
+
+const handleMaterials = () => {
+  appointStore.toggleIsMaterialDetails();
+};
+
+const handleClickEdit = (data) => {
+  if (data.item_title) {
+    appointStore.toggleIsMaterialDetails(data);
+  } else {
+    appointStore.toggleIsServiceDetails(data);
+  }
+};
 
 const statusInfo = computed(() => {
   return props.orderSummary?.status
@@ -264,60 +274,29 @@ const statusInfo = computed(() => {
     : { class: "", label: "" };
 });
 
-const services = ref([
-  {
-    id: 578,
-    offer_id: 419,
-    item_number: "Item No 1 update",
-    title: "Session - Introduction 21",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentum tellus.",
-    unit_price: "15.00",
-    quantity: 38,
-    sub_total: "570.00",
-    delivery_time: "2026-05-12 20:53:00",
-    total: "570.00",
-    created_at: "2025-03-07T14:02:00.000000Z",
-    updated_at: "2025-04-04T09:31:53.000000Z",
-    serviceable_type: null,
-    serviceable_id: null,
-    user_id: null,
-  },
-  {
-    id: 610,
-    offer_id: 419,
-    item_number: "Item No 2",
-    title: "New service 4",
-    description: "Test service description for this 2",
-    unit_price: "40.00",
-    quantity: 25,
-    sub_total: "1000.00",
-    delivery_time: "2025-04-04 16:23:00",
-    total: "1000.00",
-    created_at: "2025-04-03T09:22:00.000000Z",
-    updated_at: "2025-04-04T09:28:47.000000Z",
-    serviceable_type: null,
-    serviceable_id: null,
-    user_id: null,
-  },
-]);
+const offerDetails = ref(null);
 
-const quotations = ref([
-  {
-    id: 608,
-    offer_id: 419,
-    item_title: "Tsgsh",
-    description: "Hajsj",
-    unit_price: "56.00",
-    quantity: 30,
-    sub_total: "1680.00",
-    delivery_time: "2025-04-05 00:00:00",
-    total: "1680.00",
-    type: 1,
-    created_at: "2025-03-07T14:02:00.000000Z",
-    updated_at: "2025-04-04T09:18:28.000000Z",
+watch(
+  () => props.orderSummary,
+  async (newVal) => {
+    if (newVal?.offer?.id) {
+      try {
+        const response = await api.get(
+          `/superadmin/user/offer/${newVal.offer.id}`
+        );
+        offerDetails.value = response.data.data;
+      } catch (error) {
+        console.error("Failed to fetch offer details:", error);
+      }
+    }
   },
-]);
+  { immediate: true }
+);
+
+watch(offerDetails, (newVal) => {
+  const rawData = toRaw(newVal);
+  console.log("Raw offer details:", rawData);
+});
 </script>
 
 <style scoped>

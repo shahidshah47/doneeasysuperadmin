@@ -33,7 +33,11 @@
       <SiteSurveyActivity :orderActivity="siteSurveyDetails" />
     </div>
     <div v-if="activeButton === 'order'">
-      <OrderSummary :orderSummary="siteSurveyDetails" :user="user" :company="company" />
+      <OrderSummary
+        :orderSummary="siteSurveyDetails"
+        :user="user"
+        :company="company"
+      />
     </div>
   </div>
 </template>
@@ -67,7 +71,7 @@ const fetchSiteSurveyDetailsById = async (id) => {
       const { data, message } = response?.data;
       siteSurveyDetails.value = data;
       user.value = data?.order?.user;
-      company.value = data?.order?.user?.company;
+      company.value = data?.order?.company;
       if (data.progress_status === 0) {
         setActiveButton("order");
       }

@@ -22,7 +22,7 @@
           :alt="altText"
         />
       </div>
-      <div v-if="props.location">
+      <div v-if="props.location" class="h-full">
         <GoogleMapComponent
           :mapCustomStyles="true"
           :height="180"

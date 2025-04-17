@@ -87,7 +87,7 @@ const appointmentDetails = ref(null);
 const appointStore = useAppointmentStore();
 const companyStore = useCompanyStore();
 
-const activeButton = ref("summary");
+const activeButton = ref("order");
 
 const setActiveButton = (button) => {
   activeButton.value = button;

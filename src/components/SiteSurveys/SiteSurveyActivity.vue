@@ -8,22 +8,15 @@
       <div
         class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 items-center"
       >
-        <div>
+        <div v-for="(step, index) in steps" :key="index" class="col-md-3">
           <ProgressStep
-            icon="flag.svg"
-            text="Start Trip"
-            :date="'December 20, 2025 • 10:30 AM'"
-            :isActive="true"
+            :icon="getIcon(step, index + 1)"
+            :text="step.text"
+            :date="
+              orderActivity?.progress_status >= index + 1 ? formattedDate : ''
+            "
+            :isActive="checkActive(index + 1)"
           />
-        </div>
-        <div>
-          <ProgressStep icon="clock.svg" text="Reach to Site" />
-        </div>
-        <div>
-          <ProgressStep icon="note.svg" text="Surveying" />
-        </div>
-        <div>
-          <ProgressStep icon="emoji-happy.svg" text="Completed" />
         </div>
       </div>
     </div>
@@ -190,11 +183,42 @@ const props = defineProps({
   company: Object,
 });
 
-// watch(
-//   () => props.orderActivity,
-//   (newVal, oldVal) => {
-//     console.log("orderSummary changed:", toRaw(newVal));
-//   },
-//   { immediate: true, deep: true }
-// );
+const steps = [
+  { text: "Start Trip", icon: "flag.svg" },
+  { text: "Reach to Site", icon: "clock.svg", activeIcon: "clock-active.svg" },
+  { text: "Work Begin", icon: "cup.svg", activeIcon: "cup-active.svg" },
+  {
+    text: "Completed",
+    icon: "emoji-happy.svg",
+    activeIcon: "emoji-happy-active.svg",
+    exact: true,
+  },
+];
+
+const formattedDate = "December 20, 2025 • 10:30 AM";
+
+const getIcon = (step, level) => {
+  if (step.exact) {
+    return props?.orderActivity?.progress_status === level
+      ? step.activeIcon
+      : step.icon;
+  }
+  return props?.orderActivity?.progress_status >= level
+    ? step.activeIcon || step.icon
+    : step.icon;
+};
+
+const checkActive = (level) => {
+  return steps[level - 1]?.exact
+    ? props?.orderActivity?.progress_status === level
+    : props?.orderActivity?.progress_status >= level;
+};
+
+watch(
+  () => props.orderActivity,
+  (newVal, oldVal) => {
+    console.log("orderSummary changed:", toRaw(newVal));
+  },
+  { immediate: true, deep: true }
+);
 </script>

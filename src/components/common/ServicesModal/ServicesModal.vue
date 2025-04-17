@@ -25,12 +25,13 @@
       >
         <div class="px-6 flex flex-col gap-3">
           <InputField
-            :label="serviceDetails?.item_number ?? itemNumber"
+            label="Item No."
             name="title"
             v-model="title"
             v-bind="titleAttrs"
             type="text"
           />
+
           <TextareaField
             label="Service Description"
             name="description"
