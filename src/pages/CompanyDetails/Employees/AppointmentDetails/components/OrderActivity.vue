@@ -248,6 +248,15 @@
             alt="Map"
             class="!rounded-lg"
           />
+          <!-- <LocationCard
+            class="flex-grow h-full"
+            :location="{
+              lat: Number(appointmentDetails?.order?.address?.lat),
+              lng: Number(appointmentDetails?.order?.address?.lng),
+            }"
+            :address="appointmentDetails.offer.order.address.address"
+            buttonText="View Map"
+          /> -->
         </div>
         <div
           class="card border-0 rounded-3 p-3 !h-full flex flex-col items-center justify-center gap-8"
@@ -358,6 +367,7 @@ import { useSurveyStore } from "../../../../../store";
 import { onMounted, ref, toRaw, watch } from "vue";
 import exeIcon from "../../../../../assets/image/icons/exe-image.svg";
 import { formatDate, getPrettyDateTime } from "../../../../../utils/helper";
+import LocationCard from "../../../../../components/common/LocationCard/LocationCard.vue";
 
 const showImage = ref(true);
 
