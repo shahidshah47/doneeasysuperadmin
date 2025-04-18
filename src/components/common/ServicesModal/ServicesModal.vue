@@ -218,51 +218,77 @@ const closeModal = () => {
 };
 
 const onSubmit = handleSubmit(async (values) => {
-  // console.log(values, formatDateAtQuote(values.delivery_time), "values");
-  let response;
-  if (id.value) {
-    response = await api.post(
-      "/superadmin/user/appointment/offer/" +
-        props.appointOfferId +
-        "/services/add-update",
-      {
-        ...values,
-        quantity: Number(values.quantity),
-        unit_price: Number(values.unit_price),
-        sub_total: values.total,
-        delivery_time: formatDateAtQuote(values.delivery_time),
-      }
-    );
-  } else {
-    response = await api.post(
-      "/superadmin/user/appointment/offer/" +
-        props.appointOfferId +
-        "/services/add-update",
-      {
-        title: values.title,
-        description: values.description,
-        quantity: Number(values.quantity),
-        unit_price: Number(values.unit_price),
-        sub_total: values.total,
-        item_number: values.item_number,
-        delivery_time: formatDateAtQuote(values.delivery_time),
-        total: values.total,
-      }
-    );
-  }
-  if (response && response?.status === 200) {
-    closeModal();
-    toast.add({
-      severity: "success",
-      summary: "Success",
-      detail: response?.data?.message,
-      life: 3000,
+  // Validate required fields
+  const requiredFields = [
+    { field: "title", message: "Title is required" },
+    { field: "description", message: "Description is required" },
+    { field: "delivery_time", message: "Delivery time is required" },
+    {
+      field: "quantity",
+      message: "Valid quantity is required",
+      validate: (val) => val && !isNaN(Number(val)),
+    },
+    {
+      field: "unit_price",
+      message: "Valid unit price is required",
+      validate: (val) => val && !isNaN(Number(val)),
+    },
+  ];
+
+  if (!id.value && !values.item_number) {
+    requiredFields.push({
+      field: "item_number",
+      message: "Item number is required",
     });
-  } else {
-    toast.error({
+  }
+
+  for (const { field, message, validate } of requiredFields) {
+    if (
+      (validate && !validate(values[field])) ||
+      (!validate && !values[field])
+    ) {
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: message,
+        life: 3000,
+      });
+      return;
+    }
+  }
+
+  // Prepare common payload
+  const payload = {
+    ...values,
+    quantity: Number(values.quantity),
+    unit_price: Number(values.unit_price),
+    sub_total: values.total,
+    delivery_time: formatDateAtQuote(values.delivery_time),
+    ...(!id.value && {
+      item_number: values.item_number,
+      total: values.total,
+    }),
+  };
+
+  try {
+    const endpoint = `/superadmin/user/appointment/offer/${props.appointOfferId}/services/add-update`;
+    const response = await api.post(endpoint, payload);
+
+    if (response?.status === 200) {
+      closeModal();
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message,
+        life: 3000,
+      });
+    }
+  } catch (error) {
+    toast.add({
       severity: "error",
       summary: "Error",
-      detail: "Something went wrong!",
+      detail: error.response?.data?.message || "Something went wrong!",
+      life: 3000,
     });
   }
 });
