@@ -1,6 +1,5 @@
 <script setup>
-import { Avatar, Toast } from 'primevue';
-
+import { Avatar, Toast } from "primevue";
 </script>
 
 <template>
@@ -8,8 +7,12 @@ import { Avatar, Toast } from 'primevue';
     <Toast position="bottom-right">
       <template #message="slotProps">
         <div class="flex flex-col items-start flex-auto">
-          <div class="font-semibold !text-dm-blue text-base">{{ slotProps.message.summary + "!" }}</div>
-          <div class="font-medium !text-gray-500 text-base">{{ slotProps.message.detail }}</div>
+          <div class="font-semibold !text-dm-blue text-base">
+            {{ slotProps.message.summary + "!" }}
+          </div>
+          <div class="font-medium !text-gray-500 text-base">
+            {{ slotProps.message.detail }}
+          </div>
         </div>
       </template>
     </Toast>

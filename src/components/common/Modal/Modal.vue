@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isVisible"
-    class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-slate-gray backdrop-blur-md z-[9999]"
+    class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-slate-gray backdrop-blur-md z-[999]"
     @click.self="closeModal"
   >
     <div class="relative" :style="modalStyles">

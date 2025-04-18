@@ -69,7 +69,10 @@
           </div>
         </div>
 
-        <div class="flex flex-col w-full gap-1">
+        <div
+          v-if="locationData?.lat && locationData?.lng"
+          class="flex flex-col w-full gap-1"
+        >
           <div class="flex justify-between items-center">
             <h5 class="!font-bold text-base text-dm-blue">Pin Location</h5>
           </div>
@@ -88,7 +91,6 @@
               :location="locationData"
               :iconUrl="'/location-marker.svg'"
             />
-            <!-- <img :src="getImagePath('maps.png')" class="rounded-xl w-full" alt="Company Logo" /> -->
           </div>
         </div>
       </div>
@@ -108,7 +110,7 @@
         </div>
         <div class="bg-white py-4 pl-4 pr-2 rounded-xl flex-1">
           <div
-            class="max-h-[50rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3"
+            class="max-h-[50rem] overflow-y-auto vivid-scrollbar pr-2 flex flex-col gap-3 overflow-x-hidden"
           >
             <div
               v-for="(user, index) in infoDetails?.company?.users"
@@ -127,7 +129,7 @@
                 </div>
               </div>
               <div class="inline-flex flex-col">
-                <h4 class="!text-base font-semibold mb-0">
+                <h4 class="!text-base !font-semibold mb-0">
                   +971 {{ user?.mobile_number }}
                 </h4>
                 <h4 class="!text-xs mb-0 font-semibold">{{ user?.email }}</h4>
@@ -157,7 +159,9 @@
         <div
           class="bg-white py-4 pl-4 pr-2 rounded-xl flex flex-col gap-3 flex-1"
         >
-          <div class="max-h-[50rem] overflow-auto vivid-scrollbar pr-2 flex flex-col gap-3">
+          <div
+            class="max-h-[50rem] overflow-y-auto vivid-scrollbar pr-2 flex flex-col gap-3 overflow-x-hidden"
+          >
             <div
               v-for="(address, index) in infoDetails?.company?.addresses"
               class="p-4 rounded-xl bg-[#f8f9fa] flex flex-col gap-3 items-start"
@@ -284,7 +288,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, toRaw, watch } from "vue";
 import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useRoute } from "vue-router";
 import api from "../../api";
@@ -488,6 +492,11 @@ const handleLocationSubmit = async (values) => {
 onMounted(() => {
   window.scroll(0, 0);
   fetchCompanyDetailsById(route.params.companyId);
+});
+
+watch(locationData, (newVal) => {
+  const rawLocation = toRaw(newVal);
+  console.log("Raw locationData:", rawLocation);
 });
 </script>
 

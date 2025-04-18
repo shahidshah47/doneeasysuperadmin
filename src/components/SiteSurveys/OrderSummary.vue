@@ -185,7 +185,7 @@
               <InfoDisplay
                 className="flex flex-col gap-1"
                 label="Coordinator Phone No."
-                :value="orderSummary.mobile_number || '-'"
+                :value="`+971 ${orderSummary.mobile_number || '-'}`"
               />
             </div>
           </div>

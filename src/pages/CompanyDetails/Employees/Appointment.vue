@@ -101,7 +101,7 @@
         </template>
         <template #contact="{ data }">
           <div class="text-dm-blue font-semibold text-sm whitespace-nowrap">
-            {{ `+972 ${data.contact}` }}
+            {{ `+971 ${data.contact}` }}
           </div>
         </template>
 

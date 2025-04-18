@@ -25,7 +25,7 @@
             />
             <InfoDisplay
               label="HQ Phone No."
-              :value="`+97 ${userDetails?.user?.mobile_number}`"
+              :value="`+971 ${userDetails?.user?.mobile_number}`"
             />
             <InfoDisplay label="HQ Email" :value="userDetails?.user?.email" />
             <InfoDisplay
@@ -119,19 +119,21 @@
       </div>
 
       <div class="col-md-3">
-        <SectionHeading
-          title="Documents"
-          customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
-        />
+        <div v-if="documents.length">
+          <SectionHeading
+            title="Documents"
+            customClass="!text-lg !font-bold text-dm-blue leading-5 mb-3"
+          />
 
-        <div>
-          <div v-if="documents.length">
-            <FileCard
-              v-for="(doc, index) in documents"
-              :key="index"
-              :fileName="doc.fileName || doc.title"
-              :fileSize="doc.fileSize"
-            />
+          <div>
+            <div v-if="documents.length">
+              <FileCard
+                v-for="(doc, index) in documents"
+                :key="index"
+                :fileName="doc.fileName || doc.title"
+                :fileSize="doc.fileSize"
+              />
+            </div>
           </div>
         </div>
         <div v-if="userDetails?.verticals?.length > 0">

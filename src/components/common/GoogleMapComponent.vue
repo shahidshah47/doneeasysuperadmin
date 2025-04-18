@@ -28,7 +28,8 @@ const map = ref(null);
 const uniqueId = ref(`google-map-${Math.random().toString(36).substr(2, 9)}`);
 const mapStyle = ref({
   width: "100%",
-  height: `${props.height}px`,
+  height: "100%",
+  minHeight: `${props.height}px`,
   position: "relative",
 });
 
