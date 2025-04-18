@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.8",
     "@headlessui/vue": "^1.7.22",
     "@primeuix/themes": "^1.0.0",
     "@tailwindcss/vite": "^4.0.9",
@@ -20,6 +21,7 @@
     "datatables.net-dt": "^2.2.2",
     "datatables.net-select": "^3.0.0",
     "datatables.net-vue3": "^3.0.4",
+    "lodash": "^4.17.21",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.2.0",
     "primevue": "^4.3.2",
