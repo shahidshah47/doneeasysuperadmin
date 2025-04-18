@@ -60,7 +60,7 @@
           />
           <InfoItem
             label="Contact No."
-            :value="`+97 ${orderActivity?.offer?.user?.mobile_number}`"
+            :value="`+971 ${orderActivity?.offer?.user?.mobile_number}`"
             valueClass="!text-base fw-semibold"
           />
           <InfoItem

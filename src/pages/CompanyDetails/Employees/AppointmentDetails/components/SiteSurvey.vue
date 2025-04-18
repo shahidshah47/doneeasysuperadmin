@@ -61,7 +61,7 @@
         />
         <InfoItem
           label="Contact No."
-          value="+97 75955165"
+          value="+971 75955165"
           valueClass="!text-base fw-semibold"
         />
         <InfoItem

@@ -1,5 +1,7 @@
 <template>
-  <div class="border-0 rounded bg-white p-3 mb-3 flex gap-2 items-center">
+  <div
+    class="border-0 rounded bg-white p-3 mb-3 flex gap-2 items-center flex-wrap"
+  >
     <div
       v-for="(tag, index) in tags"
       :key="index"

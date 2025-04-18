@@ -41,7 +41,7 @@ import GoogleMapComponent from "../GoogleMapComponent.vue";
 const props = defineProps({
   address: {
     type: String,
-    default: "775 Rolling Green Rd.",
+    default: "--",
   },
   imageSrc: {
     type: String,

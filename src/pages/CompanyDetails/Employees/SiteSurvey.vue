@@ -101,7 +101,7 @@
         </template>
         <template #contact="{ data }">
           <div class="text-dm-blue font-semibold text-sm whitespace-nowrap">
-            {{ `+972 ${data.contact}` }}
+            {{ `+971 ${data.contact}` }}
           </div>
         </template>
 
@@ -249,11 +249,11 @@ const pagination = ref({
 
 const handleClickToDetails = (data) => {
   const employeeId = route.params.employeeId;
-  if (employeeId) {
-    router.push({
-      path: `/super-admin/company-details/${employeeId}/employees/appointment/${data?.id}/details`,
-    });
-  }
+  // if (employeeId) {
+  //   router.push({
+  //     path: `/super-admin/company-details/${employeeId}/employees/appointment/${data?.id}/details`,
+  //   });
+  // }
 };
 
 const fetchData = async (id, page = 1, perPage = null, search = "") => {
@@ -299,7 +299,6 @@ const fetchData = async (id, page = 1, perPage = null, search = "") => {
     loading.value = false;
   }
 };
-
 const debouncedFetch = debounce((val) => {
   fetchData(statusBtn.value, 1, null, val);
 }, 500);
