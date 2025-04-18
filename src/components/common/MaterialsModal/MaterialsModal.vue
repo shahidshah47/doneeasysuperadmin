@@ -215,29 +215,55 @@ const closeModal = () => {
 const onSubmit = handleSubmit(async (values) => {
   console.log("Form submitted successfully:", values);
   const hasSubmitListener = !!instance?.vnode.props?.onSubmit;
+
   if (hasSubmitListener) {
     emit("submit", values);
-  } else {
-    let response;
-    if (id.value) {
-      response = await api.post(
-        "/superadmin/user/appointment/offer/" +
-          props.appointOfferId +
-          "/materials/add-update",
-        {
+    return;
+  }
+
+  // Validate required fields
+  const requiredFields = [
+    { field: "item_title", message: "Item title is required" },
+    { field: "description", message: "Description is required" },
+    { field: "delivery_time", message: "Delivery time is required" },
+    {
+      field: "quantity",
+      message: "Valid quantity is required",
+      validate: (val) => val && !isNaN(Number(val)),
+    },
+    {
+      field: "unit_price",
+      message: "Valid unit price is required",
+      validate: (val) => val && !isNaN(Number(val)),
+    },
+  ];
+
+  for (const { field, message, validate } of requiredFields) {
+    if (
+      (validate && !validate(values[field])) ||
+      (!validate && !values[field])
+    ) {
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: message,
+        life: 3000,
+      });
+      return;
+    }
+  }
+
+  try {
+    const endpoint = `/superadmin/user/appointment/offer/${props.appointOfferId}/materials/add-update`;
+    const payload = id.value
+      ? {
           ...values,
           quantity: Number(values.quantity),
           unit_price: Number(values.unit_price),
           sub_total: values.total,
           delivery_time: formatDateAtQuote(values.delivery_time),
         }
-      );
-    } else {
-      response = await api.post(
-        "/superadmin/user/appointment/offer/" +
-          props.appointOfferId +
-          "/materials/add-update",
-        {
+      : {
           item_title: values.item_title,
           description: values.description,
           quantity: Number(values.quantity),
@@ -245,10 +271,11 @@ const onSubmit = handleSubmit(async (values) => {
           sub_total: values.total,
           delivery_time: formatDateAtQuote(values.delivery_time),
           total: values.total,
-        }
-      );
-    }
-    if (response && response?.status === 200) {
+        };
+
+    const response = await api.post(endpoint, payload);
+
+    if (response?.status === 200) {
       closeModal();
       toast.add({
         severity: "success",
@@ -256,13 +283,14 @@ const onSubmit = handleSubmit(async (values) => {
         detail: response?.data?.message,
         life: 3000,
       });
-    } else {
-      toast.error({
-        severity: "error",
-        summary: "Error",
-        detail: "Something went wrong!",
-      });
     }
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: error.response?.data?.message || "Something went wrong!",
+      life: 3000,
+    });
   }
 });
 
