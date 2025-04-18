@@ -61,8 +61,6 @@ const {
     activity: "",
   },
 });
-console.log("🚀 ~ values:", values);
-console.log("🚀 ~ errors:", errors);
 
 // ✅ Use fields correctly
 const [licenseNumber, licenseNumberAttrs] = defineField("license_number");

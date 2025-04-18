@@ -103,7 +103,6 @@ const fetchData = async (id, page, perPage = 20) => {
 };
 
 const handleClickToDetails = (id, type) => {
-  console.log("🚀 ~ handleClickToDetails ~ id:", id);
   // if (type === "Hot Orders") {
   //   router.push("/super-admin/order/" + id + "/details/hot-orders");
   // } else {

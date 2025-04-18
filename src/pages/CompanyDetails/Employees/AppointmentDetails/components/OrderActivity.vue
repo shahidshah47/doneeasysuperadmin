@@ -251,10 +251,10 @@
           <!-- <LocationCard
             class="flex-grow h-full"
             :location="{
-              lat: Number(appointmentDetails?.order?.address?.lat),
-              lng: Number(appointmentDetails?.order?.address?.lng),
+              lat: Number(orderActivity?.order?.address?.lat),
+              lng: Number(orderActivity?.order?.address?.lng),
             }"
-            :address="appointmentDetails.offer.order.address.address"
+            :address="orderActivity.order.address.address"
             buttonText="View Map"
           /> -->
         </div>

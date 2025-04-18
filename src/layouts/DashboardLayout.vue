@@ -36,7 +36,6 @@ const {
   appointmentDetails,
 } = storeToRefs(appointmentStore);
 const { selectedNote } = storeToRefs(surveyStore);
-console.log("🚀 ~ selectedNote:", selectedNote?.value);
 const companyId = computed(() => route.params.id);
 
 const isVendorRoute = computed(() => route.path === "/super-admin/vendor");

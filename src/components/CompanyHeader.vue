@@ -27,7 +27,7 @@
             <p
               class="m-0 font-theme text-grayish-purple leading-5 font-normal !text-[15px] !mt-1"
             >
-              ID OFC 903823
+              ID OFC {{ store?.companyData?.company?.id }}
             </p>
           </div>
         </div>
@@ -42,7 +42,11 @@
             Rating
           </p>
           <div class="flex flex-row items-center gap-3">
-            <StarRating :rating="4" :width="20" :height="20" />
+            <StarRating
+              :rating="store?.companyData?.company?.reviews_avg_rating || 0"
+              :width="20"
+              :height="20"
+            />
             <div class="rounded-3xl px-4 py-[3px] bg-light-lilac">
               <h5
                 class="text-dm-blue text-base leading-5 font-theme !font-semibold m-0"
