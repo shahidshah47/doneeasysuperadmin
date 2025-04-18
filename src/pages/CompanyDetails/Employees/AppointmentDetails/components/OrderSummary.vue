@@ -1,5 +1,5 @@
 <template>
-  <div class="row my-4 flex">
+  <div class="row my-4 flex" v-if="orderSummary">
     <div class="col-md-6 flex flex-col">
       <SectionHeading
         title="Offers Details"
@@ -132,17 +132,29 @@
         />
       </div>
     </div>
-    <div class="col-md-3 flex flex-col">
+    <div
+      class="col-md-3 flex flex-col"
+      v-if="offerDetails.order.documents.length"
+    >
       <h5 class="fw-semibold !text-base !text-dm-blue">Attachments</h5>
-      <FileCard
-        fileIcon="../../../../../assets/images2/file-icon.png"
-        fileName="Company Profile"
-        fileSize="3.2mb"
-      />
+
+      <div class="overflow-y-auto vivid-scrollbar max-h-36">
+        <div
+          v-for="(doc, index) in offerDetails.order.documents"
+          :key="doc.id || index"
+        >
+          <FileCard
+            :key="index"
+            fileIcon="../../../assets/images2/file-icon.png"
+            :fileName="doc.file_name"
+            :fileSize="doc.file_size"
+          />
+        </div>
+      </div>
 
       <DescriptionCard
         title="Additional terms"
-        content="Custom content goes here..."
+        :content="offerDetails?.additional_terms"
         linkText="read more"
         :lineClamp="3"
       />

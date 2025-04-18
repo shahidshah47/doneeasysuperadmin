@@ -5,10 +5,12 @@ import { watch, defineProps, defineEmits, ref, onMounted, nextTick } from "vue";
 import { useUserStore } from "../../store";
 import TradeLicenseForm from "./TradeLicenseForm.vue";
 import ThemeButton from "../common/ThemeButton/ThemeButton.vue";
+import { useToast } from "primevue";
 
 const userStore = useUserStore();
 const tradeLicenses = ref([]);
 const legDocType = ref("emirates_id_details");
+const toast = useToast();
 
 const props = defineProps({
   showLegDocModal: Boolean,
@@ -97,47 +99,123 @@ watch(
   { deep: true, immediate: true }
 );
 
-const onSubmit = handleSubmit((values) => {
-  // Transform the form values into the desired structure
-  const transformedData = {
-    trn: {
-      legal_name_list: values.legal_name_list.split(","), // Convert string to array
-      trn_number: values.trn_number,
-      legal_name: values.legal_name,
-    },
-    trade_licenses:
-      tradeLicenses?.value?.map((license) => ({
-        license_number: license.license_number,
-        address: license.address,
-        legal_form: license.legal_form,
-        cbls_number: license.cbls_number,
-        expiry_date: license.expiry_date,
-        phone_number: license.phone_number,
-        activity_name: license.activity_name,
-        business_name: license.business_name,
-        license_status: license.license_status,
-        establishment_date: license.establishment_date,
-        licensing_authority: license.licensing_authority,
-        activity_name_arabic: license.activity_name_arabic,
-        business_name_arabic: license.business_name_arabic,
-        state_id: license.state_id,
-        region: license.region,
-      })) || [],
-    emirates_id: {
-      emirates_id: values.emirates_id,
-      nationality: values.nationality,
-      dob: values.dob,
-    },
+const onSubmit = handleSubmit(async (values) => {
+  const emptyFields = [];
+
+  const checkField = (value, fieldName) => {
+    if (
+      value === undefined ||
+      value === null ||
+      (typeof value === "string" && value.trim() === "")
+    ) {
+      emptyFields.push(fieldName);
+    }
   };
 
-  // Emit the transformed data to the parent component
-  emit("submit", transformedData);
+  checkField(values.legal_name_list, "Legal Name List");
+  checkField(values.trn_number, "TRN Number");
+  checkField(values.legal_name, "Legal Name");
+  checkField(values.emirates_id, "Emirates ID");
+  checkField(values.nationality, "Nationality");
+  checkField(values.dob, "Date of Birth");
 
-  // Reset the form and close the modal
-  resetForm();
-  emit("close");
+  if (tradeLicenses?.value) {
+    tradeLicenses.value.forEach((license, index) => {
+      checkField(license.license_number, `License #${index + 1} Number`);
+      checkField(license.address, `License #${index + 1} Address`);
+      checkField(license.legal_form, `License #${index + 1} Legal Form`);
+      checkField(license.cbls_number, `License #${index + 1} CBLS Number`);
+      checkField(license.expiry_date, `License #${index + 1} Expiry Date`);
+      checkField(license.phone_number, `License #${index + 1} Phone Number`);
+      checkField(license.activity_name, `License #${index + 1} Activity Name`);
+      checkField(license.business_name, `License #${index + 1} Business Name`);
+      checkField(
+        license.license_status,
+        `License #${index + 1} License Status`
+      );
+      checkField(
+        license.establishment_date,
+        `License #${index + 1} Establishment Date`
+      );
+      checkField(
+        license.licensing_authority,
+        `License #${index + 1} Licensing Authority`
+      );
+      checkField(
+        license.activity_name_arabic,
+        `License #${index + 1} Activity Name (Arabic)`
+      );
+      checkField(
+        license.business_name_arabic,
+        `License #${index + 1} Business Name (Arabic)`
+      );
+      checkField(license.state_id, `License #${index + 1} State ID`);
+      checkField(license.region, `License #${index + 1} Region`);
+    });
+  }
+
+  if (emptyFields.length > 0) {
+    toast.add({
+      severity: "error",
+      summary: "Validation Error",
+      detail: `Please fill in all required fields: ${emptyFields.join(", ")}`,
+      life: 3000,
+    });
+    return;
+  }
+
+  try {
+    const transformedData = {
+      trn: {
+        legal_name_list: values.legal_name_list.split(","),
+        trn_number: values.trn_number,
+        legal_name: values.legal_name,
+      },
+      trade_licenses:
+        tradeLicenses?.value?.map((license) => ({
+          license_number: license.license_number,
+          address: license.address,
+          legal_form: license.legal_form,
+          cbls_number: license.cbls_number,
+          expiry_date: license.expiry_date,
+          phone_number: license.phone_number,
+          activity_name: license.activity_name,
+          business_name: license.business_name,
+          license_status: license.license_status,
+          establishment_date: license.establishment_date,
+          licensing_authority: license.licensing_authority,
+          activity_name_arabic: license.activity_name_arabic,
+          business_name_arabic: license.business_name_arabic,
+          state_id: license.state_id,
+          region: license.region,
+        })) || [],
+      emirates_id: {
+        emirates_id: values.emirates_id,
+        nationality: values.nationality,
+        dob: values.dob,
+      },
+    };
+
+    emit("submit", transformedData);
+
+    toast.add({
+      severity: "success",
+      summary: "Success",
+      detail: "Form submitted successfully",
+      life: 3000,
+    });
+
+    resetForm();
+    emit("close");
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      summary: "Submission Error",
+      detail: error.message || "Failed to submit form",
+      life: 3000,
+    });
+  }
 });
-
 const handleLegDocTab = (type) => {
   legDocType.value = type;
 };
@@ -146,13 +224,17 @@ const handleLegDocTab = (type) => {
 const updateTradeLicense = (index, updatedLicense) => {
   tradeLicenses.value[index] = updatedLicense;
 };
+
+const getTradeLicenseTabName = (index) => {
+  return `trade_license_${index}`;
+};
 </script>
 
 <template>
   <!-- Modal Overlay -->
   <div
     v-if="showLegDocModal"
-    class="z-[99999] fixed inset-0 bg-black bg-opacity-50 backdrop-blur-[12px] flex justify-center items-center overflow-auto"
+    class="z-[999] fixed inset-0 bg-black bg-opacity-50 backdrop-blur-[12px] flex justify-center items-center overflow-auto"
   >
     <div class="max-w-screen-md flex flex-col justify-center items-center">
       <div
@@ -171,38 +253,71 @@ const updateTradeLicense = (index, updatedLicense) => {
           <div class="flex flex-wrap flex-col gap-6 p-6">
             <div class="flex items-center justify-between gap-2">
               <ul class="nav nav-pills gap-3" id="pills-tab" role="tablist">
-                <li
-                  class="nav-item"
-                  role="presentation"
-                  v-for="(docType, index) in [
-                    'emirates_id_details',
-                    'trn_details',
-                    ...tradeLicenses.map((_, i) => 'trade_licenses' + i),
-                  ]"
-                  :key="docType"
-                >
+                <!-- Trade License Tabs -->
+
+                <!-- Emirates ID Tab -->
+                <li class="nav-item" role="presentation">
                   <button
-                    :class="`nav-link  !text-sm !font-semibold ${
-                      legDocType === docType
+                    :class="`nav-link !text-sm !font-semibold ${
+                      legDocType === 'emirates_id_details'
                         ? 'active !bg-vivid-purple !text-white-100'
                         : '!bg-light-lilac !text-dm-blue'
                     }`"
-                    :id="`pills-${docType}-tab`"
+                    id="pills-emiratesid-tab"
                     data-bs-toggle="pill"
-                    :data-bs-target="`#pills-${docType}`"
+                    data-bs-target="#pills-emiratesid"
                     type="button"
                     role="tab"
-                    @click="handleLegDocTab(docType)"
-                    :aria-controls="`pills-${docType}`"
+                    @click="handleLegDocTab('emirates_id_details')"
+                    aria-controls="pills-emiratesid"
                     aria-selected="false"
                   >
-                    {{
-                      docType === "emirates_id_details"
-                        ? "Emirates ID"
-                        : docType === "trn_details"
-                        ? "TRN"
-                        : `Trade License ${index + 1}`
-                    }}
+                    Emirates ID
+                  </button>
+                </li>
+
+                <!-- TRN Tab -->
+                <li class="nav-item" role="presentation">
+                  <button
+                    :class="`nav-link !text-sm !font-semibold ${
+                      legDocType === 'trn_details'
+                        ? 'active !bg-vivid-purple !text-white-100'
+                        : '!bg-light-lilac !text-dm-blue'
+                    }`"
+                    id="pills-trn-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-trn"
+                    type="button"
+                    role="tab"
+                    @click="handleLegDocTab('trn_details')"
+                    aria-controls="pills-trn"
+                    aria-selected="false"
+                  >
+                    TRN
+                  </button>
+                </li>
+                <li
+                  v-for="(license, index) in tradeLicenses"
+                  :key="index"
+                  class="nav-item"
+                  role="presentation"
+                >
+                  <button
+                    :class="`nav-link !text-sm !font-semibold ${
+                      legDocType === getTradeLicenseTabName(index)
+                        ? 'active !bg-vivid-purple !text-white-100'
+                        : '!bg-light-lilac !text-dm-blue'
+                    }`"
+                    :id="`pills-license-${index}-tab`"
+                    data-bs-toggle="pill"
+                    :data-bs-target="`#pills-license-${index}`"
+                    type="button"
+                    role="tab"
+                    @click="handleLegDocTab(getTradeLicenseTabName(index))"
+                    :aria-controls="`pills-license-${index}`"
+                    aria-selected="false"
+                  >
+                    Trade License {{ index + 1 }}
                   </button>
                 </li>
               </ul>
@@ -224,15 +339,17 @@ const updateTradeLicense = (index, updatedLicense) => {
             <div class="tab-content" id="pills-tabContent">
               <!-- Add your fields for Trade License here -->
               <div
-                v-for="(trade_license, index) in tradeLicenses"
+                v-for="(license, index) in tradeLicenses"
                 :key="index"
-                class="tab-pane fade"
-                :id="`pills-license${index + 1}`"
+                :class="`tab-pane fade ${
+                  legDocType === `trade_license_${index}` ? 'show active' : ''
+                }`"
+                :id="`pills-license-${index}`"
                 role="tabpanel"
-                :aria-labelledby="`pills-license${index + 1}-tab`"
+                :aria-labelledby="`pills-license-${index}-tab`"
               >
                 <TradeLicenseForm
-                  :tradeLicense="trade_license"
+                  :tradeLicense="license"
                   @update="
                     (updatedLicense) =>
                       updateTradeLicense(index, updatedLicense)
@@ -330,7 +447,7 @@ const updateTradeLicense = (index, updatedLicense) => {
                         type="text"
                         v-model="trnNumber"
                         v-bind="trnNumberAttrs"
-                        class="w-full border disabled:bg-gray-200 disabled:text-gray-500 p-2 rounded outline-0 focus:outline-0"
+                        class="w-full disabled:bg-lavender disabled:text-grayColor p-3 rounded outline-0 focus:outline-0 bg-light-lilac"
                       />
                     </div>
                     <div class="w-full">
@@ -341,7 +458,7 @@ const updateTradeLicense = (index, updatedLicense) => {
                         type="text"
                         v-model="legalName"
                         v-bind="legalNameAttrs"
-                        class="w-full border p-2 rounded outline-0 focus:outline-0"
+                        class="w-full disabled:bg-lavender disabled:text-grayColor p-3 rounded outline-0 focus:outline-0 bg-light-lilac"
                       />
                       <span class="text-red-500 text-sm">{{
                         errors?.legalName
@@ -359,7 +476,7 @@ const updateTradeLicense = (index, updatedLicense) => {
                         disabled
                         v-model="legalNameList"
                         v-bind="legalNameListAttrs"
-                        class="w-full border p-2 disabled:bg-gray-200 disabled:text-gray-500 rounded outline-0 focus:outline-0"
+                        class="w-full disabled:bg-lavender disabled:text-grayColor p-3 rounded outline-0 focus:outline-0 bg-light-lilac"
                       />
                       <span class="text-red-500 text-sm">{{
                         errors?.legal_name_list
