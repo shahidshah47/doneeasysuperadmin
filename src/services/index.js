@@ -19,3 +19,20 @@ export const getBasicValues = async () => {
         return false;
     }
 };
+
+
+// Load Google Maps script
+export const loadGoogleMapsScript = () => {
+    return new Promise((resolve) => {
+      if (typeof google !== "undefined") {
+        resolve();
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB8iGeBjvYsaGeV66adjFtXmEmF9dgGxuI`;
+      script.async = true;
+      script.onload = () => resolve();
+      document.head.appendChild(script);
+    });
+  };
+  

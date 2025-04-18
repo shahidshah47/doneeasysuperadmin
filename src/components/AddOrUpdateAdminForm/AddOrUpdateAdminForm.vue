@@ -1,17 +1,19 @@
 <script setup>
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
-import { watch, defineProps, defineEmits, ref, onMounted } from "vue";
+import { watch, defineProps, defineEmits, ref, onMounted, computed } from "vue";
 import { formatToMonthDayYear } from "../../utils/helper";
 import ThemeButton from "../common/ThemeButton/ThemeButton.vue";
 import { useToast } from "primevue";
 import { getBasicValues } from "../../services";
 import api, { authApi } from "../../api";
+import { removeEmptyValues } from "../../utils/removeEmptyValues";
 
 const props = defineProps({
   showAddOrUpdateAdminModal: Boolean,
   adminData: Object
 });
+
 const toast = useToast();
 const roles = ref([]);
 const profilePicture = ref("");
@@ -29,7 +31,7 @@ const admin = ref({
 
 // ✅ Define validation schema
 const schema = yup.object({
-  fullname: yup.string()
+  full_name: yup.string()
     .required("Full name is required")
     .min(3, "Full name must be at least 3 characters")
     .matches(/^[a-zA-Z\s]*$/, "Full name can only contain letters and spaces"),
@@ -52,18 +54,18 @@ const schema = yup.object({
   
   trn: yup.string()
     .required("TRN is required")
-    .matches(/^[0-9]{15}$/, "TRN must be exactly 15 digits"),
+    .matches(/^\d{4}-\d{4}-\d{4}-\d{3}$/, "TRN must be in format: 1000-5942-9900-003"),
   
   role_name: yup.string()
     .required("Role is required"),
   
   password: yup.string()
     .required("Password is required")
-    .min(8, "Password must be at least 8 characters")
-    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-    .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-    .matches(/[0-9]/, "Password must contain at least one number")
-    .matches(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
+    .min(8, "Password must be at least 8 characters"),
+    // .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    // .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+    // .matches(/[0-9]/, "Password must contain at least one number")
+    // .matches(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
   
   confirmPassword: yup.string()
     .required("Please confirm your password")
@@ -81,7 +83,7 @@ const {
 } = useForm({
   validationSchema: schema,
   initialValues: {
-    fullname: "",
+    full_name: "",
     designation: "",
     mobile: "",
     email: "",
@@ -93,7 +95,7 @@ const {
 });
 
 // ✅ Use fields correctly
-const [fullname, fullnameAttrs] = defineField("fullname");
+const [full_name, full_nameAttrs] = defineField("full_name");
 const [designation, designationAttrs] = defineField("designation");
 const [mobile, mobileAttrs] = defineField("mobile");
 const [email, emailAttrs] = defineField("email");
@@ -107,7 +109,7 @@ watch(
   () => props.adminData,
   (newData) => {
     if (newData) {
-      setFieldValue("fullname", "Mohsin Ikram");
+      setFieldValue("full_name", "Mohsin Ikram");
     }
   },
   { deep: true, immediate: true }
@@ -115,16 +117,29 @@ watch(
 
 // ✅ Handle form submission correctly
 const onSubmit = handleSubmit((values) => {
+  const roleFound = roles.value.find((item) => item.id === values.role_name);
   const formData = {
     ...values,
-    profilePicture: profilePicture?.value?.name,
-    emirates_id_front: admin.value.emirates_id_front,
-    emirates_id_back: admin.value.emirates_id_back,
-    visa_image: admin.value.visa_image
+    role_type: roleFound?.role_type,
+    role_name: roleFound?.name,
+    profile_picture: profilePicture?.value?.name,
+    emirates_id_front: admin.value.emirates_id_front?.name,
+    emirates_id_back: admin.value.emirates_id_back?.name,
+    visa_image: admin.value.visa_image?.name,
+    user_type: roleFound?.role_type === "sales_manager" ? 3 : roleFound?.role_type === "company_owner" ? 6 : 2 
   };
-  emit("submit", formData);
+  delete formData.confirmPassword;
+  emit("submit", removeEmptyValues(formData));
   resetForm();
   emit("close");
+}, (errors) => {
+  // Handle validation errors
+  toast.add({ 
+    severity: 'error', 
+    summary: 'Validation Error', 
+    detail: 'Please fix the form errors before submitting', 
+    life: 3000 
+  });
 });
 
 const fetchRoles = async () => {
@@ -336,6 +351,11 @@ const removeDocument = (documentType) => {
   }
 };
 
+// Add this computed property before onMounted
+const isFormValid = computed(() => {
+  return Object.keys(errors.value || {}).length === 0;
+});
+
 onMounted(() => {
   fetchRoles();
 });
@@ -343,7 +363,7 @@ onMounted(() => {
 
 <template>
   <!-- Modal Overlay -->
-  <form class="modal-content border-0 rounded-4" @submit.prevent="onSubmit">
+  <form v-if="showAddOrUpdateAdminModal" class="modal-content border-0 rounded-4" @submit.prevent="onSubmit">
     <div class="modal-header border-0 rounded-top-4 flex items-center justify-between"
       style="background-color: #f2f4fb">
       <h5 class="!text-lg !font-bold mb-0" id="addAdminModalLabel">
@@ -369,15 +389,15 @@ onMounted(() => {
       <div class="flex-1 inline-flex flex-row gap-4">
 
         <div class="w-full">
-          <label for="fullname" class="block text-base !font-bold mb-1">Full Name</label>
+          <label for="full_name" class="block text-base !font-bold mb-1">Full Name</label>
           <input
             type="text"
-            v-model="fullname"
-            v-bind="fullnameAttrs"
-            name="fullname"
+            v-model="full_name"
+            v-bind="full_nameAttrs"
+            name="full_name"
             class="w-full p-3 border-none rounded outline-0 focus:outline-0 bg-light-lilac"
           />
-          <span class="text-red-500 text-sm">{{ errors?.fullname }}</span>
+          <span class="text-red-500 text-sm">{{ errors?.full_name }}</span>
         </div>
 
         <div class="w-full">
@@ -436,6 +456,8 @@ onMounted(() => {
             v-model="trn"
             v-bind="trnAttrs"
             name="trn"
+            maxlength="20"
+            placeholder="1000-5942-9900-003"
             class="w-full p-3 border-none rounded outline-0 focus:outline-0 bg-light-lilac"
           />
           <span class="text-red-500 text-sm">{{ errors?.trn }}</span>
@@ -616,7 +638,12 @@ onMounted(() => {
     </div>
     <div class="modal-footer">
       <ThemeButton label="Cancel" data-bs-dismiss="modal" />
-      <ThemeButton :label="'Save'" variant="primary" type="submit" />
+      <ThemeButton 
+        :label="'Save'" 
+        :data-bs-dismiss="isFormValid ? 'modal' : null" 
+        variant="primary" 
+        type="submit" 
+      />
     </div>
   </form>
 </template>

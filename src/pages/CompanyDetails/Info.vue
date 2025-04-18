@@ -82,14 +82,6 @@
                 <img :src="getImageUrl('share.svg')" alt="edit-icon" />
               </div>
             </div>
-            <!-- <GoogleMap
-                            api-key="AIzaSyB8iGeBjvYsaGeV66adjFtXmEmF9dgGxuI"
-                            style="width: 100%; height: 300px"
-                            :center="locationData"
-                            :zoom="15"
-                        >
-                            <Marker :options="{ position: locationData }" />
-                        </GoogleMap> -->
             <GoogleMapComponent
               :mapCustomStyles="true"
               :height="300"
@@ -105,12 +97,13 @@
       <div class="col-span-3 flex flex-col w-full">
         <div class="flex justify-between">
           <h5 class="!font-bold text-base text-dm-blue">Admin/Manager</h5>
-          <a
-            href="#"
+          <button
+            type="button"
+            @click="showAddOrUpdateAdminModal = true"
             class="!text-vivid-purple font-semibold text-sm text-decoration-none"
             data-bs-toggle="modal"
             data-bs-target="#addAdminModal"
-            >+ Add New</a
+            >+ Add New</button
           >
         </div>
         <div class="bg-white py-4 pl-4 pr-2 rounded-xl flex-1">
@@ -152,10 +145,13 @@
       <div class="col-span-3 flex flex-col w-full">
         <div class="d-flex justify-content-between">
           <h5 class="!font-bold text-base text-dm-blue">Location</h5>
-          <a
-            href="#"
+          <button
+            type="button"
+            @click="showAddOrUpdateLocationModal = true"
+            data-bs-toggle="modal"
+            data-bs-target="#locationModal"
             class="!text-vivid-purple font-semibold text-sm text-decoration-none"
-            >+ Add New</a
+            >+ Add New</button
           >
         </div>
         <div
@@ -245,61 +241,12 @@
     aria-hidden="true"
   >
     <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content border-0 rounded-4">
-        <div
-          class="modal-header border-0 rounded-top-4"
-          style="background-color: #f2f4fb"
-        >
-          <h5 class="modal-title" id="locationModalLabel">Location</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
-        </div>
-
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-12 mb-3">
-              <label for="area" class="form-label">Business Zone</label>
-              <select class="form-select" id="area">
-                <option selected>Area Name</option>
-                <option value="1">Dubai</option>
-                <option value="2">Saudi Arabia</option>
-                <option value="3">Abu Dhabi</option>
-              </select>
-            </div>
-            <div class="col-12 mb-3">
-              <label for="city" class="form-label">City</label>
-              <select class="form-select" id="city">
-                <option value="1" selected>Dubai</option>
-                <option value="2">Saudi Arabia</option>
-                <option value="3">Abu Dhabi</option>
-              </select>
-            </div>
-            <div class="col-12 mb-3">
-              <label for="zipCode" class="form-label">Zip Code</label>
-              <select class="form-select" id="zipCode">
-                <option value="1">23023</option>
-                <option value="2">23024</option>
-                <option value="3">23025</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-outline-secondary text-uppercase"
-            data-bs-dismiss="modal"
-          >
-            Cancel
-          </button>
-          <button type="button" class="btn btn-primary">Save</button>
-        </div>
-      </div>
+      <AddOrUpdateLocation
+        :showAddOrUpdateLocationModal="showAddOrUpdateLocationModal"
+        :locationData="locationDetails"
+        @submit="handleLocationSubmit"
+        @close="closeModal"
+      />
     </div>
   </div>
 
@@ -310,7 +257,7 @@
     aria-labelledby="addAdminModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
       <AddorUpdateAdminForm
         :showAddOrUpdateAdminModal="showAddOrUpdateAdminModal"
         :adminData="addOrUpdateAdminDetails"
@@ -352,6 +299,7 @@ import AddorUpdateAdminForm from "../../components/AddorUpdateAdminForm/AddorUpd
 import GoogleMapComponent from "../../components/common/GoogleMapComponent.vue";
 import { useToast } from "primevue";
 import StyledButton from "../../components/common/StyledButton/StyledButton.vue";
+import AddOrUpdateLocation from "../../components/AddOrUpdateLocation/AddOrUpdateLocation.vue";
 
 const route = useRoute();
 const loading = ref(true);
@@ -368,6 +316,11 @@ const showLegDocModal = ref(false);
 const showAddOrUpdateAdminModal = ref(false);
 const addOrUpdateAdminDetails = ref(null);
 const toast = useToast();
+
+// location moda
+const showAddOrUpdateLocationModal = ref(false);
+const locationDetails = ref(null);
+
 
 const openCreateModal = () => {
   editingCompany.value = { ...companyStore?.companyData?.company };
@@ -445,42 +398,10 @@ const getImageUrl = (path) => {
   return new URL(`../../assets/image/icons/${path}`, import.meta.url).href;
 };
 
-const admin = ref({
-  fullName: "John Thompson",
-  designation: "CEO",
-  mobileNo: "+971 93427012",
-  emailAddress: "johnthompson15@gmail.com",
-  trn: "98734-3423-21",
-  role: "Sales Manager",
-  password: "**********",
-  confirmPassword: "**********",
-  emiratesId: [
-    { name: "Front.jpg", icon: "file-icon.png", size: "3.2mb" },
-    { name: "Back.jpg", icon: "file-icon.png", size: "3.2mb" },
-  ],
-  visa: [{ name: "Visa.jpg", icon: "file-icon.png", size: "3.2mb" }],
-});
-
-const uploadPicture = () => {
-  alert("Upload profile picture clicked");
-};
-
-const uploadEmiratesId = () => {
-  alert("Upload Emirates ID clicked");
-};
-
-const uploadVisa = () => {
-  alert("Upload Visa clicked");
-};
-
-const addAdmin = () => {
-  alert("Admin/Manager added");
-};
-
 const fetchCompanyDetailsById = async (id) => {
   try {
     const response = await api.get("/superadmin/user/details/" + id);
-    if (response.status === 200) {
+    if (response.status === 200 && response?.data?.success) {
       companyStore.setCompanyData(response.data?.data);
       infoDetails.value = response?.data?.data;
       const user = response?.data?.data?.user;
@@ -496,6 +417,13 @@ const fetchCompanyDetailsById = async (id) => {
         life: 3000,
       });
       legalDocsDetails.value = getLegalDocsDetails(user);
+    } else {
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: response?.data?.message,
+        life: 3000,
+      });
     }
   } catch (err) {
     error.value = "Error fetching data";
@@ -525,8 +453,37 @@ const handleLegDocSubmit = async (values) => {
 };
 
 const handleAdminSubmit = async (values) => {
-  console.log(values, "values");
+  console.log(values, companyStore?.companyData?.user?.organization_id, "values");
+  try {
+    const response = await api.post("/superadmin/user/"+ companyStore?.companyData?.user?.organization_id +"/add", values);
+    console.log(response, "response");
+    if (response.status === 200 && response.data.success) {
+      toast.add({
+        severity: "success",
+        summary: "Success",
+        detail: response?.data?.message,
+        life: 3000,
+      });
+      await fetchCompanyDetailsById(route.params.companyId);
+    } else {
+      toast.add({
+        severity: "error",
+        summary: "Error",
+        detail: response?.data?.message,
+        life: 3000,
+      });
+    }
+  } catch (err) {
+    error.value = "Error fetching data";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
 };
+
+const handleLocationSubmit = async (values) => {
+  console.log(values, "values");
+}
 
 onMounted(() => {
   window.scroll(0, 0);
