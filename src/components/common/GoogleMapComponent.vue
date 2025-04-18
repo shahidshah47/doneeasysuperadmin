@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { mapStyles } from "../../utils/constants";
+import { loadGoogleMapsScript } from "../../services";
 
 // Define props
 const props = defineProps({
@@ -27,24 +28,10 @@ const map = ref(null);
 const uniqueId = ref(`google-map-${Math.random().toString(36).substr(2, 9)}`);
 const mapStyle = ref({
   width: "100%",
-  height: `${props.height}px`,
+  height: "100%",
+  minHeight: `${props.height}px`,
   position: "relative",
 });
-
-// Load Google Maps script
-const loadGoogleMapsScript = () => {
-  return new Promise((resolve) => {
-    if (typeof google !== "undefined") {
-      resolve();
-      return;
-    }
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyB8iGeBjvYsaGeV66adjFtXmEmF9dgGxuI`;
-    script.async = true;
-    script.onload = () => resolve();
-    document.head.appendChild(script);
-  });
-};
 
 // Initialize the map
 const initializeMap = async () => {

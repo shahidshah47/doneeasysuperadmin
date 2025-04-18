@@ -13,8 +13,8 @@
 import StarRating from "../../common/StarRating/StarRating.vue";
 
 const props = defineProps({
-  category: Object, // The category object containing label (e.g., 'communication')
-  rating: Number, // The rating value for this category
+  category: Object,
+  rating: Number,
 });
 </script>
 

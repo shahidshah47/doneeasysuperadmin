@@ -2,7 +2,7 @@
   <div class="row my-4 flex" v-if="appointmentDetails">
     <div class="col-md-6 flex flex-col">
       <SectionHeading
-        title="Order Details"
+        :title="mainCardHeading ?? 'Order Details'"
         customClass="!text-base !font-bold text-dm-blue leading-5"
       />
 
@@ -22,24 +22,27 @@
               </h4>
             </div>
             <span
-              class="bg-gradient-primary rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1"
+              :class="[
+                'rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1',
+                statusInfo.class,
+              ]"
             >
-              In Progress</span
-            >
+              {{ statusInfo.label }}
+            </span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
             <InfoDisplay
               label="Date"
               :value="
-                formatDateAndTime(appointmentDetails.delivery_date)
+                formatDateAndTime(appointmentDetails.offer.delivery_date)
                   ?.formattedDate
               "
             />
             <InfoDisplay
               label="Time"
               :value="
-                formatDateAndTime(null, appointmentDetails.delivery_time)
+                formatDateAndTime(null, appointmentDetails.offer.delivery_time)
                   ?.formattedTime
               "
             />
@@ -56,19 +59,19 @@
 
           <div class="flex justify-between" v-if="user || company">
             <ProfileCard
-              :filePath="user.profile_picture?.file_path"
+              :filePath="user?.profile_picture?.file_path"
               imageSrc="../../../assets/images2/manager.png"
               altText="manager img"
               subText="Manager"
               :mainText="user.name"
             />
             <ProfileCard
-              :filePath="company.company_logo?.file_path"
+              :filePath="company?.company_logo?.file_path"
               imageSrc="../../../assets/images2/ltd.png"
               altText="ltd"
               :mainText="company.company_name"
               linkText="View Details"
-              @viewDetails="handleViewDetails()"
+              @viewDetails="handleViewDetails(company.id)"
             />
           </div>
 
@@ -89,7 +92,9 @@
         class="h-full flex-1"
       >
         <div class="d-flex">
-          <h5 class="fw-bold !text-base !text-dm-blue">Assign to</h5>
+          <h5 class="fw-bold !text-base !text-dm-blue">
+            {{ associateHeading ?? "Assign to" }}
+          </h5>
           <p
             class="!text-grayColor text-sm leading-5 !font-bold mb-0 ms-auto font-theme"
           >
@@ -102,9 +107,9 @@
         >
           <UserProfileCard
             :key="index"
-            :profileImage="associate.profile_picture.file_path"
-            :name="associate.name"
-            :designation="associate.designation"
+            :profileImage="associate?.profile_picture?.file_path"
+            :name="associate?.name"
+            :designation="associate?.designation"
             :rating="4"
           />
         </div>
@@ -149,9 +154,13 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from "vue";
+import { computed, defineProps, ref } from "vue";
 import { useCompanyStore } from "../../store";
-import { formatDateAndTime, getOrderType } from "../../utils/helper";
+import {
+  formatDateAndTime,
+  getOrderType,
+  getStatusInfo,
+} from "../../utils/helper";
 import DescriptionCard from "../common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../common/FileCard/FileCard.vue";
 import LocationCard from "../common/LocationCard/LocationCard.vue";
@@ -167,11 +176,18 @@ const props = defineProps({
   appointmentDetails: Object,
   user: Object,
   company: Object,
+  mainCardHeading: String,
+  associateHeading: String,
 });
 
-const handleViewDetails = () => {
+const handleViewDetails = (id) => {
   companyStore.toggleCompanyDetail();
+  companyStore.setCompanyId(id);
 };
-
+const statusInfo = computed(() => {
+  return props.orderSummary?.status
+    ? getStatusInfo(props.orderSummary.status)
+    : { class: "", label: "" };
+});
 console.log(props.appointmentDetails, "props appointment details");
 </script>

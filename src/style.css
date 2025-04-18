@@ -627,3 +627,124 @@ select {
   ) !important;
   border-radius: 12px;
 }
+
+.bg-gradient-aqua-lavender {
+  background: linear-gradient(
+    148.03deg,
+    #d6f1f5 -18.12%,
+    #ebe4fd 84.98%
+  ) !important;
+  border-radius: 12px;
+}
+
+.bg-gradient-aqua-light {
+  background: linear-gradient(
+    148.03deg,
+    #d6f1f5 -18.12%,
+    #ebe4fd 84.98%
+  ) !important;
+  border-radius: 8px;
+}
+
+.prime-btn {
+  position: relative;
+}
+
+.prime-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 1.6px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  background: linear-gradient(
+    98.24deg,
+    #38e0b2 -18.55%,
+    #442ae8 28.45%,
+    #5925eb 64.63%,
+    #9e21ee 116.94%
+  );
+}
+.status-active {
+  background-color: #d6ffef !important;
+  color: #00995c !important;
+}
+
+.status-deactivated {
+  background-color: #e7e7eb !important;
+  color: #0e0d35 !important;
+}
+
+.status-inactive {
+  background-color: #e7e7eb !important;
+  color: #575672 !important;
+}
+
+.status-monitory {
+  background-color: #fceed9 !important;
+  color: #dc8b13 !important;
+}
+
+.status-banned {
+  background-color: #ffe5e5 !important;
+  color: #ff5555 !important;
+}
+
+.status-default {
+  background-color: #f1f1f1 !important;
+  color: #000 !important;
+}
+
+.p-toast-message {
+  background: #fff !important;
+  @apply !shadow-2xl !rounded-xl !border-light-lilac;
+}
+.p-toast-message-content {
+  position: relative !important;
+  align-items: center !important;
+  padding: 14px 22px !important;
+}
+.p-toast-close-button {
+  @apply !text-gray-blue-100;
+}
+.p-toast-message-content::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 40px;
+  background-color: #0ec37b;
+  bottom: 0;
+  margin: auto;
+}
+.p-toast-message .p-toast-close-button:hover {
+  background: transparent !important;
+}
+.p-toast-message-success .p-toast-close-button:focus-visible {
+  outline-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.bg-gradient-warning {
+  background: linear-gradient(97.53deg, #f6c343 2.03%, #f6b100 100%);
+}
+
+.bg-gradient-success {
+  background: linear-gradient(97.53deg, #28a745 2.03%, #218838 100%);
+}
+
+.bg-gradient-info {
+  background: linear-gradient(97.53deg, #17a2b8 2.03%, #138496 100%);
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(97.53deg, #343a40 2.03%, #23272b 100%);
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(97.53deg, #6c757d 2.03%, #5a6268 100%);
+}

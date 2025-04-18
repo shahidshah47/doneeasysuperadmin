@@ -88,7 +88,7 @@ const handleCompSizeSelect = (heading) => {
   <!-- Modal Overlay -->
   <div
     v-if="showCompanyModal"
-    class="z-[99999] left-0 right-0 bottom-0 top-0 overflow-auto backdrop-blur-[12px] bg-opacity-10 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+    class="z-[999] left-0 right-0 bottom-0 top-0 overflow-auto backdrop-blur-[12px] bg-opacity-10 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
   >
     <div class="relative bg-white rounded-3xl overflow-hidden">
       <div

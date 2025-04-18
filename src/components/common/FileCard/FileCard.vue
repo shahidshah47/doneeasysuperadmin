@@ -53,11 +53,11 @@ const props = defineProps({
   },
   fileName: {
     type: String,
-    default: "Company Profile",
+    default: "--",
   },
   fileSize: {
     type: String,
-    default: "3.2mb",
+    default: "--",
   },
   isEyeIcon: {
     type: Boolean,

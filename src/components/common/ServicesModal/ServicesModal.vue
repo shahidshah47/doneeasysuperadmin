@@ -31,6 +31,7 @@
             v-bind="titleAttrs"
             type="text"
           />
+
           <TextareaField
             label="Service Description"
             name="description"

@@ -4,7 +4,7 @@
       <div
         class="w-8 h-8 !bg-light-lilac shadow-lavendar-card flex items-center justify-center"
       >
-        <img :src="getImagePath(image)" alt="Notification Icon" />
+        <img :src="image" alt="Notification Icon" />
       </div>
     </div>
     <div class="flex flex-col">
@@ -13,8 +13,6 @@
       </p>
       <div class="flex text-grayColor text-sm mt-1">
         <span>{{ date }}</span>
-        <span class="mx-2">•</span>
-        <span>{{ time }}</span>
       </div>
     </div>
   </div>
@@ -25,13 +23,7 @@ defineProps({
   image: String,
   message: String,
   date: String,
-  time: String,
 });
-
-const getImagePath = (imageName) => {
-  return new URL(`../../../assets/image/icons/${imageName}`, import.meta.url)
-    .href;
-};
 </script>
 
 <style scoped>

@@ -372,7 +372,7 @@ onMounted(() => {
         </template>
 
         <template #id="{ data }"
-          ><span>{{ data.id }}</span></template
+          ><span class="!font-semibold">{{ data.id }}</span></template
         >
 
         <template #companyName="{ data }">

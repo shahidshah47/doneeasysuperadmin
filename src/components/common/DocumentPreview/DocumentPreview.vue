@@ -1,7 +1,7 @@
 <template>
   <div class="rounded-xl border-0 bg-white-100 p-4">
-    <div class="text-center mb-3 rounded-[10px] overflow-hidden">
-      <img :src="getImageUrl(imageName)" :alt="title" class="w-100" />
+    <div class="text-center mb-3 rounded-[10px] overflow-hidden max-h-38">
+      <img :src="imageName" :alt="title" class="w-100" />
     </div>
     <p class="fw-bold mb-0">{{ title }}</p>
     <p class="text-secondary mb-0 text-sm">{{ institute }}</p>
@@ -36,11 +36,6 @@ export default {
     credentialId: {
       type: String,
       required: true,
-    },
-  },
-  methods: {
-    getImageUrl(name) {
-      return new URL(`../../../assets/images2/${name}`, import.meta.url).href;
     },
   },
 };

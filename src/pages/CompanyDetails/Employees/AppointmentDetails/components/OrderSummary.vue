@@ -1,5 +1,5 @@
 <template>
-  <div class="row my-4 flex">
+  <div class="row my-4 flex" v-if="orderSummary">
     <div class="col-md-6 flex flex-col">
       <SectionHeading
         title="Offers Details"
@@ -10,32 +10,35 @@
         <div class="card-body position-relative">
           <div class="position-absolute end-0 me-3 mt-3 top-0">
             <span
-              class="bg-gradient-primary rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1"
+              :class="[
+                'rounded-sm text-uppercase text-white-100 !text-xs font-bold leding-4 px-2 py-1',
+                statusInfo.class,
+              ]"
             >
-              In Progress
+              {{ statusInfo.label }}
             </span>
           </div>
           <p class="!text-base !text-grayish-purple font-normal leading-5 mb-0">
-            ID: 98374861
+            ID: {{ orderSummary?.order?.id }}
           </p>
           <h4
-            class="text-dm-blue !font-semibold leading-4 !text-[20px] font-theme"
+            class="text-dm-blue !font-semibold leading-4 !text-[20px] font-theme capitalize"
           >
-            Laundry Services
+            {{ orderSummary?.order?.title }}
           </h4>
 
           <div class="row g-2 mb-2">
             <div class="col-md-6">
               <InfoDisplay
                 label="Date"
-                value="Sat, 19 Nov 2023"
+                :value="formatDate(orderSummary?.delivery_date)"
                 className="flex flex-col gap-1"
               />
             </div>
             <div class="col-md-6">
               <InfoDisplay
                 label="Time"
-                value="10:30 AM"
+                :value="formatTime(orderSummary?.delivery_time)"
                 className="flex flex-col gap-1"
               />
             </div>
@@ -49,14 +52,18 @@
             <div class="col-md-6">
               <InfoDisplay
                 label="Payment Status"
-                value="Paid"
+                :value="`Paid ${orderSummary?.paid_percentage}%`"
                 className="flex flex-col gap-1"
               />
             </div>
             <div class="col-md-6">
               <InfoDisplay
                 label="Order Amount"
-                value="$150.00"
+                :value="
+                  offerDetails?.grand_total != null
+                    ? Math.floor(offerDetails?.grand_total)
+                    : ''
+                "
                 className="flex flex-col gap-1"
               />
             </div>
@@ -64,23 +71,24 @@
 
           <div class="row">
             <ProfileCard
-              :imageSrc="ManagerIcon"
-              altText="manager img"
-              subText="Manager"
-              mainText="John Doe"
+              :imageSrc="offerDetails?.user?.profile_picture?.file_path"
+              :altText="`${offerDetails?.user?.name} img`"
+              :subText="offerDetails?.user?.designation"
+              :mainText="offerDetails?.user?.name"
             />
             <ProfileCard
-              :imageSrc="CompanyIcon"
-              altText="ltd"
-              mainText="XYZ Bito Group Pvt Ltd"
-              linkText="View Details"
+              :imageSrc="offerDetails?.user?.company?.company_logo?.file_path"
+              :altText="offerDetails?.user?.company?.company_name"
+              :mainText="offerDetails?.user?.company?.company_name"
+              linkText="View
+            Details"
             />
           </div>
 
           <div class="mt-4">
             <SummaryCard
               title="Customer Summary"
-              description="Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentum tellus."
+              :description="orderSummary?.order?.description"
               readMoreLink="#"
             />
           </div>
@@ -88,67 +96,93 @@
       </div>
     </div>
     <div class="col-md-3 flex flex-col">
-      <div class="d-flex">
-        <h5 class="fw-semibold !text-base !text-dm-blue">Assign to</h5>
-        <p
-          class="!text-grayColor text-sm leading-5 !font-semibold mb-0 ms-auto font-theme"
+      <div v-if="orderSummary?.associate_user.length > 0">
+        <div class="d-flex">
+          <h5 class="fw-semibold !text-base !text-dm-blue">Assign to</h5>
+          <p
+            class="!text-grayColor text-sm leading-5 !font-semibold mb-0 ms-auto font-theme"
+          >
+            View All
+          </p>
+        </div>
+        <div
+          v-for="(associate, index) in orderSummary?.associate_user"
+          :key="associate.id || index"
         >
-          View All
-        </p>
+          <UserProfileCard
+            :key="index"
+            :profileImage="associate?.profile_picture?.file_path"
+            :name="associate?.name"
+            :designation="associate?.designation"
+            :rating="4"
+          />
+        </div>
       </div>
-      <UserProfileCard
-        :profileImage="ManagerIcon"
-        name="Nancy Tolbert"
-        designation="Senior Manager"
-        :rating="4"
-      />
 
       <h5 class="fw-semibold mt-3 !text-base !text-dm-blue">Order Location</h5>
-      <div class="flex-1 flex">
+      <div class="flex-1 flex h-full">
         <LocationCard
           class="flex-grow h-full"
-          address="123 Main St."
-          :imageSrc="MapIcon"
-          buttonText="Open Map"
+          :location="{
+            lat: Number(orderSummary?.order?.address?.lat),
+            lng: Number(orderSummary?.order?.address?.lng),
+          }"
+          :address="orderSummary?.order?.address?.address"
+          buttonText="View Map"
         />
       </div>
     </div>
-    <div class="col-md-3 flex flex-col">
+    <div
+      class="col-md-3 flex flex-col"
+      v-if="offerDetails.order.documents.length"
+    >
       <h5 class="fw-semibold !text-base !text-dm-blue">Attachments</h5>
-      <FileCard
-        fileIcon="../../../../../assets/images2/file-icon.png"
-        fileName="Company Profile"
-        fileSize="3.2mb"
-      />
+
+      <div class="overflow-y-auto vivid-scrollbar max-h-36">
+        <div
+          v-for="(doc, index) in offerDetails.order.documents"
+          :key="doc.id || index"
+        >
+          <FileCard
+            :key="index"
+            fileIcon="../../../assets/images2/file-icon.png"
+            :fileName="doc.file_name"
+            :fileSize="doc.file_size"
+          />
+        </div>
+      </div>
 
       <DescriptionCard
         title="Additional terms"
-        content="Custom content goes here..."
+        :content="offerDetails?.additional_terms"
         linkText="read more"
         :lineClamp="3"
       />
     </div>
   </div>
 
-  <h5 class="fw-semibold">Payment Terms</h5>
-  <div class="card border-0 rounded-3">
-    <div class="card-body">
-      <div class="row">
-        <PaymentCard
-          badgeText="1st payment"
-          paymentDescription="25% - After event reservation."
-          paymentDate="2020-05-17, 10:00 AM"
-          currency="AED"
-          amount="2300.00"
-          status="Paid"
-        />
-      </div>
+  <div v-if="offerDetails?.payment_terms?.length > 0">
+    <h5 class="fw-bold !text-base !text-dm-blue">Payment Terms</h5>
+    <div
+      class="bg-white rounded-xl p-3 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3"
+    >
+      <PaymentCard
+        :key="index"
+        v-for="(paymentTerm, index) in offerDetails?.payment_terms"
+        :badgeText="getOrdinalNumber(index + 1) + ' Payment'"
+        :paymentDescription="paymentTerm.description"
+        :paymentDate="formatDateAndTime(paymentTerm.created_at)?.formattedDate"
+        currency="AED"
+        :amount="formatWithCommas(paymentTerm.amount)"
+        :statusClass="paymentTermsStatus(paymentTerm.status)?.gradient"
+        :status="paymentTermsStatus(paymentTerm.status)?.statusText"
+      />
     </div>
   </div>
 
   <BreakDown title="Offer Breakdown" @toggle="handleToggle" />
 
-  <div class="mb-4" v-if="services.length > 0">
+  <div class="mb-4" v-if="offerDetails?.services.length > 0">
     <div class="flex justify-between items-center">
       <h5 class="fw-bold !text-base leading-5 text-dm-blue">
         Quote for Services
@@ -162,7 +196,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <ServiceCard
-        v-for="(service, index) in services"
+        v-for="(service, index) in offerDetails?.services"
         :key="service.id"
         :data="service"
         :itemTitle="`Item No ${index + 1}`"
@@ -171,7 +205,7 @@
     </div>
   </div>
 
-  <div v-if="quotations.length > 0">
+  <div v-if="offerDetails?.quotations.length > 0">
     <div class="flex justify-between items-center">
       <h5 class="fw-bold !text-base leading-5 text-dm-blue">
         Quote for Materials
@@ -185,7 +219,7 @@
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       <MaterialCard
-        v-for="(quote, index) in quotations"
+        v-for="(quote, index) in offerDetails?.quotations"
         :key="quote.id"
         :itemTitle="`Item No ${index + 1}`"
         :data="quote"
@@ -196,7 +230,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref, toRaw, watch } from "vue";
+import api from "../../../../../api";
 import BreakDown from "../../../../../components/common/BreakDown/BreakDown.vue";
 import DescriptionCard from "../../../../../components/common/DescriptionCard/DescriptionCard.vue";
 import FileCard from "../../../../../components/common/FileCard/FileCard.vue";
@@ -206,74 +241,74 @@ import PaymentCard from "../../../../../components/common/PaymentCard/PaymentCar
 import ProfileCard from "../../../../../components/common/ProfileCard/ProfileCard.vue";
 import SectionHeading from "../../../../../components/common/SectionHeading/SectionHeading.vue";
 import ServiceCard from "../../../../../components/common/ServiceCard/ServiceCard.vue";
+import MaterialCard from "../../../../../components/common/MaterialCard/MaterialCard.vue";
 import SummaryCard from "../../../../../components/common/SummaryCard/SummaryCard.vue";
 import UserProfileCard from "../../../../../components/common/UserProfileCard/UserProfileCard.vue";
 import MapIcon from "../../../../../assets/images2/map-2.png";
 import ManagerIcon from "../../../../../assets/images2/manager.png";
 import CompanyIcon from "../../../../../assets/images2/ltd.png";
+import {
+  getStatusInfo,
+  formatDate,
+  formatTime,
+  getOrdinalNumber,
+  formatDateAndTime,
+  formatWithCommas,
+} from "../../../../../utils/helper";
+import { paymentTermsStatus } from "../../../../../utils/constants";
+import { useAppointmentStore } from "../../../../../store";
+
+const props = defineProps({
+  orderSummary: Object,
+});
+
+const appointStore = useAppointmentStore();
+
+const handleServices = () => {
+  appointStore.toggleIsServiceDetails();
+};
+
+const handleMaterials = () => {
+  appointStore.toggleIsMaterialDetails();
+};
 
 const handleClickEdit = (data) => {
   if (data.item_title) {
-    // appointStore.toggleIsMaterialDetails(data);
+    appointStore.toggleIsMaterialDetails(data);
   } else {
-    // appointStore.toggleIsServiceDetails(data);
+    appointStore.toggleIsServiceDetails(data);
   }
 };
 
-const services = ref([
-  {
-    id: 578,
-    offer_id: 419,
-    item_number: "Item No 1 update",
-    title: "Session - Introduction 21",
-    description:
-      "Lorem ipsum dolor sit amet consectetur. Proin tellus ac sit ullamcorper morbi condimentum tellus.",
-    unit_price: "15.00",
-    quantity: 38,
-    sub_total: "570.00",
-    delivery_time: "2026-05-12 20:53:00",
-    total: "570.00",
-    created_at: "2025-03-07T14:02:00.000000Z",
-    updated_at: "2025-04-04T09:31:53.000000Z",
-    serviceable_type: null,
-    serviceable_id: null,
-    user_id: null,
-  },
-  {
-    id: 610,
-    offer_id: 419,
-    item_number: "Item No 2",
-    title: "New service 4",
-    description: "Test service description for this 2",
-    unit_price: "40.00",
-    quantity: 25,
-    sub_total: "1000.00",
-    delivery_time: "2025-04-04 16:23:00",
-    total: "1000.00",
-    created_at: "2025-04-03T09:22:00.000000Z",
-    updated_at: "2025-04-04T09:28:47.000000Z",
-    serviceable_type: null,
-    serviceable_id: null,
-    user_id: null,
-  },
-]);
+const statusInfo = computed(() => {
+  return props.orderSummary?.status
+    ? getStatusInfo(props.orderSummary.status)
+    : { class: "", label: "" };
+});
 
-const quotations = ref([
-  {
-    id: 608,
-    offer_id: 419,
-    item_title: "Tsgsh",
-    description: "Hajsj",
-    unit_price: "56.00",
-    quantity: 30,
-    sub_total: "1680.00",
-    delivery_time: "2025-04-05 00:00:00",
-    total: "1680.00",
-    type: 1,
-    created_at: "2025-03-07T14:02:00.000000Z",
-    updated_at: "2025-04-04T09:18:28.000000Z",
+const offerDetails = ref(null);
+
+watch(
+  () => props.orderSummary,
+  async (newVal) => {
+    if (newVal?.offer?.id) {
+      try {
+        const response = await api.get(
+          `/superadmin/user/offer/${newVal.offer.id}`
+        );
+        offerDetails.value = response.data.data;
+      } catch (error) {
+        console.error("Failed to fetch offer details:", error);
+      }
+    }
   },
-]);
+  { immediate: true }
+);
+
+watch(offerDetails, (newVal) => {
+  const rawData = toRaw(newVal);
+  console.log("Raw offer details:", rawData);
+});
 </script>
 
 <style scoped>

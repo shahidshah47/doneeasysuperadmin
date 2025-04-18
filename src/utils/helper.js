@@ -1,4 +1,4 @@
-import { blue, gray, green, red, yellow } from "./constants";
+import { blue, getOfferStatus, gray, green, red, yellow } from "./constants";
 
 export const transformData = (data) => {
   return data.map((item, index) => {
@@ -88,6 +88,55 @@ export const getLegalDocsDetails = (user) => {
     { label: "Emirates ID", value: user?.emirates_id },
     { label: "TRN", value: user?.trn },
   ];
+};
+
+const ACTIVE = 1;
+const DEACTIVATED = 2;
+const INACTIVE = 3;
+const MONITORY = 4;
+const BANNED = 5;
+
+const WORKING_SURVEY_TASK = 1;
+const WORKING_REQUEST_TASK = 2;
+const WORKING_APPOINTMENT_TASK = 3;
+const APPOINTMENT_ASSIGNED = 4;
+const REQUEST_ASSIGNED = 5;
+const SURVEY_ASSIGNED = 6;
+
+const getProgressStatusText = (status) => {
+  switch (status) {
+    case WORKING_SURVEY_TASK:
+      return "Survey Task";
+    case WORKING_REQUEST_TASK:
+      return "Request Task";
+    case WORKING_APPOINTMENT_TASK:
+      return "Appointment Task";
+    case APPOINTMENT_ASSIGNED:
+      return "Appointment Assigned";
+    case REQUEST_ASSIGNED:
+      return "Request Assigned";
+    case SURVEY_ASSIGNED:
+      return "Survey Assigned";
+    default:
+      return "Occupied";
+  }
+};
+
+const getStatusText = (status) => {
+  switch (status) {
+    case ACTIVE:
+      return "Active";
+    case DEACTIVATED:
+      return "Deactivated";
+    case INACTIVE:
+      return "Inactive";
+    case MONITORY:
+      return "Monitory";
+    case BANNED:
+      return "Banned";
+    default:
+      return "";
+  }
 };
 
 // Utility function to convert API response to table format
@@ -235,6 +284,57 @@ export const convertAppointmentData = (appointment) => {
   };
 };
 
+export const convertAppointmentEmployeeData = (appointment) => {
+  return {
+    id: appointment.id,
+    organizationName: {
+      logo: appointment.user.profile_picture?.file_path || "",
+      name: appointment.user.name || "N/A",
+    },
+    title: {
+      name: appointment.order.title,
+      description: appointment.order.description,
+    },
+    verticle: {
+      image: appointment.order.verticle.image_path,
+      name: appointment.order.verticle.name,
+    },
+    manager: {
+      name: appointment?.user?.name,
+      logo: appointment?.user?.profile_picture?.file_path,
+    },
+    contact: appointment?.user?.mobile_number,
+    status: getAppointmentStatus(appointment.status),
+    expectedDateAndTime:
+      appointment.delivery_date + " " + formatTime(appointment.delivery_time),
+  };
+};
+
+export const convertSurveyEmployeeData = (survey) => {
+  return {
+    id: survey.id,
+    organizationName: {
+      logo: survey.user.profile_picture?.file_path || "",
+      name: survey.user.name || "N/A",
+    },
+    title: {
+      name: survey.order.title,
+      description: survey.order.description,
+    },
+    verticle: {
+      image: survey.order.verticle.image_path,
+      name: survey.order.verticle.name,
+    },
+    manager: {
+      name: survey?.user?.name,
+      logo: survey?.user?.profile_picture?.file_path,
+    },
+    contact: survey?.user?.mobile_number,
+    status: getAppointmentStatus(survey.status),
+    expectedDateAndTime: survey.date + " " + formatTime(survey.start_time),
+  };
+};
+
 // Utility function to convert API response to table format
 export const convertSiteSurveyData = (site_survey) => {
   return {
@@ -263,19 +363,44 @@ export const convertEmployeeUsersData = (empUser) => {
     id: empUser.id,
     employeeName: {
       name: empUser.name,
-      image: empUser.profile_picture.file_path,
+      image:
+        empUser?.profile_picture?.file_path ||
+        "https://pilot.doneeasy.io/api/files/UploadedFiles/1738997376_profile_picture.jpg",
     },
-    role: empUser.designation,
-    vertical: empUser.vertical_count ?? 0,
-    status: "Active",
-    contact: { phone: empUser.mobile_number, email: empUser.email },
-    currentWork: "Occupied",
+    role: empUser?.designation,
+    vertical: empUser?.vertical_count ?? 0,
+    status: getStatusText(empUser?.status),
+    contact: { phone: empUser?.mobile_number, email: empUser?.email },
+    currentWork: getProgressStatusText(empUser?.working_type || 0),
     projectDetail: {
-      name: "Business Setup",
-      client: "Client Name",
-      end_date: "11/02.2023",
-      image: "Avatar.png",
+      name: empUser?.working_order?.title,
+      client: empUser?.created_by?.name,
+      end_date: empUser?.working_order?.end_date,
+      image: empUser?.created_by?.profile_picture?.file_path,
     },
+  };
+};
+
+// Utility function to convert API response to table format
+export const convertOffersData = (offer) => {
+  return {
+    id: offer.id,
+    organizationName: {
+      logo: offer.company.company_logo?.file_path || "",
+      name: offer.company.company_name || "N/A",
+    },
+    order: {
+      name: offer.order.title,
+      description: offer.order.description,
+    },
+    orderType: offer.order.type === 1 ? "One-time" : "Reoccuring",
+    verticle: {
+      image: offer.order.verticle.image_path,
+      name: offer.order.verticle.name,
+    },
+    offerSentDate: formatDateAtMidnight(offer.created_at),
+    status: getOfferStatus(offer.status),
+    offerValue: offer.grand_total,
   };
 };
 
@@ -329,6 +454,35 @@ export const getAppointProgressStatus = (status) => {
       return { name: "Pending From Client", ...red };
     default:
       return { name: "Other", ...gray };
+  }
+};
+
+const STATUS_SCHEDULED = 1;
+const STATUS_RESCHEDULED = 2;
+const CANCELED = 3;
+const COMPLETED = 4;
+const REJECTED_RESCHEDULED = 5;
+const DELIVERED = 6;
+const DISPUTED = 7;
+
+export const getAppointmentStatus = (status) => {
+  switch (status) {
+    case STATUS_SCHEDULED:
+      return { name: "Scheduled", ...green };
+    case STATUS_RESCHEDULED:
+      return { name: "Rescheduled", ...green };
+    case CANCELED:
+      return { name: "Canceled", ...red };
+    case COMPLETED:
+      return { name: "Completed", ...green };
+    case REJECTED_RESCHEDULED:
+      return { name: "Rejected - Rescheduled", ...red };
+    case DELIVERED:
+      return { name: "Delivered", ...green };
+    case DISPUTED:
+      return { name: "Disputed", ...red };
+    default:
+      return { name: "Other", color: "gray" };
   }
 };
 
@@ -489,12 +643,94 @@ export const debounce = (func, delay) => {
   };
 };
 
-export const  getMonthFromISO = (dateString) => {
+export const getMonthFromISO = (dateString) => {
   const date = new Date(dateString);
   // Months are zero-based (0 = January, 4 = May, etc.)
   const monthNames = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
   return monthNames[date.getUTCMonth()];
-}
+};
+
+export const formatToMonthYear = (dateString) => {
+  if (!dateString) return "Invalid Date"; // Handle null or undefined
+
+  let date;
+
+  if (dateString.includes("T")) {
+    date = new Date(dateString);
+  } else {
+    // If it's in "YYYY-MM-DD" format (start_date)
+    date = new Date(`${dateString}T00:00:00Z`);
+  }
+
+  // Check if date is valid
+  if (isNaN(date.getTime())) return "Invalid Date";
+
+  const options = { year: "numeric", month: "short" };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+};
+
+export const getStatusInfo = (status) => {
+  let statusInfo = {
+    class: "",
+    label: "",
+  };
+
+  switch (status) {
+    case 1:
+      statusInfo.class = "bg-gradient-primary"; // Scheduled
+      statusInfo.label = "Scheduled";
+      break;
+    case 2:
+      statusInfo.class = "bg-gradient-warning"; // Rescheduled
+      statusInfo.label = "Rescheduled";
+      break;
+    case 3:
+      statusInfo.class = "bg-gradient-orange"; // Canceled
+      statusInfo.label = "Canceled";
+      break;
+    case 4:
+      statusInfo.class = "bg-gradient-success"; // Completed
+      statusInfo.label = "Completed";
+      break;
+    case 5:
+      statusInfo.class = "bg-gradient-info"; // Rejected Rescheduled
+      statusInfo.label = "Rejected Rescheduled";
+      break;
+    case 6:
+      statusInfo.class = "bg-gradient-success"; // Delivered
+      statusInfo.label = "Delivered";
+      break;
+    case 7:
+      statusInfo.class = "bg-gradient-dark"; // Disputed
+      statusInfo.label = "Disputed";
+      break;
+    default:
+      statusInfo.class = "bg-gradient-secondary"; // Unknown status
+      statusInfo.label = "Unknown";
+      break;
+  }
+
+  return statusInfo;
+};
+
+export const getPrettyDateTime = (isoString) => {
+  const dateObj = new Date(isoString);
+  const date = dateObj.toISOString().split("T")[0];
+  const time = dateObj.toTimeString().split(" ")[0];
+  const { formattedDate, formattedTime } = formatDateAndTime(date, time);
+
+  return `${formattedDate.replace(",", "")} • ${formattedTime}`;
+};

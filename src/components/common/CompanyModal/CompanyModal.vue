@@ -85,6 +85,8 @@ import { useToast } from "primevue";
 import { useRoute } from "vue-router";
 import api from "../../../api";
 import Modal from "../Modal/Modal.vue";
+import { useCompanyStore } from "../../../store";
+import { storeToRefs } from "pinia";
 
 const details = ref(null);
 const error = ref(null);
@@ -92,6 +94,8 @@ const loading = ref(true);
 const emit = defineEmits(["close"]);
 const toast = useToast();
 const route = useRoute();
+const companyStore = useCompanyStore();
+const { companyId } = storeToRefs(companyStore);
 
 const isVisible = ref(true);
 const screenWidth = ref(window.innerWidth);
@@ -128,7 +132,7 @@ const updateScreenSize = () => {
 const fetchCompanyDetails = async () => {
   try {
     const response = await api.get(
-      "/superadmin/user/appointment/company/" + route.params.appointmentId
+      "/superadmin/user/appointment/company/" + companyId?.value
     );
     if (response.status === 200) {
       const { data } = response.data;
