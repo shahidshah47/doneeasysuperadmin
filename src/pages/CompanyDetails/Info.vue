@@ -105,8 +105,9 @@
             class="!text-vivid-purple font-semibold text-sm text-decoration-none"
             data-bs-toggle="modal"
             data-bs-target="#addAdminModal"
-            >+ Add New</button
           >
+            + Add New
+          </button>
         </div>
         <div class="bg-white py-4 pl-4 pr-2 rounded-xl flex-1">
           <div
@@ -153,8 +154,9 @@
             data-bs-toggle="modal"
             data-bs-target="#locationModal"
             class="!text-vivid-purple font-semibold text-sm text-decoration-none"
-            >+ Add New</button
           >
+            + Add New
+          </button>
         </div>
         <div
           class="bg-white py-4 pl-4 pr-2 rounded-xl flex flex-col gap-3 flex-1"
@@ -284,7 +286,6 @@
     @submit="handleLegDocSubmit"
     @close="closeModal"
   />
-  
 </template>
 
 <script setup>
@@ -293,13 +294,10 @@ import CompanyHeader from "../../components/CompanyHeader.vue";
 import { useRoute } from "vue-router";
 import api from "../../api";
 import { useCompanyStore, useUserStore } from "../../store";
-import {
-  getCompanyDetails,
-  getLegalDocsDetails,
-} from "../../utils/helper";
+import { getCompanyDetails, getLegalDocsDetails } from "../../utils/helper";
 import CompanyForm from "../../components/CompanyForm/CompanyForm.vue";
 import LegalDocDetailsForm from "../../components/LegalDocDetailsForm/LegalDocDetailsForm.vue";
-import AddorUpdateAdminForm from "../../components/AddorUpdateAdminForm/AddorUpdateAdminForm.vue";
+import AddorUpdateAdminForm from "../../components/AddOrUpdateAdminForm/AddOrUpdateAdminForm.vue";
 import GoogleMapComponent from "../../components/common/GoogleMapComponent.vue";
 import { useToast } from "primevue";
 import StyledButton from "../../components/common/StyledButton/StyledButton.vue";
@@ -324,7 +322,6 @@ const toast = useToast();
 // location moda
 const showAddOrUpdateLocationModal = ref(false);
 const locationDetails = ref(null);
-
 
 const openCreateModal = () => {
   editingCompany.value = { ...companyStore?.companyData?.company };
@@ -457,9 +454,18 @@ const handleLegDocSubmit = async (values) => {
 };
 
 const handleAdminSubmit = async (values) => {
-  console.log(values, companyStore?.companyData?.user?.organization_id, "values");
+  console.log(
+    values,
+    companyStore?.companyData?.user?.organization_id,
+    "values"
+  );
   try {
-    const response = await api.post("/superadmin/user/"+ companyStore?.companyData?.user?.organization_id +"/add", values);
+    const response = await api.post(
+      "/superadmin/user/" +
+        companyStore?.companyData?.user?.organization_id +
+        "/add",
+      values
+    );
     console.log(response, "response");
     if (response.status === 200 && response.data.success) {
       toast.add({
@@ -487,7 +493,7 @@ const handleAdminSubmit = async (values) => {
 
 const handleLocationSubmit = async (values) => {
   console.log(values, "values");
-}
+};
 
 onMounted(() => {
   window.scroll(0, 0);
